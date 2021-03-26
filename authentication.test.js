@@ -1,4 +1,4 @@
-const { test } = require('@jest/globals');
+const { test, expect } = require('@jest/globals');
 const authen = require('./authentication');
 
 /**
@@ -24,11 +24,19 @@ test('validating password: checks lengths', ()=> {
     expect(authentication.isValidEmail("igiti@gmil.cod")).toBe(false);
 });
 
+test('checks if the username already exists', ()=> {
+    expect(authentication.isUniqueUserName('Arluad')).toBe(true);
+});
+
+test('checks if the username already exists', ()=> {
+    expect(authentication.isUniqueEmail('kagina@gmail.com')).toBe(true);
+});
+
 /**
  * Login authentication
  */
 
-test('validating user : checks valide username', ()=> { 
+test('validating user : checks valid username', ()=> { 
     expect(authentication.userExists("igiti@gmail.com", "!Urhah")).toBe(false);
 });
 
