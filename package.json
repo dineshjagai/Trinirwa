@@ -4,7 +4,7 @@
   "description": "Dependencies used for testing",
   "main": "authentication.test.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
