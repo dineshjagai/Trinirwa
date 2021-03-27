@@ -1,5 +1,5 @@
 
-const authen = require('./authentication');
+const authen = require('./authentication.js');
 
 /**
  * Sign up
