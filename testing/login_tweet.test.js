@@ -26,7 +26,7 @@ test('validating posted tweet : non-successful tweet post', ()=> {
     expect(tweetapi.isPosted(tweetapi.fetchRandomTweet() + tweetapi.getTime())).toBe(false);
 });
 
-
+// Add read test cases
 
 /**
  * User userapi
