@@ -1,10 +1,10 @@
-CREATE TABLE USERS (uid int NOT NULL AUTO_INCREMENT, username text NOT NULL UNIQUE, first_name text NOT NULL, last_name text NOT NULL, hashed_password text NOT NULL, profile_picture text NOT NULL, followers_count int NOT NULL, is_logged_in  boolean NOT NULL, tweets_count int NOT NULL, location text NOT NULL, is_live int NOT NULL, PRIMARY KEY(uid));
+CREATE TABLE USERS (uid int NOT NULL AUTO_INCREMENT, username text NOT NULL UNIQUE, first_name text NOT NULL, last_name text NOT NULL, email text NOT NULL, hashed_password text NOT NULL, profile_picture text NOT NULL, followers_count int NOT NULL, is_logged_in  boolean NOT NULL, tweets_count int NOT NULL, location text NOT NULL, is_live int NOT NULL, PRIMARY KEY(uid));
 
 CREATE TABLE INTERESTS (interests_uid int NOT NULL, interest text NOT NULL, FOREIGN KEY(interests_uid) REFERENCES USERS(uid) ON DELETE CASCADE);
  
 CREATE TABLE FOLLOWERS (uid_user_one int NOT NULL, uid_user_two int NOT NULL, FOREIGN KEY(uid_user_one) REFERENCES USERS(uid) ON DELETE CASCADE, FOREIGN KEY(uid_user_two) REFERENCES USERS(uid) ON DELETE CASCADE);
 
-CREATE TABLE TWEETS (uid int NOT NULL, tweet_id  int NOT NULL AUTO_INCREMENT, type text, content text, PRIMARY KEY (tweet_id), FOREIGN KEY (uid) REFERENCES USERS(uid));
+CREATE TABLE TWEETS (uid int NOT NULL, tweet_id  int NOT NULL AUTO_INCREMENT, type text, content text,  tweet_date datetime, tweet_likes int NOT NULL, PRIMARY KEY (tweet_id), FOREIGN KEY (uid) REFERENCES USERS(uid));
 
 CREATE TABLE COMMENTS (tweet_id_one int NOT NULL, tweet_id_two int NOT NULL, FOREIGN KEY(tweet_id_one) REFERENCES TWEETS (tweet_id), FOREIGN KEY(tweet_id_two) REFERENCES TWEETS (tweet_id));
 
