@@ -4,7 +4,7 @@ function isValidPassword(password){
 }
 
 function isValidUsername(userName) {
-    const valid = new RegExp('^[a-zA-Z0-9_]*$');
+    const valid = new RegExp('^[a-zA-Z0-9_]+$');
     return valid.test(userName);
 }
 
