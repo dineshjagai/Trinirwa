@@ -1,4 +1,6 @@
-CREATE TABLE USERS (uid int NOT NULL AUTO_INCREMENT, username text NOT NULL UNIQUE, first_name text NOT NULL, last_name text NOT NULL, email text NOT NULL, hashed_password text NOT NULL, profile_picture text NOT NULL, followers_count int NOT NULL, is_logged_in  boolean NOT NULL, tweets_count int NOT NULL, location text NOT NULL, is_live int NOT NULL, PRIMARY KEY(uid));
+CREATE TABLE USERS (uid int NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL UNIQUE, first_name text NOT NULL, last_name text NOT NULL, email text NOT NULL, password text NOT NULL, profile_picture text NOT NULL, followers_count int NOT NULL, is_logged_in  boolean NOT NULL, tweets_count int NOT NULL, location text NOT NULL, is_live int NOT NULL, PRIMARY KEY(uid));
+
+CREATE TABLE USERS_AUTH (uid int NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL UNIQUE, password text NOT NULL, FOREIGN KEY(uid) REFERENCES USERS(uid), FOREIGN KEY(username) REFERENCES USERS(username));
 
 CREATE TABLE INTERESTS (interests_uid int NOT NULL, interest text NOT NULL, FOREIGN KEY(interests_uid) REFERENCES USERS(uid) ON DELETE CASCADE);
  
