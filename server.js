@@ -12,11 +12,11 @@ webapp.use(cors());
 const bodyParser = require('body-parser');
 const db = require('./database2.js');
 
-const port = 3000;
-
+const port = 5000;
 webapp.use(bodyParser.urlencoded({
     extended: true,
 }));
+webapp.use(bodyParser.json());
 
 webapp.listen(port, () => {
     console.log(`Server running on port:${port}`);
@@ -25,7 +25,7 @@ webapp.listen(port, () => {
 webapp.get('/profile/:uid', (req, res) => {
     const sql_info = 'SELECT username, first_name, last_name, email, profile_picture, location FROM USERS WHERE  uid = ?';
     const sql_interest = 'SELECT interest FROM INTERESTS WHERE interests_uid= ?';
-    const sql_following = 'SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two = ?';
+    const sql_following = 'SELECT uid, username, profile_picture FROM USERS WHERE uid IN  (SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one = ?)';
     const parameters = [req.params.uid];
     db.get(sql_info, parameters,(err, student)=> {
         let data = [];
@@ -121,6 +121,7 @@ webapp.put('/profile/password/:uid', (req, res)=> {
 webapp.post('/profile/interest/:uid', (req, res)=> {
     const sql_update = 'INSERT INTO INTERESTS (interests_uid, interest) VALUES (?, ?)';
     const params = [req.params.uid, req.body.interest];
+    console.log(req.body);
     db.run(sql_update, params, 
         function(err){
             if(err) {

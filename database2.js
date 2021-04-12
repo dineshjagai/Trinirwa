@@ -33,9 +33,9 @@ const db = new sqlite3.Database(DB_NAME, (err) => {
         const insert_users = 
         'INSERT INTO USERS (username, first_name, last_name, email, hashed_password, profile_picture, followers_count, is_logged_in, tweets_count, location, is_live) VALUES (?,?,?,?,?,?,?,?,?,?,?)';
         db.run(insert_users, ['Ida', 'Ida', 'Mae','ida@cis.upenn.edu',  'Kigali', 'not url', '2', 'true', '0', 'Kigali','true']);
-        db.run(insert_users, ['Ida1', 'Ida1', 'Mae1','ida1@cis.upenn.edu', 'Kigali!2021', 'not url', '2', 'true', '0', 'Kigali', 'true']);
-        db.run(insert_users, ['Ida2', 'Ida2', 'Mae2','ida2@cis.upenn.edu', 'Kigali!2023', 'not  url', '2', 'true', '0', 'Kigali', 'true']);
-        db.run(insert_users, ['Ida3', 'Ida3', 'Mae3','ida3@cis.upenn.edu', 'Kigali!2023', 'not url', '2', 'true', '0', 'Kigali', 'true']);
+        db.run(insert_users, ['Ida1', 'Ida1', 'Mae1','ida1@cis.upenn.edu', 'Kigali!2021', 'https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350', '2', 'true', '0', 'Kigali', 'true']);
+        db.run(insert_users, ['Ida2', 'Ida2', 'Mae2','ida2@cis.upenn.edu', 'Kigali!2023', 'https://images.unsplash.com/photo-1494548162494-384bba4ab999?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8ZGF3bnxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80', '2', 'true', '0', 'Kigali', 'true']);
+        db.run(insert_users, ['Ida3', 'Ida3', 'Mae3','ida3@cis.upenn.edu', 'Kigali!2023', 'https://i.pinimg.com/originals/ca/76/0b/ca760b70976b52578da88e06973af542.jpg', '2', 'true', '0', 'Kigali', 'true']);
       }
     });
 
