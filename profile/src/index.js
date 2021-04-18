@@ -6,9 +6,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import reportWebVitals from './reportWebVitals';
 
 
+
 ReactDOM.render(
   <React.StrictMode>
-    <App id="1"/>
+    <App id = {3}/>
   </React.StrictMode>,
   document.getElementById('root')
 );

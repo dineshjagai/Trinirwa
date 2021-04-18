@@ -2,15 +2,19 @@
 const express = require ('express');
 const auth = require('./authentication.js');
 var crypto = require("crypto");
-//
-//var password = crypto.createHash("Kigali"); // encrypts the password
-//console.log(password);
 const webapp = express();
+
+//impporting database
+let mysql = require('mysql');
+let config = require('./db_connection.js');
+
+//connecting to database
+let connection = mysql.createConnection(config);
 
 const cors = require('cors');
 webapp.use(cors());
 const bodyParser = require('body-parser');
-const db = require('./database2.js');
+//const db = require('./db_connection.js').default;
 
 const port = 5000;
 webapp.use(bodyParser.urlencoded({
@@ -21,20 +25,20 @@ webapp.use(bodyParser.json());
 webapp.listen(port, () => {
     console.log(`Server running on port:${port}`);
 });
-
+// getting the profile info
 webapp.get('/profile/:uid', (req, res) => {
     const sql_info = 'SELECT username, first_name, last_name, email, profile_picture, location FROM USERS WHERE  uid = ?';
     const sql_interest = 'SELECT interest FROM INTERESTS WHERE interests_uid= ?';
     const sql_following = 'SELECT uid, username, profile_picture FROM USERS WHERE uid IN  (SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one = ?)';
     const parameters = [req.params.uid];
-    db.get(sql_info, parameters,(err, student)=> {
+    connection.query(sql_info, parameters,(err, student)=> {
         let data = [];
         if(err) {
             res.status(404).json({error: err.message});
             return;
         }
         data.push(student);
-        db.all(sql_interest, parameters, (err, interests)=> {
+        connection.query(sql_interest, parameters, (err, interests)=> {
             if(err) {
                 res.status(404).json({
                     message: "no interest",
@@ -44,7 +48,7 @@ webapp.get('/profile/:uid', (req, res) => {
             }
             data.push(interests);
 
-            db.all(sql_following, parameters, (err, followers)=> {
+            connection.query(sql_following, parameters, (err, followers)=> {
                 if(err) {
                     res.status(404).json({
                         message: "no followers",
@@ -62,11 +66,34 @@ webapp.get('/profile/:uid', (req, res) => {
     }); 
 });
 
+/**
+ * Retrieving all tweets of users
+ * route to be updated for infinitely scrolling list
+ * **/
+
+webapp.get('/profile/tweet/:uid', (req, res)=> {
+    const sql_select = 'SELECT * FROM TWEETS WHERE uid=?';
+    const params = [req.params.uid];
+    connection.query(sql_select, params, (err, tweets)=> {
+        if(err) {
+            res.status(404).json({
+                message: "no followers",
+                error: err.message});
+            return;
+        }
+        res.json({
+            message: "200",
+            data: tweets,
+        })
+    }); 
+    
+});
+
 // deleting profile
  webapp.delete('/profile/delete/:uid', (req, res)=> {
     const sql_delete = 'DELETE FROM USERS WHERE uid =? AND hashed_password = ?';
     const params = [req.params.uid, req.body.password];
-    db.run(sql_delete, params, 
+    connection.query(sql_delete, params, 
         function (err){
             if(err) {
                 res.status(401).json({error: err.message});
@@ -80,7 +107,7 @@ webapp.get('/profile/:uid', (req, res) => {
 webapp.put('/profile/username/:uid', (req, res)=> {
     const sql_update = 'UPDATE USERS SET username = ? WHERE uid = ?';
     const params = [req.body.username, req.params.uid];
-    db.run(sql_update, params, 
+    connection.query(sql_update, params, 
         function(err){
             if(!auth.isValidUsername(params[0])) {
                 res.status(400).json({message: "invalid username"});
@@ -103,7 +130,7 @@ webapp.put('/profile/password/:uid', (req, res)=> {
    
    //checks if newPassword is valid
    if(auth.isValidPassword(params[0])) {
-        db.run(sql_update, params, 
+        connection.query(sql_update, params, 
             function(err){
                if(err) {
                     res.status(405).json({error: err.message});
@@ -121,8 +148,7 @@ webapp.put('/profile/password/:uid', (req, res)=> {
 webapp.post('/profile/interest/:uid', (req, res)=> {
     const sql_update = 'INSERT INTO INTERESTS (interests_uid, interest) VALUES (?, ?)';
     const params = [req.params.uid, req.body.interest];
-    console.log(req.body);
-    db.run(sql_update, params, 
+    connection.query(sql_update, params, 
         function(err){
             if(err) {
                 res.status(405).json({error: err.message});
@@ -137,7 +163,7 @@ webapp.post('/profile/interest/:uid', (req, res)=> {
 webapp.delete('/profile/delete/interest/:uid', (req, res)=> {
     const sql_delete = 'DELETE FROM INTERESTS WHERE interests_uid=? AND interest=?';
     const params = [req.params.uid, req.body.interest];
-    db.run(sql_delete, params, 
+    connection.query(sql_delete, params, 
         function(err){
             if(err) {
                 res.status(405).json({error: err.message});

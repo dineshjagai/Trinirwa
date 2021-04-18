@@ -1,10 +1,8 @@
 import React,{useState} from 'react';
-import logo from './goku.jpeg';
-
 export default function Follower(props) {
-    const[uid, setUid]= useState(props.info.uid);
-    const[username, setUsername]= useState(props.info.username);
-    const[picture, setPicture]= useState(props.info.profile_picture);
+    // const[uid, setUid]= useState(props.info.uid);
+    // const[username, setUsername]= useState(props.info.username);
+    // const[picture, setPicture]= useState(props.info.profile_picture);
     return(
         
         <div style={{

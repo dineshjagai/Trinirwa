@@ -16,17 +16,8 @@ export default function DialogBox(props) {
   };
 
   const handleClose = () => {
-  const addUrl = '/profile/interest/'+props.id;
-  let input = document.getElementById('interest').value;
-  input = input+"";
-    axios({
-        method: 'POST',
-        url: addUrl,
-        data: {
-            interest: input,
-        }
-    });
-  
+    let input = document.getElementById('interest').value;
+    props.onClose(input);
     setOpen(false);
     
   };
