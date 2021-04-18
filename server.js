@@ -4,6 +4,9 @@ const auth = require('./authentication.js');
 var crypto = require("crypto");
 const webapp = express();
 
+const bodyParser = require('body-parser');
+const db = require('./src/components/database.js');
+
 //impporting database
 let mysql = require('mysql');
 let config = require('./db_connection.js');
@@ -20,8 +23,9 @@ const port = 5000;
 webapp.use(bodyParser.urlencoded({
     extended: true,
 }));
-webapp.use(bodyParser.json());
+webapp.engine('html', require('ejs').renderFile);
 
+// Start server
 webapp.listen(port, () => {
     console.log(`Server running on port:${port}`);
 });
@@ -158,6 +162,58 @@ webapp.post('/profile/interest/:uid', (req, res)=> {
         }
     );
 });
+
+webapp.get('/home', (req, res) => {
+    console.log("Home page in!");
+    res.render('homepage.html');
+});
+
+
+
+webapp.post('/createTweet', (req, res) => {
+    console.log('Create a Tweet');    
+    const newTweet = {
+      uid : req.body.ui,
+      type : req.body.type,
+      content : req.body.content,
+      tweet_date : Date.now(),
+      tweet_likes : 0
+    };
+
+    //insert newTweet in table TWEET
+    const sql = 'INSERT INTO TWEETS (uid, tweet_id, type, content, tweet_date, tweet_likes) VALUES (?,?,?,?,?,?)';
+    const values = [newTweet.uid, newTweet.tweet_id, newTweet.type, newTweet.content, newTweet.tweet_date, newTweet.tweet_likes];
+    db.run(sql, values, function(err, result) {
+        if (err) {
+            console.log("here");
+            res.status(400).json({ error: err.message });
+            return;
+        }
+        res.json({
+            message : 'sucessful creation of tweet',
+            tweet: req.body.tweet_id
+        });     
+    });
+});
+
+
+webapp.delete('/deleteTweet', (req, res) => {
+    console.log('Delete a Tweet');
+    const sql = "DELETE FROM TWEETS WHERE tweet_id=?";
+    const params = [req.params.tweet_id];
+    db.query(sql, params,
+        function(err){
+            if(err) {
+                res.status(405).json({error: err.message});
+                return;
+            }
+            res.json({message: 'Successful tweet deletion'});
+        }
+    );
+
+
+
+}
 
 //delete interest
 webapp.delete('/profile/delete/interest/:uid', (req, res)=> {
