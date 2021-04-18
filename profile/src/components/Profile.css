@@ -1,0 +1,19 @@
+ .pictures {
+   width: 100%;
+   height: 500px;
+ } 
+ #overlay {
+    object-fit: cover;
+    filter: blur(2px);
+  } 
+  
+  #originalDiv {
+    display: block;
+    margin-left:auto;
+    margin-right: auto;
+    position: relative;
+    top: -175px;
+    width: 200px;
+    height: 200px;
+    border-radius: 200px;
+  }
