@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="homepage.css"> 
+        <script src="http://code.jquery.com/jquery-3.6.0.js"></script>
+    </head>
+    <body>
+        <div class="side_navigator">
+            <img src="woman.png"> <!-- woman.png replace the user photo -->
+            <a href="#">@username</a>
+            <a href="#">My Followers</a>
+        </div>
+        <div class="main">
+            <div class="top_navigator">
+                <div class="search-container">
+                    <input type="text" placeholder="Searching for.." name="search">
+                    <input type="submit" value="SEARCH"></input>
+                </div>
+                <input type="submit" value="LIVE"></input>
+            </div>
+            <br>
+
+            <div class="commentBox">
+                 <form action="#" method="post"> 
+				    <input type="text" id="textarea" placeholder="What's on your mind?" required autofocus></input>
+                    <div class="btn">
+                        <input id= "comment" type="submit" value="COMMENT">
+                        <button id="cancel">CANCEL</button>
+                    </div>       
+                </form>  
+            </div>
+            <br>
+
+            <div class="comments">
+                <p>COMMENTS</p>
+            </div>
+            
+
+        </div>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#comment').click(function() {
+                    var content = $('#textarea').val();
+                    
+                    let tweet = `
+                        <div class="commentBox">
+                            <div class="box">
+                                <p>${content}</p>
+                            </div>
+                            <div class="btn">
+                                <input id= "comment" type="submit" value="COMMENT">
+                                <button id="delete">DELETE</button>  
+                            </div>    
+                        </div>`;     
+                    
+                    $('.comments').append(tweet + '<br>');
+                    $('#textarea').val('');
+                    
+                });
+
+                $('#cancel').click(function() {
+                    $('#textarea').val('');
+                });
+
+                $('#delete').click(function() {
+                    $('.commentBox').remove();
+                });
+
+
+            });
+        </script>
+        
+    </body>
+</html>
