@@ -14,13 +14,105 @@ let connection = mysql.createConnection(config);
 const cors = require('cors');
 webapp.use(cors());
 const bodyParser = require('body-parser');
-//const db = require('./db_connection.js').default;
+//const connection = require('./db_connection.js').default;
+
+
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const bcrypt = require("bcryptjs");
+const saltRounds = 10;
+
+
 
 const port = 5000;
 webapp.use(bodyParser.urlencoded({
     extended: true,
 }));
 webapp.use(bodyParser.json());
+
+
+webapp.use(express.json());
+webapp.use(
+  cors({
+    origin: [`http://localhost:${port}`],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
+
+webapp.use(cookieParser());
+webapp.use(bodyParser.urlencoded({ extended: true }));
+
+webapp.use(
+  session({
+    key: "userId",
+    secret: "subscribe",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      expires: 60 * 60 * 24,
+    },
+  })
+);
+
+
+webapp.post("/register", (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    if (err) {
+      console.log(err);
+    }
+
+    connection.query(
+      "INSERT INTO USERS_AUTH (username, password) VALUES (?,?)",
+      [username, hash],
+      (err, result) => {
+        console.log(err);
+      }
+    );
+  });
+});
+
+webapp.get("/login", (req, res) => {
+  if (req.session.user) {
+    res.send({ loggedIn: true, user: req.session.user });
+  } else {
+    res.send({ loggedIn: false });
+  }
+});
+
+webapp.post("/login", (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  connection.query(
+    "SELECT * FROM USERS_AUTH WHERE username = ?;",
+    username,
+    (err, result) => {
+      if (err) {
+        res.send({ err: err });
+      }
+
+      if (result.length > 0) {
+        bcrypt.compare(password, result[0].password, (error, response) => {
+          if (response) {
+            req.session.user = result;
+            console.log(req.session.user);
+            res.send(result);
+          } else {
+            res.send({ message: "Wrong username/password combination!" });
+          }
+        });
+      } else {
+        res.send({ message: "User doesn't exist" });
+      }
+    }
+  );
+});
+
+
 
 webapp.listen(port, () => {
     console.log(`Server running on port:${port}`);
@@ -180,7 +272,7 @@ webapp.delete('/profile/delete/interest/:uid', (req, res)=> {
 //     const sql_remove = 'UPDATE USERS SET profile_picture=? WHERE uid=?';
 //     const params = [req.params.uid, req.body.url];
 //     if(url != null && )
-//     db.run(sql_remove, params, 
+//     connection.run(sql_remove, params, 
 //         function(err){
 //             if(err) {
 //                 res.status(405).json({error: err.message});
