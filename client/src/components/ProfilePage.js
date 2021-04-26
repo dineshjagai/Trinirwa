@@ -20,7 +20,7 @@ export default function ProfilePage(props) {
     const [childKey, setChildKey] = useState(0);
   
   const fetchTweets = ()=>{
-      const getUrl = '/profile/tweet/2';
+      const getUrl = `/profile/tweet/${id}`;
       axios({
         method: 'GET',
         url: getUrl,
@@ -31,7 +31,7 @@ export default function ProfilePage(props) {
    
   useEffect(()=>{
     axios({
-      method: 'get',
+      method: 'GET',
       url: url
     }).then((result)=>{
         setData(result.data.data[0]);
@@ -46,7 +46,7 @@ export default function ProfilePage(props) {
   const addInterest  = (newInterest) => {
     setInterests([...interests, newInterest])
     setChildKey(Math.floor(Math.random() * 1000000000))
-    const addUrl = '/profile/interest/2';
+    const addUrl = `/profile/interest/${id}`;
     axios({
         method: 'POST',
         url: addUrl,
@@ -62,7 +62,7 @@ const deleteInterest = (interes)=>{
         temp.delete(interes);
         setInterests(temp);
         setChildKey(Math.floor(Math.random() * 1000000000))
-        const delUrl= `/profile/delete/interest/${2}`;//props.id;
+        const delUrl= `/profile/delete/interest/${id}`;
         axios({
             method: 'DELETE',
             url: delUrl,
