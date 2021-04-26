@@ -8,13 +8,9 @@ export default function Registration() {
   const [usernameReg, setUsernameReg] = useState("");
   const [passwordReg, setPasswordReg] = useState("");
 
-
-  const [loginStatus, setLoginStatus] = useState("");
-
   Axios.defaults.withCredentials = true;
-
   const register = () => {
-    Axios.post("http://localhost:3001/register", {
+    Axios.post("/register", {
       username: usernameReg,
       password: passwordReg,
     }).then((response) => {
@@ -49,7 +45,8 @@ export default function Registration() {
             <button
               type="button"
               className="btn btn-primary w-100"
-              onClick={register}>
+              onClick={register}
+              >
               Sign Up
             </button>
           </div>

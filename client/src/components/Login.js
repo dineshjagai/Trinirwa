@@ -15,7 +15,7 @@ export default function Login() {
   Axios.defaults.withCredentials = true;
 
   const login = async () => {
-    Axios.post("http://localhost:3001/login", {
+    Axios.post("/login", {
       username: username,
       password: password,
     }).then((response) => {
@@ -25,20 +25,20 @@ export default function Login() {
         alert(response.data.message)
       } else {
         setLoginStatus(response.data[0].username);
-        history.push('/ProfilePage');
+        history.push('/ProfilePage/:id');
       }
     });
   };
 
-  useEffect(() => {
-    Axios.get("http://localhost:5000/login").then((response) => {
-      if (response.data.loggedIn == true) {
-        setLoginStatus(response.data.user[0].username);
-      } else {
+  // useEffect(() => {
+  //   Axios.get("/login").then((response) => {
+  //     if (response.data.loggedIn == true) {
+  //       setLoginStatus(response.data.user[0].username);
+  //     } else {
 
-      }
-    });
-  }, []);
+  //     }
+  //   });
+  // }, []);
 
 
   return (

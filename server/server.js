@@ -30,6 +30,9 @@ webapp.use(bodyParser.urlencoded({
 }));
 webapp.use(bodyParser.json());
 
+webapp.listen(port, () => {
+  console.log(`Server running on port:${port}`);
+});
 
 webapp.use(express.json());
 webapp.use(
@@ -113,11 +116,7 @@ webapp.post("/login", (req, res) => {
 });
 
 
-
-webapp.listen(port, () => {
-    console.log(`Server running on port:${port}`);
-});
-// getting the profile info
+//getting the profile info
 webapp.get('/profile/:uid', (req, res) => {
     const sql_info = 'SELECT username, first_name, last_name, email, profile_picture, location FROM USERS WHERE  uid = ?';
     const sql_interest = 'SELECT interest FROM INTERESTS WHERE interests_uid= ?';

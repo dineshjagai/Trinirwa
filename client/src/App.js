@@ -7,7 +7,7 @@ import Login from "./components/Login";
 function App() {
   return (
     <Router>
-      <Route path="/" exact render={(props) => <Registration />} />
+      <Route path="/" exact render={(props) => <Registration />} /> 
       <Route path="/registration" exact render={(props) => <Registration />} />
       <Route path="/login" exact render={(props) => <Login />} />
 

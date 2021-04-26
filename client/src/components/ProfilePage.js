@@ -9,8 +9,9 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 
 
 export default function ProfilePage(props) {
-  
-  const url = "/profile/"+props.id;
+  const words = (window.location.href).split('/');
+  const id = words[words.length - 1];
+  const url = `/profile/${id}`;
     const[info, setData] = useState([{}]);
     const[followers, setFollowers] = useState({});
     const[interests, setInterests] = useState(new Set());
@@ -19,7 +20,7 @@ export default function ProfilePage(props) {
     const [childKey, setChildKey] = useState(0);
   
   const fetchTweets = ()=>{
-      const getUrl = '/profile/tweet/3';
+      const getUrl = '/profile/tweet/2';
       axios({
         method: 'GET',
         url: getUrl,
@@ -45,7 +46,7 @@ export default function ProfilePage(props) {
   const addInterest  = (newInterest) => {
     setInterests([...interests, newInterest])
     setChildKey(Math.floor(Math.random() * 1000000000))
-    const addUrl = '/profile/interest/3';
+    const addUrl = '/profile/interest/2';
     axios({
         method: 'POST',
         url: addUrl,
@@ -61,7 +62,7 @@ const deleteInterest = (interes)=>{
         temp.delete(interes);
         setInterests(temp);
         setChildKey(Math.floor(Math.random() * 1000000000))
-        const delUrl= `/profile/delete/interest/${3}`;//props.id;
+        const delUrl= `/profile/delete/interest/${2}`;//props.id;
         axios({
             method: 'DELETE',
             url: delUrl,
