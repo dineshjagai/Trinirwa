@@ -1,8 +1,9 @@
 import React from 'react';
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
-import { BrowserRouter as Router, Link } from "react-router-dom";
+import {Route, BrowserRouter as Router, Link } from "react-router-dom";
 import './Sidebar.css';
+import ProfilePage from "./ProfilePage"
 
 const SideBarData = [
     {
@@ -14,7 +15,7 @@ const SideBarData = [
 ];
 
 function SideBar(props) {
-    const profile = "/profile/"+props.uid;
+    const profile = `/profile/${props.uid}`;
     const username = props.username;
     return (
         <Router>
@@ -38,6 +39,7 @@ function SideBar(props) {
                     })}
                 </ul>      
             </div>  
+            <Route path="/profile" component={() => <Home/>}/>
         </Router>
    
     );

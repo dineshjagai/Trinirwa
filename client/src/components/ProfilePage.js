@@ -9,8 +9,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 
 
 export default function ProfilePage(props) {
-  const words = (window.location.href).split('/');
-  const id = words[words.length - 1];
+  const id = props.uid;
   const url = `/profile/${id}`;
     const[info, setData] = useState([{}]);
     const[followers, setFollowers] = useState({});
@@ -93,6 +92,3 @@ const deleteInterest = (interes)=>{
     </div>
   ) : <div></div>;
 }
-
-
-export default ProfilePage;
