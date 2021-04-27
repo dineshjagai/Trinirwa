@@ -11,13 +11,16 @@ export default function Registration() {
   const [passwordReg, setPasswordReg] = useState("");
 
   Axios.defaults.withCredentials = true;
+  
+  const 
+
   const register = () => {
     Axios.post("/register", {
       username: usernameReg,
       password: passwordReg,
     }).then((response) => {
       console.log(response);
-      history.push('/ProfilePage/:id');
+      history.push('/Signup/:id');
     });
   };
 
