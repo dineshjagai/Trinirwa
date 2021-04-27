@@ -291,6 +291,16 @@ webapp.delete('/profile/delete/interest/:uid', (req, res)=> {
     );
 });
 
+webapp.get('/followers/:uid', (req, res) => {
+ /*
+    Get the followers from home
+ */
+});
+
+webapp.get('/followers', (req, res) => {
+
+});
+
 
 //removing profile picture
 // webapp.put('/profile/delete/profile_pic/:uid', (req, res)=> {
