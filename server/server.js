@@ -1,7 +1,6 @@
 // create express app
 const express = require ('express');
 const auth = require('./authentication.js');
-var crypto = require("crypto");
 const webapp = express();
 
 //impporting database

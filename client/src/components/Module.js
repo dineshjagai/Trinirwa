@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 
-export const getPlayersInfo = (username) => {
+export const getUserInformation = (username) => {
     const prm = axios({
         method: 'GET',
-        url: `/api/playerInfo/${username}`,
+        url: `/api//${username}`,
     });
     return prm;
 };
