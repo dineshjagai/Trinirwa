@@ -3,6 +3,8 @@ import { Link, useHistory } from 'react-router-dom'
 
 import Axios from "axios";
 import "../App.css";
+const history = useHistory()
+
 
 export default function Registration() {
   const [usernameReg, setUsernameReg] = useState("");
@@ -15,6 +17,7 @@ export default function Registration() {
       password: passwordReg,
     }).then((response) => {
       console.log(response);
+      history.push('/ProfilePage/:id');
     });
   };
 

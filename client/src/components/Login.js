@@ -30,16 +30,6 @@ export default function Login() {
     });
   };
 
-  // useEffect(() => {
-  //   Axios.get("/login").then((response) => {
-  //     if (response.data.loggedIn == true) {
-  //       setLoginStatus(response.data.user[0].username);
-  //     } else {
-
-  //     }
-  //   });
-  // }, []);
-
 
   return (
       <div className="card shadow mx-auto mt-5" style={{ width: '30rem' }}>

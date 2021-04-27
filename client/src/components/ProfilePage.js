@@ -8,6 +8,7 @@ import TweetDisplayer from './tweetDisplayer.js';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 
+
 export default function ProfilePage(props) {
   const words = (window.location.href).split('/');
   const id = words[words.length - 1];
