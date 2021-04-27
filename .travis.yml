@@ -1,12 +1,14 @@
 language: node_js
 node_js:
   - node
-install:  
+install: 
+  - npm instal  
   - nvm install node  
   - node -v  
   - npm install --save-dev jest  
 script:  
   - cd server 
+  - npm install
   - npm test
   - cd ../test 
   - npm test
