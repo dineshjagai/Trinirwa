@@ -6,4 +6,7 @@ install:
   - node -v  
   - npm install --save-dev jest  
 script:  
-  - cd test && npm test
+  - cd server 
+  - npm test
+  - cd ../test 
+  - npm test
