@@ -1,23 +1,23 @@
 import React from 'react';
-import * as FaIcons from "react-icons/fa";
-import * as AiIcons from "react-icons/ai";
-import {Route, BrowserRouter as Router, Link } from "react-router-dom";
+import * as FaIcons from 'react-icons/fa';
+// import * as AiIcons from 'react-icons/ai';
+import { Route, BrowserRouter as Router, Link } from 'react-router-dom';
 import './Sidebar.css';
-import ProfilePage from "./ProfilePage"
+import ProfilePage from './ProfilePage';
 
 const SideBarData = [
-    {
-        title: 'Followers',
-        path: '/followers',
-        icon: <FaIcons.FaUserFriends />,
-        cName: 'nav-text'
-    }
+  {
+    title: 'Followers',
+    path: '/followers',
+    icon: <FaIcons.FaUserFriends />,
+    cName: 'nav-text',
+  },
 ];
 
 function SideBar(props) {
-    const profile = `/profile/${props.uid}`;
-    const username = props.username;
-    return (
+  const profile = `/profile/${props.uid}`;
+  const { username } = props;
+  return (
         <Router>
             <div className="sidebar">
                 <ul className='sidebar-items'>
@@ -27,22 +27,20 @@ function SideBar(props) {
                             <span>{username}</span>
                         </Link>
                     </li>
-                    {SideBarData.map((item, index) => {
-                        return(
+                    {SideBarData.map((item, index) => (
                             <li key={index} className={item.cName}>
                                 <Link to={item.path}>
-                                    {item.icon} 
+                                    {item.icon}
                                     <span>{item.title}</span>
                                 </Link>
                             </li>
-                        );
-                    })}
-                </ul>      
-            </div>  
-            <Route path="/profile" component={() => <Home/>}/>
+                    ))}
+                </ul>
+            </div>
+            <Route path="/profile" component={() => <ProfilePage />}/>
         </Router>
-   
-    );
+
+  );
 }
 
 export default SideBar;
