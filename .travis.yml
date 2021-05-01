@@ -1,7 +1,14 @@
 language: node_js
+node_js:
+  - node
 install: 
-    - npm i
-script: 
-    - npm run test
-branches:
-    only: development
+  - npm instal  
+  - nvm install node  
+  - node -v  
+  - npm install --save-dev jest  
+script:  
+  - cd server 
+  - npm install
+  - npm test
+  - cd ../test 
+  - npm test

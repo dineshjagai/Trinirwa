@@ -1,6 +1,6 @@
 const { test } = require('@jest/globals');
-const log = require('./login');
-const db = require('./database')
+const log = require('./server/authentication');
+
 
 
 
@@ -29,10 +29,4 @@ test('validating password: correct pass', ()=> {
 test('validating username: correct username', ()=> { 
     expect(log.isValidUsername("anaick")).toBe(true);
 });
-
-// Go to login page
-test('validating user :', ()=> { 
-    expect(db.validateUser("anaick", "!Dragon@907")).toBe(true);
-});
-
 

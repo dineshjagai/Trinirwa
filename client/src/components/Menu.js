@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -17,7 +16,6 @@ export default function Dropdown() {
 
   return (
     <div>
-       
       <MoreHorizIcon onClick={handleClick}/>
       <Menu
         id="simple-menu"

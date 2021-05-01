@@ -1,6 +1,5 @@
 import React from 'react';
-import "./Home.css";
-import Tweet from './Tweet.js';
+import './Home.css';
 import NavBar from './navBar';
 import SideBar from './Sidebar';
 import CommentBox from './CommentBox';
@@ -18,9 +17,7 @@ export default function Home(props) {
             <NavBar/>
             <SideBar uid= {uid} username={username}/>
             <CommentBox/>
- 
-        </div>
-    );
-    
-}
 
+        </div>
+  );
+}

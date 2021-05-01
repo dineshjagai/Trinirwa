@@ -1,28 +1,28 @@
 import React from 'react';
-import * as FaIcons from "react-icons/fa";
-import * as AiIcons from "react-icons/ai";
-import {Route, BrowserRouter as Router, Link } from "react-router-dom";
+import * as FaIcons from 'react-icons/fa';
+// import * as AiIcons from 'react-icons/ai';
+import { Route, BrowserRouter as Router, Link } from 'react-router-dom';
 import './Sidebar.css';
 import ProfilePage from "./ProfilePage"
 import { useHistory } from 'react-router-dom'
 
 
 const SideBarData = [
-    {
-        title: 'Followers',
-        path: '/followers',
-        icon: <FaIcons.FaUserFriends />,
-        cName: 'nav-text'
-    }
+  {
+    title: 'Followers',
+    path: '/followers',
+    icon: <FaIcons.FaUserFriends />,
+    cName: 'nav-text',
+  },
 ];
 function reload () {
     window.location.reload();
 }
 
 function SideBar(props) {
-    const profile = `/profile/${props.uid}`;
-    const username = props.username;
-    return (
+  const profile = `/profile/${props.uid}`;
+  const { username } = props;
+  return (
         <Router>
             <div className="sidebar">
                 <ul className='sidebar-items'>
@@ -32,8 +32,7 @@ function SideBar(props) {
                             <span>{username}</span>
                         </Link>
                     </li>
-                    {SideBarData.map((item, index) => {
-                        return(
+                    {SideBarData.map((item, index) => (
                             <li key={index} className={item.cName}>
                                 <Link onClik={reload} to={item.path}>
                                     {item.icon} 
@@ -46,8 +45,8 @@ function SideBar(props) {
             </div>  
             <Route path="/profile" component={() => <ProfilePage/>}/>
         </Router>
-   
-    );
+
+  );
 }
 
 export default SideBar;

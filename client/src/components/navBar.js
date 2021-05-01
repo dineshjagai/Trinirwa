@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 function NavBar() {
-    return (
+  return (
         <nav class="navbar navbar-light bg-light">
             <div class="container-fluid">
                 <form class="d-flex">
                 <a class="navbar-brand" href="#">
-      <img  alt="" width="30" height="24" class="d-inline-block align-text-top"></img>
+      <img alt="" width="30" height="24" class="d-inline-block align-text-top"></img>
       Bootstrap
     </a>
                     <input class="form-control m-2" type="search"></input>
@@ -14,6 +14,6 @@ function NavBar() {
                 </form>
             </div>
         </nav>
-    );
+  );
 }
 export default NavBar;

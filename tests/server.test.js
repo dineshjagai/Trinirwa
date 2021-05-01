@@ -1,4 +1,4 @@
-let webapp = require("./server");
+let webapp = require("./server/server");
 const request = require('supertest');
 
 describe('Test  /home endpoint', () => {
