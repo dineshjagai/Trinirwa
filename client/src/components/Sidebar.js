@@ -4,6 +4,8 @@ import * as AiIcons from "react-icons/ai";
 import {Route, BrowserRouter as Router, Link } from "react-router-dom";
 import './Sidebar.css';
 import ProfilePage from "./ProfilePage"
+import { useHistory } from 'react-router-dom'
+
 
 const SideBarData = [
     {
@@ -13,6 +15,9 @@ const SideBarData = [
         cName: 'nav-text'
     }
 ];
+function reload () {
+    window.location.reload();
+}
 
 function SideBar(props) {
     const profile = `/profile/${props.uid}`;
@@ -30,7 +35,7 @@ function SideBar(props) {
                     {SideBarData.map((item, index) => {
                         return(
                             <li key={index} className={item.cName}>
-                                <Link to={item.path}>
+                                <Link onClik={reload} to={item.path}>
                                     {item.icon} 
                                     <span>{item.title}</span>
                                 </Link>
@@ -39,7 +44,7 @@ function SideBar(props) {
                     })}
                 </ul>      
             </div>  
-            <Route path="/profile" component={() => <Home/>}/>
+            <Route path="/profile" component={() => <ProfilePage/>}/>
         </Router>
    
     );
