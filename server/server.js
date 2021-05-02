@@ -328,13 +328,11 @@ webapp.get('/home', (req, res) => {
           res.status(404).json({ error: err.message });
           return;
       } else {
-
       }
       res.json({
           message: 'successful operation',
           data: rows,
       });
-
   }); */
 });
 

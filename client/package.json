@@ -10,18 +10,15 @@
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.1",
-    "babel-eslint": "^10.1.0",
     "bootstrap": "^4.6.0",
     "eslint": "*",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "react": "^17.0.2",
-    "react-blur": "^0.6.0",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
-    "react-image-crop": "^8.6.6",
-    "react-lazy-blur-image": "^0.1.2",
+    "react-image-crop": "*",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-virtualized-auto-sizer": "^1.0.5",
@@ -52,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0"
   }
 }

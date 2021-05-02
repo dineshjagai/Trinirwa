@@ -1,5 +1,5 @@
 {
-    "editor.fontFamily": "Consolas, 'Courier New', monoscape",
+    "editor.fontFamily": "Monaco, 'Courier New', monoscape",
     "editor.fontSize": 16,
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 100,
