@@ -33,8 +33,7 @@ export default function Login() {
     });
   };
   
- let loggedInHtml =   <Router>
- <div className="card shadow mx-auto mt-5" style={{ width: '30rem' }}>
+ let loggedInHtml =  <Router>  <div className="card shadow mx-auto mt-5" style={{ width: '30rem' }}>
 <div className="container mx-1">
   <div className="card-body p-xs">
     <h2 className="card-title text-center font-weight-bold">Log In</h2>
