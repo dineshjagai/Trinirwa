@@ -1,0 +1,49 @@
+.container-profile {
+  margin: auto;
+  width: 95%;
+  height: 80%;
+  background-color: #a9c9c2;
+  box-shadow: 2px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px; 
+} 
+
+.pictures {
+  margin: 0 auto;
+  width: 95%;
+  height: 80%;
+  position: relative;
+} 
+
+#overlay {
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(2px);
+} 
+  
+#originalDiv {
+  display: block;
+  margin-left:auto;
+  margin-right: auto;
+  position: relative;
+  top: -180px;
+  width: 200px;
+  height: 200px;
+  border-radius: 200px;
+}
+.username {
+  margin: auto;
+  display: flex;
+}
+#username {
+  margin: auto;
+  font-weight: bold;
+  font-size: large;
+}
+
+.deleteButton {
+ bottom: 0;
+ float: right;
+} 
