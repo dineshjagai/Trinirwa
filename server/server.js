@@ -253,6 +253,7 @@ webapp.put('/profile/password/:uid', (req, res) => {
     res.status(405).json({ message: "new password doesn't meet requirement" });
   }
 });
+
 // Adding interest
 webapp.post('/profile/interest/:uid', (req, res) => {
   const sql_update = 'INSERT INTO INTERESTS (interests_uid, interest) VALUES (?, ?)';
@@ -272,7 +273,7 @@ webapp.delete('/profile/delete/interest/:uid', (req, res) => {
   const sql_delete = 'DELETE FROM INTERESTS WHERE interests_uid=? AND interest=?';
   const params = [req.params.uid, req.body.interest];
   connection.query(sql_delete, params,
-    function (err) {
+    function(err) {
       if (err) {
         res.status(405).json({ error: err.message });
         return;
@@ -282,9 +283,17 @@ webapp.delete('/profile/delete/interest/:uid', (req, res) => {
 });
 
 webapp.get('/followers/:uid', (req, res) => {
-  /*
-    Get the followers from home
- */
+  //finish the outes correctly
+ const sql_get = 'SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two=?';
+ const params = [req.params.uid];
+ connection.query(sql_get, params,
+  function(err) {
+    if(err) {
+      res.status(405).json({ error: err.message });
+      return;
+    }
+  })
+
 });
 
 webapp.get('/followers', (req, res) => {

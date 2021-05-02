@@ -25,14 +25,14 @@ export default function CommentBox() {
   //   };
 
   return (
-        <div className="commentBox">
-           <form action="#" method="post">
-               <input type="text" onChange={onChange} value={comment} placeholder="What's on your mind?"></input>
-                <div class="btn">
-                    <button type="submit" className="comment" disabled={comment.length < 1} onClick={postTweet}>COMMENT</button>
-                    <button type="button" className="cancel" onClick={onCancel}>CANCEL</button>
-                </div>
-            </form>
+    <div className="commentBox">
+      <form action="#" method="post">
+        <input type="text" onChange={onChange} value={comment} placeholder="What's on your mind?" />
+        <div className="btn">
+          <button type="submit" className="comment" disabled={comment.length < 1} onClick={postTweet}>COMMENT</button>
+          <button type="button" className="cancel" onClick={onCancel}>CANCEL</button>
         </div>
+      </form>
+    </div>
   );
 }

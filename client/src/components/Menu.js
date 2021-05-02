@@ -16,7 +16,7 @@ export default function Dropdown() {
 
   return (
     <div>
-      <MoreHorizIcon onClick={handleClick}/>
+      <MoreHorizIcon onClick={handleClick} />
       <Menu
         id="simple-menu"
         anchorEl={anchorEl}
