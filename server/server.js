@@ -8,7 +8,7 @@ const webapp = express();
 const mysql = require('mysql');
 
 // connecting to database
-const connection = mysql.createConnection(config);
+const connection = mysql.createConnection(require('./db_connection.js'));
 const cors = require('cors');
 
 webapp.use(cors());
@@ -18,7 +18,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
-const config = require('./db_connection.js');
+
 
 const saltRounds = 10;
 
@@ -253,6 +253,7 @@ webapp.put('/profile/password/:uid', (req, res) => {
     res.status(405).json({ message: "new password doesn't meet requirement" });
   }
 });
+
 // Adding interest
 webapp.post('/profile/interest/:uid', (req, res) => {
   const sql_update = 'INSERT INTO INTERESTS (interests_uid, interest) VALUES (?, ?)';
@@ -272,7 +273,7 @@ webapp.delete('/profile/delete/interest/:uid', (req, res) => {
   const sql_delete = 'DELETE FROM INTERESTS WHERE interests_uid=? AND interest=?';
   const params = [req.params.uid, req.body.interest];
   connection.query(sql_delete, params,
-    function (err) {
+    function(err) {
       if (err) {
         res.status(405).json({ error: err.message });
         return;
@@ -282,9 +283,17 @@ webapp.delete('/profile/delete/interest/:uid', (req, res) => {
 });
 
 webapp.get('/followers/:uid', (req, res) => {
-  /*
-    Get the followers from home
- */
+  //finish the outes correctly
+ const sql_get = 'SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two=?';
+ const params = [req.params.uid];
+ connection.query(sql_get, params,
+  function(err) {
+    if(err) {
+      res.status(405).json({ error: err.message });
+      return;
+    }
+  })
+
 });
 
 webapp.get('/followers', (req, res) => {
@@ -314,49 +323,31 @@ webapp.get('/followers', (req, res) => {
 
 // deleting cover page
 
-<<<<<<< Updated upstream
 
 
 
-=======
->>>>>>> Stashed changes
 /* -------------------------------------------------------------------------- */
 /*                                CREATE TWEET                                */
 /* -------------------------------------------------------------------------- */
 
 webapp.get('/home', (req, res) => {
-<<<<<<< Updated upstream
   console.log("Home page in!");
-  res.render('homepage.html');
+  // res.render('homepage.html');
   /*const sql = 'SELECT * from TWEETS';
-=======
-  console.log('Home page in!');
-  res.render('homepage.html');
-  /* const sql = 'SELECT * from TWEETS';
->>>>>>> Stashed changes
   const params = [];
   db.query(sql, params, (err, rows) => {
       if (err) {
           res.status(404).json({ error: err.message });
           return;
       } else {
-<<<<<<< Updated upstream
           
-=======
-
->>>>>>> Stashed changes
       }
       res.json({
           message: 'successful operation',
           data: rows,
       });
-<<<<<<< Updated upstream
       
   });*/
-=======
-
-  }); */
->>>>>>> Stashed changes
 });
 
 webapp.post('/createTweet', (req, res) => {
@@ -371,7 +362,6 @@ webapp.post('/createTweet', (req, res) => {
     type: req.body.type,
     content: req.body.content,
     tweet_date: Date.now(),
-<<<<<<< Updated upstream
     tweet_likes: 0
   };
 
@@ -393,26 +383,6 @@ webapp.post('/createTweet', (req, res) => {
 });
 
 /*webapp.post('/deleteTweet/', (req, res) => {
-=======
-    tweet_likes: 0,
-  };
-
-  // insert newTweet in table TWEET
-  const sql = 'INSERT INTO TWEETS (uid, tweet_id, type, content, tweet_date, tweet_likes) VALUES (?,?,?,?,?,?)';
-  const values = [newTweet.uid, newTweet.tweet_id, newTweet.type, newTweet.content, newTweet.tweet_date, newTweet.tweet_likes];
-  db.run(sql, values, (err, result) => {
-    if (err) {
-      console.log('here');
-      res.status(400).json({ error: err.message });
-    } else {
-      console.log('successful creation of tweet');
-      res.redirect('/home');
-    }
-  });
-});
-
-/* webapp.post('/deleteTweet/', (req, res) => {
->>>>>>> Stashed changes
     console.log('Delete a Tweet');
     const sql = 'DELETE FROM TWEETS WHERE tweet_id = ?';
     const values = [req.body.tweet_id];
@@ -426,14 +396,10 @@ webapp.post('/createTweet', (req, res) => {
             tweet: req.body.tweet_id
         });
     });
-<<<<<<< Updated upstream
 });*/
 
 
 
-=======
-}); */
->>>>>>> Stashed changes
 
 webapp.use((_req, res) => {
   res.status(404);

@@ -22,12 +22,12 @@ export default function Registration() {
   };
 
   return (
-      <div className="card shadow mx-auto mt-5" style={{ width: '30rem' }}>
+    <div className="card shadow mx-auto mt-5" style={{ width: '30rem' }}>
       <div className="container mx-1">
         <div className="card-body p-xs">
           <h2 className="card-title text-center font-weight-bold">Sign Up</h2>
           <div className="form-group">
-            <label>Username:</label>
+            <label htmlFor="new-username-form">Username:</label>
             <input
               id="new-username-form"
               className="form-control"
@@ -47,7 +47,7 @@ export default function Registration() {
               type="button"
               className="btn btn-primary w-100"
               onClick={register}
-              >
+            >
               Sign Up
             </button>
           </div>
