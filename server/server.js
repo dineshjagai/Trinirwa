@@ -253,6 +253,7 @@ webapp.put('/profile/password/:uid', (req, res) => {
     res.status(405).json({ message: "new password doesn't meet requirement" });
   }
 });
+
 // Adding interest
 webapp.post('/profile/interest/:uid', (req, res) => {
   const sql_update = 'INSERT INTO INTERESTS (interests_uid, interest) VALUES (?, ?)';
@@ -282,9 +283,15 @@ webapp.delete('/profile/delete/interest/:uid', (req, res) => {
 });
 
 webapp.get('/followers/:uid', (req, res) => {
-  /*
-    Get the followers from home
- */
+  // finish the outes correctly
+  const sql_get = 'SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two=?';
+  const params = [req.params.uid];
+  connection.query(sql_get, params,
+    (err) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+    });
 });
 
 webapp.get('/followers', (req, res) => {
@@ -328,13 +335,11 @@ webapp.get('/home', (req, res) => {
           res.status(404).json({ error: err.message });
           return;
       } else {
-
       }
       res.json({
           message: 'successful operation',
           data: rows,
       });
-
   }); */
 });
 

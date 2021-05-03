@@ -1,3 +1,4 @@
+import React from 'react';
 import Tweet from './Tweet';
 
 export default function TweetDisplayer() {
@@ -32,11 +33,11 @@ export default function TweetDisplayer() {
     uid: 3, tweet_id: 14, type: 'text', content: 'tweet5', tweet_date: '0000-00-00 00:00:00', tweet_likes: 10,
   }];
 
-  const items = all.map((tweet) => <Tweet key={tweet.tweet_id} data={tweet}/>);
+  const items = all.map((tweet) => <Tweet key={tweet.tweet_id} data={tweet} />);
 
   return (
-      <div>
-          {items}
-      </div>
+    <div>
+      {items}
+    </div>
   );
 }
