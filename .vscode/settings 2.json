@@ -1,0 +1,12 @@
+{
+    "editor.fontFamily": "Monaco, 'Courier New', monoscape",
+    "editor.fontSize": 16,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 100,
+    "editor.formatOnSave": false,
+    "files.eol": "\n", 
+    "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": ["javascript"]
+ }
