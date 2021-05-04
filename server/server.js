@@ -341,6 +341,22 @@ webapp.delete('/profile/delete/interest/:uid', (req, res) => {
     });
 });
 
+webapp.get('/profile/followers/:uid', (req, res) => {
+  // finish the outes correctly
+  const sql_get = 'SELECT profile_picture, username FROM (SELECT * FROM USERS JOIN FOLLOWERS ON USERS.UID = FOLLOWERS.uid_user_one) AS T WHERE uid_user_two=? LIMIT 8';
+  const params = [req.params.uid];
+  connection.query(sql_get, params,
+    (err, followers) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        followers,
+      });
+    });
+});
+
 webapp.get('/followers/:uid', (req, res) => {
   // finish the outes correctly
   const sql_get = 'SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one=?';
