@@ -1,9 +1,10 @@
 /* eslint-disable react/no-array-index-key */
-import React from 'react';
+import React, { useState } from 'react';
 import * as FaIcons from 'react-icons/fa';
 import { Route, BrowserRouter as Router, Link } from 'react-router-dom';
 import './Sidebar.css';
 import ProfilePage from './ProfilePage';
+import { getUsername } from './Module';
 
 const SideBarData = [
   {
@@ -18,6 +19,12 @@ function reload() {
 }
 
 function SideBar({ uid }) {
+  const [username, setUsername] = useState('');
+
+  getUsername(uid).then((result) => {
+    setUsername(result.data.data[0].username);
+  });
+
   const profile = `/profile/${uid}`;
   return (
     <Router>
@@ -26,13 +33,12 @@ function SideBar({ uid }) {
           <li className="nav-text">
             <Link to={profile}>
               <FaIcons.FaUserFriends />
-              {/* get username from uid
-              <span>{username}</span> */}
+              <span>{username}</span>
             </Link>
           </li>
           {SideBarData.map((item, index) => (
             <li key={index} className={item.cName}>
-              <Link onClik={reload} to={item.path}>
+              <Link onClick={reload} to={item.path}>
                 {item.icon}
                 <span>{item.title}</span>
               </Link>

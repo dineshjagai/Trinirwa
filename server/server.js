@@ -119,22 +119,6 @@ webapp.post('/login', (req, res) => {
 /* -------------------------------------------------------------------------- */
 /*                        PROFILE AND TWEETS ENDPOINTS                        */
 /* -------------------------------------------------------------------------- */
-// // Other API endpoints
-// webapp.get('/api/players', (req, res) => {
-//   console.log('READ all players');
-//   const sql = 'select * from players';
-//   const params = [];
-//   db.query(sql, params, (err, rows) => {
-//     if (err) {
-//       const status = err.status || 500;
-//       res.status(status).json({ error: err.message });
-//       return;
-//     }
-//     res.json({
-//       message: 'success',
-//       data: rows,
-//     });
-
 // getting the profile info
 webapp.get('/profile/:uid', (req, res) => {
   const sql_info = 'SELECT username, first_name, last_name, email, profile_picture, location FROM USERS WHERE  uid = ?';
@@ -264,7 +248,7 @@ webapp.post('/profile/interest/:uid', (req, res) => {
         res.status(405).json({ error: err.message });
         return;
       }
-      res.json({ message: 'Interest successfull added', changes: this.changes });
+      res.json({ message: 'Interest successfully added', changes: this.changes });
     });
 });
 
@@ -278,25 +262,23 @@ webapp.delete('/profile/delete/interest/:uid', (req, res) => {
         res.status(405).json({ error: err.message });
         return;
       }
-      res.json({ message: 'Interest successfull deleted', changes: this.changes });
+      res.json({ message: 'Interest successfully deleted', changes: this.changes });
     });
 });
 
 webapp.get('/followers/:uid', (req, res) => {
   // finish the outes correctly
-  const sql_get = 'SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two=?';
+  const sql_get = 'SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one=?';
   const params = [req.params.uid];
   connection.query(sql_get, params,
-    (err) => {
+    (err, followers) => {
       if (err) {
         res.status(405).json({ error: err.message });
       }
+      res.json({ message: 'Followers successfully retrieved', data: followers });
     });
 });
 
-webapp.get('/followers', (req, res) => {
-
-});
 
 // removing profile picture
 // webapp.put('/profile/delete/profile_pic/:uid', (req, res)=> {
@@ -325,57 +307,51 @@ webapp.get('/followers', (req, res) => {
 /*                                CREATE TWEET                                */
 /* -------------------------------------------------------------------------- */
 
-webapp.get('/home', (req, res) => {
-  console.log('Home page in!');
-  res.render('homepage.html');
-  /* const sql = 'SELECT * from TWEETS';
-  const params = [];
-  db.query(sql, params, (err, rows) => {
+webapp.get('/home/:uid', (req, res) => {
+  const sql = 'SELECT username from USERS WHERE uid=?';
+  const params = [req.params.uid];
+  connection.query(sql, params, (err, user) => {
       if (err) {
           res.status(404).json({ error: err.message });
           return;
-      } else {
       }
       res.json({
           message: 'successful operation',
-          data: rows,
+          data: user,
       });
-  }); */
+  });
 });
 
-webapp.post('/createTweet', (req, res) => {
-  console.log('Create a Tweet');
-  /* if (!req.body.username) {
-       res.status(400).json({ error: 'missing username' });
-       return;
-   } */
-
+// Adding tweet
+webapp.post('/createTweet/:uid', (req, res) => {
+  console.log("Creation of Tweet");
   const newTweet = {
-    uid: req.body.ui,
-    type: req.body.type,
+    uid: req.params.uid,
+    type: 'text',
     content: req.body.content,
     tweet_date: Date.now(),
     tweet_likes: 0,
   };
 
-  // insert newTweet in table TWEET
+  // insert newTweet in table TWEETS
   const sql = 'INSERT INTO TWEETS (uid, tweet_id, type, content, tweet_date, tweet_likes) VALUES (?,?,?,?,?,?)';
   const values = [newTweet.uid, newTweet.tweet_id, newTweet.type, newTweet.content, newTweet.tweet_date, newTweet.tweet_likes];
-  db.run(sql, values, (err, result) => {
-    if (err) {
-      console.log('here');
-      res.status(400).json({ error: err.message });
-    } else {
-      console.log('successful creation of tweet');
-      res.redirect('/home');
-    }
-  });
+  connection.query(sql, values,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Tweet successfully added', changes: this.changes });
+    });
 });
 
-/* webapp.post('/deleteTweet/', (req, res) => {
+
+
+webapp.post('/deleteTweet/:tweetid', (req, res) => {
     console.log('Delete a Tweet');
     const sql = 'DELETE FROM TWEETS WHERE tweet_id = ?';
-    const values = [req.body.tweet_id];
+    const values = [req.params.tweetid];
     db.run(sql, values, function(err, result) {
         if (err) {
             res.status(400).json({ error: err.message });
@@ -383,10 +359,10 @@ webapp.post('/createTweet', (req, res) => {
         }
         res.json({
             message : 'sucessful deletion of tweet',
-            tweet: req.body.tweet_id
+            data: result
         });
     });
-}); */
+});
 
 webapp.use((_req, res) => {
   res.status(404);

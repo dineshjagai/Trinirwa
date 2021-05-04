@@ -7,7 +7,6 @@ import CommentBox from './CommentBox';
 export default function Home(props) {
   const words = (window.location.href).split('/');
   const uid = words[words.length - 1];
-  // let uid = props.uid; // current user
   const { username } = props;
 
   return (
@@ -15,7 +14,7 @@ export default function Home(props) {
     <div className="home">
       <NavBar />
       <SideBar uid={uid} username={username} />
-      <CommentBox />
+      <CommentBox uid={uid} />
 
     </div>
   );

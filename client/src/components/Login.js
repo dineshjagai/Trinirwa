@@ -16,7 +16,7 @@ export default function Login() {
       if (response.data.message) {
         alert(response.data.message);
       } else {
-        history.push('/home/2');
+        history.push('/home/1');
       }
     });
   };

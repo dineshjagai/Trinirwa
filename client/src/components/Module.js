@@ -53,3 +53,28 @@ export function deleteProfile(id) {
     url: delUrl,
   });
 }
+
+// Home modules
+export function getUsername(id) {
+  return axios({
+    method: 'GET',
+    url: `/home/${id}`,
+  });
+}
+
+export function addTweet(tweet, id) {
+  return axios({
+    method: 'POST',
+    url: `/createTweet/${id}`,
+    data: {
+      content: tweet,
+    },
+  });
+}
+
+export function fetchFollowers(id) {
+  return axios({
+    method: 'GET',
+    url: `/followers/${id}`,
+  });
+}

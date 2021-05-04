@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Tweet({ data }) {
   const classes = useStyles();
+  console.log(data.content);
   return (
     <div id="container_tweet">
       <div id="tweet_header">
