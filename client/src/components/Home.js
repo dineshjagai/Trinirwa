@@ -4,16 +4,12 @@ import NavBar from './navBar';
 import SideBar from './Sidebar';
 import CommentBox from './CommentBox';
 
-export default function Home(props) {
-  const words = (window.location.href).split('/');
-  const uid = words[words.length - 1];
-  const { username } = props;
-
+export default function Home({ uid }) {
+  console.log(`uid home page${uid}`);
   return (
-
     <div className="home">
       <NavBar />
-      <SideBar uid={uid} username={username} />
+      <SideBar uid={uid} />
       <CommentBox uid={uid} />
 
     </div>

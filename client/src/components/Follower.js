@@ -1,28 +1,17 @@
 import React from 'react';
+import './Follower.css';
 
 export default function Follower({ info }) {
   return (
-    <div style={{
-      marginTop: '10px',
-      marginLeft: '10px',
-    }}
-    >
-      <img
-        style={{
-          width: '60px',
-          height: '60px',
-          borderRadius: '100px',
-        }}
-        src={info.profile_picture}
-        alt=""
-      />
-      <p
-        style={{
-          margin: 'auto',
-        }}
-      >
-        {info.username}
-      </p>
+    <div onH className="followerContainer">
+      <div className="myimgContainer">
+        <img
+          className="myimg"
+          src={info.profile_picture}
+          alt=""
+        />
+      </div>
+      <div className="text">{info.username}</div>
     </div>
   );
 }

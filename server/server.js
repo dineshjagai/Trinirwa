@@ -63,15 +63,23 @@ webapp.use(
 webapp.post('/register', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
+  const { first_name } = req.body;
+  const { last_name } = req.body;
+  const { email } = req.body;
+  const datetime = new Date('en-US').toLocaleString();
+  const followerCount = 0;
+  const isLoggedIn = 1;
+  const tweetsCount = 0;
+  const isLive = 0;
 
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
       console.log(err);
     }
-
     connection.query(
-      'INSERT INTO USERS_AUTH (username, password) VALUES (?,?)',
-      [username, hash],
+      'INSERT INTO USERS (username, password, first_name, last_name,email, date, followers_count, is_logged_in, tweets_count, is_live, date) VALUES (?,?,?,?,?,?,?,?,?,?)',
+      [username, hash, first_name, last_name, email, followerCount,
+        isLoggedIn, tweetsCount, isLive, datetime],
       (err, result) => {
         console.log(err);
       },
@@ -87,12 +95,31 @@ webapp.get('/login', (req, res) => {
   }
 });
 
+webapp.post('/userUid', (req, res) => {
+  console.log('Get the user id');
+  const sql = 'select uid from USERS where username = ?';
+  const { username } = req.body;
+  const params = [username];
+  connection.query(sql, params, (err, row) => {
+    if (err) {
+      const status = err.status || 500;
+      res.status(status).json({ error: err.message });
+      return;
+    }
+    res.send({
+      message: 'success',
+      data: row,
+    });
+  });
+});
+
 webapp.post('/login', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
+  console.log(`username:${username}`);
 
   connection.query(
-    'SELECT * FROM USERS_AUTH WHERE username = ?;',
+    'SELECT * FROM USERS WHERE username = ?;',
     username,
     (err, result) => {
       if (err) {
@@ -187,18 +214,40 @@ webapp.get('/profile/tweet/:uid', (req, res) => {
   });
 });
 
-// deleting profile
+// deactivating profile
 webapp.delete('/profile/delete/:uid', (req, res) => {
-  const sql_delete = 'DELETE FROM USERS WHERE uid =? AND hashed_password = ?';
-  const params = [req.params.uid, req.body.password];
-  connection.query(sql_delete, params,
-    function (err) {
-      if (err) {
-        res.status(401).json({ error: err.message });
-        return;
-      }
-      res.json({ message: 'deleted', changes: this.changes });
-    });
+  const sql_get = 'SELECT password FROM USERS WHERE uid=?'
+  const sql_deact = 'UPDATE USERS SET isDeactivated = true WHERE uid =?';
+  const id = req.params.uid;
+  const {password} = req.body;
+  connection.query(sql_get, id, function (err, result){
+    if (err) {
+      res.status(401).json({ error: err.message });
+      return;
+    }
+    console.log(id);
+    if (result.length > 0) {
+      
+      bcrypt.compare(password, result[0].password, (error, response) => {
+        console.log(response);
+        if(error) {
+          res.status(401).json({ error: err.message });
+          return;
+        } else if (response) {
+          connection.query(sql_deact, id,
+            function (err) {
+              if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+              }
+              res.json({ message: 'Account deactivated', changes: this.changes });
+            });
+        } else {
+          res.status(401).json({ message: 'Wrong password input! Try again.' });
+        }
+      });
+    } 
+  })
 });
 // changing username
 webapp.put('/profile/username/:uid', (req, res) => {
@@ -214,29 +263,55 @@ webapp.put('/profile/username/:uid', (req, res) => {
         return;
       }
       res.json({ message: 'Username updated', changes: this.changes });
+      return;
     });
 });
 
 // updating password
 webapp.put('/profile/password/:uid', (req, res) => {
-  const sql_update = 'UPDATE USERS SET hashed_password= ? WHERE uid= ? AND hashed_password= ?';
-  const params = [req.body.new_password, req.params.uid, req.body.old_password];
-  // encrypt the password
-
-  // checks if newPassword is valid
-  if (auth.isValidPassword(params[0])) {
-    connection.query(sql_update, params,
-      function (err) {
-        if (err) {
-          res.status(405).json({ error: err.message });
+  const sql_get = 'SELECT password FROM USERS WHERE uid=?'
+  const sql_update = 'UPDATE USERS SET password= ? WHERE uid= ?';
+  const id = req.params.uid;
+  const newPass = req.body.newPassword;
+  const oldPass = req.body.oldPassword;
+  console.log(id+ "/"+newPass + "/"+ oldPass);
+  connection.query(sql_get, id, function (err, result) {
+    if(err) {
+      res.status(404).json({error: err.message});
+      return
+    }
+    if(result.length > 0) {
+      bcrypt.compare(oldPass, result[0].password, (error, response) => {
+        if(error) {
+          res.status(401).json({error: error.message});
           return;
         }
-        res.json({ message: 'password updated', changes: this.changes });
+        if(response) {
+          bcrypt.hash(newPass, saltRounds, (hashingError, hash) => {
+            if(hashingError){
+              res.json({error: hashingError.message});
+              return;
+            } else {
+              connection.query(sql_update, [hash, id], (err)=>{
+                if (err) {
+                  res.status(500).json({ error: err.message});
+                  return
+                } else {
+                  res.json({message: 'password successfully updated'});
+                  return;
+                } 
+              });
+            }
+          });
+        } else {
+          res.status(401).json({ message: 'Wrong password input! Try again.' });
+        }
       });
-  } else {
-    res.status(405).json({ message: "new password doesn't meet requirement" });
-  }
+    }
+  });
+    
 });
+
 
 // Adding interest
 webapp.post('/profile/interest/:uid', (req, res) => {

@@ -2,6 +2,7 @@
 import React from 'react';
 import './Profile.css';
 import DialogPassword from './DialogPassword';
+import DialogPasswordChange from './DialogPasswordChange';
 
 export default function Profile(props) {
   return (
@@ -15,7 +16,8 @@ export default function Profile(props) {
         <span id="username">{props.data.username}</span>
       </div>
       <div className="deleteButton">
-        <DialogPassword />
+        <DialogPassword id={props.id} />
+        <DialogPasswordChange id={props.id} />
       </div>
     </div>
   );

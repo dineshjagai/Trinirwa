@@ -46,7 +46,7 @@ function SideBar({ uid }) {
           ))}
         </ul>
       </div>
-      <Route path="/profile" component={() => <ProfilePage />} />
+      <Route path="/profile" component={() => <ProfilePage uid={uid} />} />
     </Router>
 
   );
