@@ -38,18 +38,41 @@ export function fetchTweets(id) {
   });
 }
 
-export function getFollowers(id) {
-  const getUrl = `/profile/followers/${id}`;
+export function getProfileData(id) {
+  const getUrl = `/profile/${id}`;
   return axios({
     method: 'GET',
     url: getUrl,
   });
 }
 
-export function deleteProfile(id) {
+export function getFollowers(id) {
+  const getUrl = `/followers/${id}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}
+
+export function deactivateProfile(id, inputPassword) {
   const delUrl = `/profile/delete/${id}`;
   return axios({
     method: 'DELETE',
     url: delUrl,
+    data: {
+      password: inputPassword,
+    },
+  });
+}
+
+export function updatePassword(id, newPass, oldPass) {
+  const upUrl = `/profile/password/${id}`;
+  return axios({
+    method: 'PUT',
+    url: upUrl,
+    data: {
+      newPassword: newPass,
+      oldPassword: oldPass,
+    },
   });
 }

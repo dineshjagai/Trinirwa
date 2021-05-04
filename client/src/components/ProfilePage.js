@@ -1,23 +1,20 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Profile from './ProfilePicture';
 import NavBar from './navBar';
 import Displayer from './Displayer';
-// import Followers from './Followers';
+import Followers from './Followers';
 import TweetDisplayer from './tweetDisplayer';
-import { addInterest, deleteInterest, fetchTweets } from './Module';
+import {
+  addInterest, deleteInterest, fetchTweets, getProfileData, getFollowers,
+} from './Module';
 
-export default function ProfilePage() {
-  const words = (window.location.href).split('/');
-  const id = words[words.length - 1];
-  const url = `/profile/${id}`;
+export default function ProfilePage({ id }) {
   const [info, setData] = useState([{}]);
   const [interests, setInterests] = useState(new Set());
   const [madeQuery, setMadeQuery] = useState(false);
   const [tweets, setTweets] = useState([{}]);
   const [childKey, setChildKey] = useState(0);
-  // const [followers, setFollowers] = useState([]);
-
+  const [followers, setFollowers] = useState([]);
   const handleFetchTweets = () => {
     fetchTweets(id).then((result) => {
       setTweets(result.data);
@@ -25,15 +22,19 @@ export default function ProfilePage() {
   };
 
   useEffect(() => {
-    axios({
-      method: 'GET',
-      url,
-    }).then((result) => {
+    getProfileData(id).then((result) => {
+      console.log(result.data.data[0]);
       setData(result.data.data[0]);
       const newInterest = new Set((result.data.interests).map((obj) => obj.interest));
       setInterests(newInterest);
-      setMadeQuery(true);
-      handleFetchTweets();
+    }).catch((error) => {
+      console.log(error.message);
+    });
+    setMadeQuery(true);
+    handleFetchTweets();
+    getFollowers(id).then((result) => {
+      setFollowers(result.data.followers);
+      console.log(followers);
     });
   }, []);
 
@@ -53,24 +54,29 @@ export default function ProfilePage() {
 
   return madeQuery ? (
     <div className="profile">
-
-      <NavBar />
-      <div>
-        <Profile data={info} />
+      <div style={{
+        width: '98%', margin: 'auto',
+      }}
+      >
+        <NavBar />
+        <Profile data={info} id={id} />
         <br />
-        <br />
-      </div>
-      <div className="center">
-
-        <Displayer
-          key={childKey}
-          id={3}
-          interests={interests}
-          addInterest={handleAddInterest}
-          deleteInterest={handleDeleteInterest}
-        />
-        <br />
-        {/* <Followers input_followers={followers} /> */}
+        <div
+          style={{
+            width: '%', margin: 'auto', marginRight: '1%',
+          }}
+          className="center"
+        >
+          <Displayer
+            key={childKey}
+            id={id}
+            interests={interests}
+            addInterest={handleAddInterest}
+            deleteInterest={handleDeleteInterest}
+          />
+          <br />
+          { true ? <Followers input={followers} /> : <div>haha</div>}
+        </div>
       </div>
       <div id="center" className="center">
         <TweetDisplayer tweets={tweets} />

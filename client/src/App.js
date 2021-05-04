@@ -13,7 +13,7 @@ function App() {
       <Route path="/registration" exact render={() => <Registration />} />
       <Route path="/login" exact render={() => <Login />} />
       <Route path="/home/:id" component={() => <Home />} />
-      <Route path="/profile/:id" exact render={() => <ProfilePage />} />
+      <Route path="/profile/:id" exact render={() => <ProfilePage id={1220} />} />
     </Router>
   );
 }
