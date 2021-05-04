@@ -146,22 +146,6 @@ webapp.post('/login', (req, res) => {
 /* -------------------------------------------------------------------------- */
 /*                        PROFILE AND TWEETS ENDPOINTS                        */
 /* -------------------------------------------------------------------------- */
-// // Other API endpoints
-// webapp.get('/api/players', (req, res) => {
-//   console.log('READ all players');
-//   const sql = 'select * from players';
-//   const params = [];
-//   db.query(sql, params, (err, rows) => {
-//     if (err) {
-//       const status = err.status || 500;
-//       res.status(status).json({ error: err.message });
-//       return;
-//     }
-//     res.json({
-//       message: 'success',
-//       data: rows,
-//     });
-
 // getting the profile info
 webapp.get('/profile/:uid', (req, res) => {
   const sql_info = 'SELECT username, first_name, last_name, email, profile_picture, location FROM USERS WHERE  uid = ?';
@@ -230,18 +214,40 @@ webapp.get('/profile/tweet/:uid', (req, res) => {
   });
 });
 
-// deleting profile
+// deactivating profile
 webapp.delete('/profile/delete/:uid', (req, res) => {
-  const sql_delete = 'DELETE FROM USERS WHERE uid =? AND hashed_password = ?';
-  const params = [req.params.uid, req.body.password];
-  connection.query(sql_delete, params,
-    function (err) {
-      if (err) {
-        res.status(401).json({ error: err.message });
-        return;
-      }
-      res.json({ message: 'deleted', changes: this.changes });
-    });
+  const sql_get = 'SELECT password FROM USERS WHERE uid=?'
+  const sql_deact = 'UPDATE USERS SET isDeactivated = true WHERE uid =?';
+  const id = req.params.uid;
+  const {password} = req.body;
+  connection.query(sql_get, id, function (err, result){
+    if (err) {
+      res.status(401).json({ error: err.message });
+      return;
+    }
+    console.log(id);
+    if (result.length > 0) {
+      
+      bcrypt.compare(password, result[0].password, (error, response) => {
+        console.log(response);
+        if(error) {
+          res.status(401).json({ error: err.message });
+          return;
+        } else if (response) {
+          connection.query(sql_deact, id,
+            function (err) {
+              if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+              }
+              res.json({ message: 'Account deactivated', changes: this.changes });
+            });
+        } else {
+          res.status(401).json({ message: 'Wrong password input! Try again.' });
+        }
+      });
+    } 
+  })
 });
 // changing username
 webapp.put('/profile/username/:uid', (req, res) => {
@@ -257,29 +263,55 @@ webapp.put('/profile/username/:uid', (req, res) => {
         return;
       }
       res.json({ message: 'Username updated', changes: this.changes });
+      return;
     });
 });
 
 // updating password
 webapp.put('/profile/password/:uid', (req, res) => {
-  const sql_update = 'UPDATE USERS SET hashed_password= ? WHERE uid= ? AND hashed_password= ?';
-  const params = [req.body.new_password, req.params.uid, req.body.old_password];
-  // encrypt the password
-
-  // checks if newPassword is valid
-  if (auth.isValidPassword(params[0])) {
-    connection.query(sql_update, params,
-      function (err) {
-        if (err) {
-          res.status(405).json({ error: err.message });
+  const sql_get = 'SELECT password FROM USERS WHERE uid=?'
+  const sql_update = 'UPDATE USERS SET password= ? WHERE uid= ?';
+  const id = req.params.uid;
+  const newPass = req.body.newPassword;
+  const oldPass = req.body.oldPassword;
+  console.log(id+ "/"+newPass + "/"+ oldPass);
+  connection.query(sql_get, id, function (err, result) {
+    if(err) {
+      res.status(404).json({error: err.message});
+      return
+    }
+    if(result.length > 0) {
+      bcrypt.compare(oldPass, result[0].password, (error, response) => {
+        if(error) {
+          res.status(401).json({error: error.message});
           return;
         }
-        res.json({ message: 'password updated', changes: this.changes });
+        if(response) {
+          bcrypt.hash(newPass, saltRounds, (hashingError, hash) => {
+            if(hashingError){
+              res.json({error: hashingError.message});
+              return;
+            } else {
+              connection.query(sql_update, [hash, id], (err)=>{
+                if (err) {
+                  res.status(500).json({ error: err.message});
+                  return
+                } else {
+                  res.json({message: 'password successfully updated'});
+                  return;
+                } 
+              });
+            }
+          });
+        } else {
+          res.status(401).json({ message: 'Wrong password input! Try again.' });
+        }
       });
-  } else {
-    res.status(405).json({ message: "new password doesn't meet requirement" });
-  }
+    }
+  });
+    
 });
+
 
 // Adding interest
 webapp.post('/profile/interest/:uid', (req, res) => {
@@ -311,13 +343,17 @@ webapp.delete('/profile/delete/interest/:uid', (req, res) => {
 
 webapp.get('/followers/:uid', (req, res) => {
   // finish the outes correctly
-  const sql_get = 'SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two=?';
+  const sql_get = 'SELECT profile_picture, username FROM (SELECT * FROM USERS JOIN FOLLOWERS ON USERS.UID = FOLLOWERS.uid_user_one) AS T WHERE uid_user_two=? LIMIT 8';
   const params = [req.params.uid];
   connection.query(sql_get, params,
-    (err) => {
+    (err, followers) => {
       if (err) {
         res.status(405).json({ error: err.message });
       }
+      res.json({
+        message: '200',
+        followers,
+      });
     });
 });
 
