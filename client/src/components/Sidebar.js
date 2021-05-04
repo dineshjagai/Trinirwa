@@ -32,7 +32,7 @@ function SideBar({ uid }) {
           </li>
           {SideBarData.map((item, index) => (
             <li key={index} className={item.cName}>
-              <Link onClik={reload} to={item.path}>
+              <Link onClick={reload} to={item.path}>
                 {item.icon}
                 <span>{item.title}</span>
               </Link>

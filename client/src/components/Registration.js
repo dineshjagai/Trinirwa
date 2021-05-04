@@ -1,23 +1,58 @@
+/* eslint-disable no-alert */
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-
 import Axios from 'axios';
+import { addUser } from './Module';
 import '../App.css';
+import {
+  isValidPassword, isValidUsername, isValidEmail, isSamePassword,
+} from '../auth/authentication';
 
 export default function Registration() {
   const [usernameReg, setUsernameReg] = useState('');
-  const [passwordReg, setPasswordReg] = useState('');
+  const [passwordOneReg, setPasswordOneReg] = useState('');
+  const [passwordTwoReg, setPasswordTwoReg] = useState('');
+  const [firstNameReg, setFirstNameReg] = useState('');
+  const [lastNameReg, setLastNameReg] = useState('');
+  const [email, setEmailReg] = useState('');
   const history = useHistory();
 
   Axios.defaults.withCredentials = true;
 
   const register = () => {
-    Axios.post('/register', {
-      username: usernameReg,
-      password: passwordReg,
-    }).then((response) => {
+    if (!isSamePassword(passwordOneReg, passwordTwoReg)) {
+      alert('Passwords do not match, please re-enter');
+      window.history.replaceState(null, 'new page', '/');
+      window.location.reload();
+      return;
+    }
+
+    if (!isValidUsername(usernameReg)) {
+      alert('Invalid User Name');
+      window.history.replaceState(null, 'new page', '/');
+      window.location.reload();
+      return;
+    }
+
+    if (!isValidPassword(passwordOneReg)) {
+      alert('Invalid password, password must have a minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character');
+      window.history.replaceState(null, 'new page', '/');
+      window.location.reload();
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      alert('Invalid email, please re-enter');
+      window.history.replaceState(null, 'new page', '/');
+      window.location.reload();
+      return;
+    }
+
+    addUser(usernameReg, passwordOneReg, firstNameReg, lastNameReg, email).then((response) => {
       console.log(response);
       history.push('/Signup/:id');
+    }).catch((e) => {
+      console.log(e);
     });
   };
 
@@ -35,11 +70,54 @@ export default function Registration() {
             />
           </div>
           <div className="form-group">
+            <label htmlFor="exampleInputEmail1">Email address</label>
+            <input
+              type="email"
+              className="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+              placeholder="Enter email"
+              onChange={(e) => setEmailReg(e.target.value)}
+            />
+            <small id="emailHelp" className="form-text text-muted">We will never share your email with anyone else.</small>
+          </div>
+          <div className="form-group">
+            <label>First Name:</label>
+            <input
+              type="name"
+              className="form-control"
+              placeholder="Enter First Name"
+              onChange={(e) => setFirstNameReg(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label>Last Name:</label>
+            <input
+              type="name"
+              placeholder="Enter Last Name"
+              className="form-control"
+              onChange={(e) => setLastNameReg(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
             <label>Password:</label>
             <input
               type="password"
+              aria-describedby="passwordHelp"
               className="form-control"
-              onChange={(e) => setPasswordReg(e.target.value)}
+              placeholder="Enter Password"
+              onChange={(e) => setPasswordOneReg(e.target.value)}
+            />
+            <small id="passwordHelp" className="form-text text-muted">Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character</small>
+
+          </div>
+          <div className="form-group">
+            <label>Confirm Password:</label>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Re-Enter Password"
+              onChange={(e) => setPasswordTwoReg(e.target.value)}
             />
           </div>
           <div className="form-group">

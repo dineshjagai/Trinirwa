@@ -53,3 +53,41 @@ export function deleteProfile(id) {
     url: delUrl,
   });
 }
+
+export const addUser = (usernameReg, passwordOneReg, firstName, lastName, email) => {
+  const prm = axios({
+    method: 'POST',
+    url: '/register',
+    data: {
+      username: usernameReg,
+      password: passwordOneReg,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+    },
+  });
+  return prm;
+};
+
+export const getUid = (usernameReg) => {
+  const prm = axios({
+    method: 'POST',
+    url: '/userUid',
+    data: {
+      username: usernameReg,
+    },
+  });
+  return prm;
+};
+
+export const userLogin = (usernameReg, password) => {
+  const prm = axios({
+    method: 'POST',
+    url: '/login',
+    data: {
+      username: usernameReg,
+      password,
+    },
+  });
+  return prm;
+};

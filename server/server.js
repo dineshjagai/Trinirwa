@@ -63,15 +63,23 @@ webapp.use(
 webapp.post('/register', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
+  const { first_name } = req.body;
+  const { last_name } = req.body;
+  const { email } = req.body;
+  const datetime = new Date('en-US').toLocaleString();
+  const followerCount = 0;
+  const isLoggedIn = 1;
+  const tweetsCount = 0;
+  const isLive = 0;
 
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
       console.log(err);
     }
-
     connection.query(
-      'INSERT INTO USERS_AUTH (username, password) VALUES (?,?)',
-      [username, hash],
+      'INSERT INTO USERS (username, password, first_name, last_name,email, date, followers_count, is_logged_in, tweets_count, is_live, date) VALUES (?,?,?,?,?,?,?,?,?,?)',
+      [username, hash, first_name, last_name, email, followerCount,
+        isLoggedIn, tweetsCount, isLive, datetime],
       (err, result) => {
         console.log(err);
       },
@@ -87,12 +95,31 @@ webapp.get('/login', (req, res) => {
   }
 });
 
+webapp.post('/userUid', (req, res) => {
+  console.log('Get the user id');
+  const sql = 'select uid from USERS where username = ?';
+  const { username } = req.body;
+  const params = [username];
+  connection.query(sql, params, (err, row) => {
+    if (err) {
+      const status = err.status || 500;
+      res.status(status).json({ error: err.message });
+      return;
+    }
+    res.send({
+      message: 'success',
+      data: row,
+    });
+  });
+});
+
 webapp.post('/login', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
+  console.log(`username:${username}`);
 
   connection.query(
-    'SELECT * FROM USERS_AUTH WHERE username = ?;',
+    'SELECT * FROM USERS WHERE username = ?;',
     username,
     (err, result) => {
       if (err) {

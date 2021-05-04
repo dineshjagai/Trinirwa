@@ -1,22 +1,30 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import Axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
 import '../App.css';
+import { userLogin, getUid } from './Module';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const history = useHistory();
+  const [uid, setUid] = useState('');
   Axios.defaults.withCredentials = true;
-  const login = async () => {
-    Axios.post('/login', {
-      username,
-      password,
-    }).then((response) => {
+
+  const login = () => {
+    userLogin(username, password).then((response) => {
       if (response.data.message) {
         alert(response.data.message);
       } else {
-        history.push('/home/2');
+        getUid(username).then((res) => {
+          setUid(Array.from(res.data.data)[0].uid);
+          console.log(Array.from(res.data.data)[0].uid);
+          console.log(uid);
+        }).catch((e) => {
+          console.log(e);
+        });
+        history.push('/home/');
       }
     });
   };
@@ -42,6 +50,10 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          <p>
+            Forgot Password?&nbsp;
+            <Link to="/">Click here to reset!</Link>
+          </p>
           <div className="form-group text-center">
             <button
               type="button"
