@@ -1,30 +1,52 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
-import { Link, useHistory } from 'react-router-dom';
+import {
+  Link, useHistory, BrowserRouter as Route,
+} from 'react-router-dom';
 import '../App.css';
 import { userLogin, getUid } from './Module';
+import Home from './Home';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const history = useHistory();
   const [uid, setUid] = useState('');
+  const [count, setCount] = useState(0);
+  const [isAuth, setIsAuth] = useState(false);
   Axios.defaults.withCredentials = true;
 
-  const login = () => {
+  useEffect(() => setUid(uid), [uid, username, password, count, isAuth]);
+  // useEffect(() => console.log(count), [count]);
+
+  const login = async () => {
     userLogin(username, password).then((response) => {
       if (response.data.message) {
         alert(response.data.message);
+        // window.history.replaceState(null, 'new page', '/login');
+        // window.location.reload();
+        setUsername('');
+        setPassword('');
+        setUid('');
+        setCount(count + 1);
+        if (count >= 3) {
+          // disable user from logging into the browser
+          // TODO implement this
+        }
+        document.getElementById('new-password-form').value = '';
+        document.getElementById('new-username-form').value = '';
       } else {
+        setIsAuth(true);
+        let fetchedUid = null;
         getUid(username).then((res) => {
-          setUid(Array.from(res.data.data)[0].uid);
-          console.log(Array.from(res.data.data)[0].uid);
-          console.log(uid);
+          [fetchedUid] = [Array.from(res.data.data)[0].uid];
+          setUid(fetchedUid);
+          // window.history.replaceState({ fetchedUid }, 'new page', '/home');
+          // window.location.reload();
         }).catch((e) => {
           console.log(e);
         });
-        history.push('/home/');
       }
     });
   };
@@ -38,6 +60,7 @@ export default function Login() {
             <label>Username:</label>
             <input
               id="new-username-form"
+              placeholder="Enter Username"
               className="form-control"
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -45,7 +68,9 @@ export default function Login() {
           <div className="form-group">
             <label>Password:</label>
             <input
+              id="new-password-form"
               type="password"
+              placeholder="Enter Password"
               className="form-control"
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -55,17 +80,30 @@ export default function Login() {
             <Link to="/">Click here to reset!</Link>
           </p>
           <div className="form-group text-center">
-            <button
-              type="button"
-              className="btn btn-primary w-100"
-              onClick={login}
-            >
-              Log In
-            </button>
+            {isAuth ? (
+              <Link to="/home">
+                <button
+                  type="button"
+                  className="btn btn-primary w-100"
+                  onClick={login}
+                >
+                  Log In
+                </button>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-primary w-100"
+                onClick={login}
+              >
+                Log In
+              </button>
+            )}
           </div>
           <p>
             Don&apos;t have an account?&nbsp;
             <Link to="/registration">Sign Up!</Link>
+            <Route path="/home/" component={() => <Home uid={uid} />} />
           </p>
         </div>
       </div>

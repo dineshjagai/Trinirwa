@@ -18,7 +18,7 @@ function reload() {
 }
 
 function SideBar({ uid }) {
-  const profile = `/profile/${uid}`;
+  const profile = '/profile';
   return (
     <Router>
       <div className="sidebar">
@@ -40,7 +40,7 @@ function SideBar({ uid }) {
           ))}
         </ul>
       </div>
-      <Route path="/profile" component={() => <ProfilePage />} />
+      <Route path="/profile" component={() => <ProfilePage uid={uid} />} />
     </Router>
 
   );

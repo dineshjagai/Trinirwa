@@ -65,6 +65,7 @@ export default function Registration() {
             <label htmlFor="new-username-form">Username:</label>
             <input
               id="new-username-form"
+              placeholder="Enter Username"
               className="form-control"
               onChange={(e) => setUsernameReg(e.target.value)}
             />
