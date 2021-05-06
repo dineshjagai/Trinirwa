@@ -3,9 +3,10 @@ import Profile from './ProfilePicture';
 import NavBar from './navBar';
 import Displayer from './Displayer';
 import Followers from './Followers';
+import Friends from './Friends';
 import TweetDisplayer from './tweetDisplayer';
 import {
-  addInterest, deleteInterest, fetchTweets, getProfileData, getFollowers,
+  addInterest, deleteInterest, fetchTweets, getProfileData,
 } from './Module';
 
 export default function ProfilePage({ id }) {
@@ -14,7 +15,6 @@ export default function ProfilePage({ id }) {
   const [madeQuery, setMadeQuery] = useState(false);
   const [tweets, setTweets] = useState([{}]);
   const [childKey, setChildKey] = useState(0);
-  const [followers, setFollowers] = useState([]);
   const handleFetchTweets = () => {
     fetchTweets(id).then((result) => {
       setTweets(result.data);
@@ -32,10 +32,6 @@ export default function ProfilePage({ id }) {
     });
     setMadeQuery(true);
     handleFetchTweets();
-    getFollowers(id).then((result) => {
-      setFollowers(result.data.followers);
-      console.log(followers);
-    });
   }, []);
 
   const handleAddInterest = (newInterest) => {
@@ -63,7 +59,7 @@ export default function ProfilePage({ id }) {
         <br />
         <div
           style={{
-            width: '%', margin: 'auto', marginRight: '1%',
+            width: '30%', margin: 'auto', marginRight: '1%',
           }}
           className="center"
         >
@@ -75,7 +71,9 @@ export default function ProfilePage({ id }) {
             deleteInterest={handleDeleteInterest}
           />
           <br />
-          { true ? <Followers input={followers} /> : <div>haha</div>}
+          <Friends id={id} />
+          <br />
+          <Followers id={id} />
         </div>
       </div>
       <div id="center" className="center">

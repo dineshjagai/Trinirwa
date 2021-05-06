@@ -16,7 +16,6 @@ export default function Home(props) {
       <NavBar />
       <SideBar uid={uid} username={username} />
       <CommentBox />
-
     </div>
   );
 }

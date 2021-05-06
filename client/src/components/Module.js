@@ -47,7 +47,15 @@ export function getProfileData(id) {
 }
 
 export function getFollowers(id) {
-  const getUrl = `/followers/${id}`;
+  const getUrl = `/profile/followers/${id}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}
+
+export function getFriends(id) {
+  const getUrl = `/profile/friends/${id}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -73,6 +81,39 @@ export function updatePassword(id, newPass, oldPass) {
     data: {
       newPassword: newPass,
       oldPassword: oldPass,
+    },
+  });
+}
+
+export function blockFollower(id, username) {
+  const insUrl = `/block/${id}`;
+  return axios({
+    method: 'POST',
+    url: insUrl,
+    data: {
+      follower: username,
+    },
+  });
+}
+
+export function followUser(id, username) {
+  const insUrl = `/follow/${id}`;
+  return axios({
+    method: 'POST',
+    url: insUrl,
+    data: {
+      follower: username,
+    },
+  });
+}
+
+export function unfollowUser(id, username) {
+  const insUrl = `/unfollow/${id}`;
+  return axios({
+    method: 'PUT',
+    url: insUrl,
+    data: {
+      follower: username,
     },
   });
 }

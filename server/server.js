@@ -314,11 +314,13 @@ webapp.delete('/profile/delete/interest/:uid', (req, res) => {
     });
 });
 
-webapp.get('/followers/:uid', (req, res) => {
+// Getting the followers to display on profile
+webapp.get('/profile/followers/:uid', (req, res) => {
   // finish the outes correctly
-  const sql_get = 'SELECT profile_picture, username FROM (SELECT * FROM USERS JOIN FOLLOWERS ON USERS.UID = FOLLOWERS.uid_user_one) AS T WHERE uid_user_two=? LIMIT 8';
-  const params = [req.params.uid];
-  connection.query(sql_get, params,
+  const uid = req.params.uid;
+  const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two = ${uid} and uid_user_one NOT IN (SELECT user_two FROM BLOCKED_USERS WHERE user_one= ${uid} )) as T ON uid = uid_user_one LIMIT 6`;
+  
+  connection.query(sql_get,
     (err, followers) => {
       if (err) {
         res.status(405).json({ error: err.message });
@@ -330,8 +332,68 @@ webapp.get('/followers/:uid', (req, res) => {
     });
 });
 
-webapp.get('/followers', (req, res) => {
+// Getting the friends to display on profile
+webapp.get('/profile/friends/:uid', (req, res) => {
+  const uid = req.params.uid;
+  const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two= ${uid} AND uid_user_one in (SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one= ${uid}) AND uid_user_one NOT IN (SELECT user_two FROM BLOCKED_USERS WHERE user_one= ${uid})) AS T ON uid = uid_user_one`;
+  
+  connection.query(sql_get,
+    (err, followers) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        followers,
+      });
+    });
+});
 
+// blocking a follower
+webapp.post('/block/:uid', (req, res) => {
+  const sql_insert = 'INSERT INTO BLOCKED_USERS ( user_one, user_two ) VALUES(?, (SELECT uid FROM USERS WHERE username = ?))';
+  const params = [req.params.uid, req.body.follower];
+  connection.query(sql_insert, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'user successfully blocked', changes: this.changes });
+    });
+});
+
+// blocking a follower
+webapp.post('/follow/:uid', (req, res) => {
+  const sql_insert = 'INSERT INTO FOLLOWERS ( uid_user_one, uid_user_two ) VALUES(?, (SELECT uid FROM USERS WHERE username = ?))';
+  const params = [req.params.uid, req.body.follower];
+  connection.query(sql_insert, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'user successfully blocked', changes: this.changes });
+    });
+});
+
+// unfollowing a user
+webapp.put('/unfollow/:uid', (req, res) => {
+  const sql_unfollow = 'DELETE FROM FOLLOWERS WHERE uid_user_one = ? AND uid_user_two IN (SELECT uid FROM USERS WHERE username = ?)';
+  const params = [req.params.uid, req.body.follower];
+  console.log(params);
+  connection.query(sql_unfollow, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'user successfully unfollowed', changes: this.changes });
+    });
+});
+
+
+webapp.get('/followers', (req, res) => {
 });
 
 // removing profile picture

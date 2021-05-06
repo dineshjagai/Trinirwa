@@ -12,8 +12,8 @@ function App() {
       <Route path="/" exact render={() => <Registration />} />
       <Route path="/registration" exact render={() => <Registration />} />
       <Route path="/login" exact render={() => <Login />} />
-      <Route path="/home/:id" component={() => <Home />} />
-      <Route path="/profile/:id" exact render={() => <ProfilePage id={1220} />} />
+      <Route path="/home/" component={() => <Home id={1200} />} />
+      <Route path="/profile/" exact render={() => <ProfilePage id={1220} />} />
     </Router>
   );
 }
