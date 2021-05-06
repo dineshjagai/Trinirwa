@@ -24,14 +24,15 @@ function SideBar({ uid }) {
   getUsername(uid).then((result) => {
     setUsername(result.data.data[0].username);
   });
+  // console.log("Sidebar page " + uid);
 
-  const profile = `/profile/${uid}`;
+  // const profile = `/profile/${uid}
   return (
     <Router>
       <div className="sidebar">
         <ul className="sidebar-items">
           <li className="nav-text">
-            <Link to={profile}>
+            <Link to="/profile">
               <FaIcons.FaUserFriends />
               <span>{username}</span>
             </Link>
@@ -46,7 +47,7 @@ function SideBar({ uid }) {
           ))}
         </ul>
       </div>
-      <Route path="/profile" component={() => <ProfilePage uid={uid} />} />
+      <Route path="/profile" render={() => <ProfilePage uid={uid} />} />
     </Router>
 
   );

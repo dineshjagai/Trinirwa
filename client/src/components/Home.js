@@ -5,8 +5,10 @@ import SideBar from './Sidebar';
 import CommentBox from './CommentBox';
 
 export default function Home({ uid }) {
+  console.log('HERE');
   console.log(`uid home page${uid}`);
   return (
+
     <div className="home">
       <NavBar />
       <SideBar uid={uid} />

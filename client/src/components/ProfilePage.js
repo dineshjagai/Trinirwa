@@ -3,7 +3,7 @@ import Profile from './ProfilePicture';
 import NavBar from './navBar';
 import Displayer from './Displayer';
 import Followers from './Followers';
-import TweetDisplayer from './tweetDisplayer';
+// import TweetDisplayer from './tweetDisplayer';
 import {
   addInterest, deleteInterest, fetchTweets, getProfileData, getFollowers,
 } from './Module';
@@ -15,11 +15,13 @@ export default function ProfilePage({ id }) {
   const [tweets, setTweets] = useState([{}]);
   const [childKey, setChildKey] = useState(0);
   const [followers, setFollowers] = useState([]);
-  const handleFetchTweets = () => {
-    fetchTweets(id).then((result) => {
-      setTweets(result.data);
-    });
-  };
+  // const handleFetchTweets = () => {
+  //   fetchTweets(id).then((result) => {
+  //     setTweets(result.data);
+  //   });
+  // };
+
+  console.log(`Profile Page uid ${id}`);
 
   useEffect(() => {
     getProfileData(id).then((result) => {
@@ -31,11 +33,15 @@ export default function ProfilePage({ id }) {
       console.log(error.message);
     });
     setMadeQuery(true);
-    handleFetchTweets();
+    // handleFetchTweets();
     getFollowers(id).then((result) => {
       setFollowers(result.data.followers);
       console.log(followers);
     });
+    fetchTweets(id).then((result) => {
+      setTweets(result.data);
+    });
+    console.log(tweets);
   }, []);
 
   const handleAddInterest = (newInterest) => {
@@ -79,7 +85,7 @@ export default function ProfilePage({ id }) {
         </div>
       </div>
       <div id="center" className="center">
-        <TweetDisplayer tweets={tweets} />
+        {/* <TweetDisplayer tweets={tweets} /> */}
       </div>
     </div>
   ) : <div />;
