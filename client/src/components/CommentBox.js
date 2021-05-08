@@ -9,6 +9,7 @@ export default function CommentBox({ uid }) {
   const [tweets, setTweets] = useState([{}]);
   const [allUserTweetsIn, setAllUserTweetsIn] = useState(false);
   const allTweets = [];
+  const numberOfTweets = allTweets.length;
   const [allFollowersTweetsIn, setAllFollowersTweetsIn] = useState(false);
 
   const onCancel = () => {
@@ -69,7 +70,10 @@ export default function CommentBox({ uid }) {
     });
   }, []);
 
-  console.log(allTweets);
+  if (allTweets.length !== numberOfTweets) {
+    console.log('Got here number!');
+    window.location.reload(false);
+  }
 
   return (
     <div className="feed">

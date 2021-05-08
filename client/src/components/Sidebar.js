@@ -22,6 +22,7 @@ function SideBar({ uid }) {
   const [username, setUsername] = useState('');
 
   getUsername(uid).then((result) => {
+    console.log(result.data.data[0]);
     setUsername(result.data.data[0].username);
   });
 
