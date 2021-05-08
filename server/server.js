@@ -63,15 +63,23 @@ webapp.use(
 webapp.post('/register', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
+  const { first_name } = req.body;
+  const { last_name } = req.body;
+  const { email } = req.body;
+  const datetime = new Date('en-US').toLocaleString();
+  const followerCount = 0;
+  const isLoggedIn = 1;
+  const tweetsCount = 0;
+  const isLive = 0;
 
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
       console.log(err);
     }
-
     connection.query(
-      'INSERT INTO USERS_AUTH (username, password) VALUES (?,?)',
-      [username, hash],
+      'INSERT INTO USERS (username, password, first_name, last_name,email, date, followers_count, is_logged_in, tweets_count, is_live, date) VALUES (?,?,?,?,?,?,?,?,?,?)',
+      [username, hash, first_name, last_name, email, followerCount,
+        isLoggedIn, tweetsCount, isLive, datetime],
       (err, result) => {
         console.log(err);
       },
@@ -87,12 +95,31 @@ webapp.get('/login', (req, res) => {
   }
 });
 
+webapp.post('/userUid', (req, res) => {
+  console.log('Get the user id');
+  const sql = 'select uid from USERS where username = ?';
+  const { username } = req.body;
+  const params = [username];
+  connection.query(sql, params, (err, row) => {
+    if (err) {
+      const status = err.status || 500;
+      res.status(status).json({ error: err.message });
+      return;
+    }
+    res.send({
+      message: 'success',
+      data: row,
+    });
+  });
+});
+
 webapp.post('/login', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
+  console.log(`username:${username}`);
 
   connection.query(
-    'SELECT * FROM USERS_AUTH WHERE username = ?;',
+    'SELECT * FROM USERS WHERE username = ?;',
     username,
     (err, result) => {
       if (err) {
@@ -119,12 +146,57 @@ webapp.post('/login', (req, res) => {
 /* -------------------------------------------------------------------------- */
 /*                        PROFILE AND TWEETS ENDPOINTS                        */
 /* -------------------------------------------------------------------------- */
+// // getting the profile info
+// webapp.get('/profile/:uid', (req, res) => {
+//   const sql_info = 'SELECT username, first_name, last_name, email, profile_picture, location FROM USERS WHERE  uid = ?';
+//   const sql_interest = 'SELECT interest FROM INTERESTS WHERE interests_uid= ?';
+//   const sql_following = 'SELECT uid, username, profile_picture FROM USERS WHERE uid IN  (SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one = ?)';
+//   const parameters = [req.params.uid];
+//   connection.query(sql_info, parameters, (err, student) => {
+//     const data = [];
+//     if (err) {
+//       res.status(404).json({ error: err.message });
+//       return;
+//     }
+//     data.push(student);
+//     connection.query(sql_interest, parameters, (err, interests) => {
+//       if (err) {
+//         res.status(404).json({
+//           message: 'no interest',
+//           data,
+//           error: err.message,
+//         });
+//         return;
+//       }
+//       data.push(interests);
+
+//       connection.query(sql_following, parameters, (err, followers) => {
+//         if (err) {
+//           res.status(404).json({
+//             message: 'no followers',
+//             data,
+//             error: err.message,
+//           });
+//           return;
+//         }
+//         data.push(followers);
+//         res.json({
+//           message: '200',
+//           data: student,
+//           interests,
+//           followers,
+//         });
+//       });
+//     });
+//   });
+// });
+
 // getting the profile info
-webapp.get('/profile/:uid', (req, res) => {
-  const sql_info = 'SELECT username, first_name, last_name, email, profile_picture, location FROM USERS WHERE  uid = ?';
-  const sql_interest = 'SELECT interest FROM INTERESTS WHERE interests_uid= ?';
-  const sql_following = 'SELECT uid, username, profile_picture FROM USERS WHERE uid IN  (SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one = ?)';
-  const parameters = [req.params.uid];
+webapp.get('/profile/:username', (req, res) => {
+  const sql_info = `SELECT username, first_name, last_name, email, profile_picture, location FROM USERS WHERE username = ?`;
+  const sql_interest = 'SELECT interest FROM INTERESTS_1 WHERE user= ?';
+  const sql_following = 'SELECT uid, username, profile_picture FROM USERS WHERE username IN  (SELECT user_two FROM FOLLOWERS_1 WHERE user_one = ?)';
+  const parameters = [req.params.username];
   connection.query(sql_info, parameters, (err, student) => {
     const data = [];
     if (err) {
@@ -287,38 +359,84 @@ webapp.put('/profile/password/:uid', (req, res) => {
 
 
 // Adding interest
-webapp.post('/profile/interest/:uid', (req, res) => {
-  const sql_update = 'INSERT INTO INTERESTS (interests_uid, interest) VALUES (?, ?)';
-  const params = [req.params.uid, req.body.interest];
+webapp.post('/profile/interest/:username', (req, res) => {
+  const sql_update = 'INSERT INTO INTERESTS_1 (user, interest) VALUES (?, ?)';
+  const params = [req.params.username, req.body.interest];
   connection.query(sql_update, params,
     function (err) {
       if (err) {
         res.status(405).json({ error: err.message });
         return;
       }
-      res.json({ message: 'Interest successfull added', changes: this.changes });
+      res.json({ message: 'Interest successfully added', changes: this.changes });
     });
 });
 
+// Adding interest
+// webapp.post('/profile/interest/:uid', (req, res) => {
+//   const sql_update = 'INSERT INTO INTERESTS (interests_uid, interest) VALUES (?, ?)';
+//   const params = [req.params.uid, req.body.interest];
+//   connection.query(sql_update, params,
+//     function (err) {
+//       if (err) {
+//         res.status(405).json({ error: err.message });
+//         return;
+//       }
+//       res.json({ message: 'Interest successfully added', changes: this.changes });
+//     });
+// });
+
+// // delete interest
+// webapp.delete('/profile/delete/interest/:uid', (req, res) => {
+//   const sql_delete = 'DELETE FROM INTERESTS WHERE interests_uid=? AND interest=?';
+//   const params = [req.params.uid, req.body.interest];
+//   connection.query(sql_delete, params,
+//     function (err) {
+//       if (err) {
+//         res.status(405).json({ error: err.message });
+//         return;
+//       }
+//       res.json({ message: 'Interest successfully deleted', changes: this.changes });
+//     });
+// });
+
 // delete interest
-webapp.delete('/profile/delete/interest/:uid', (req, res) => {
-  const sql_delete = 'DELETE FROM INTERESTS WHERE interests_uid=? AND interest=?';
-  const params = [req.params.uid, req.body.interest];
+webapp.delete('/profile/delete/interest/:username', (req, res) => {
+  const sql_delete = 'DELETE FROM INTERESTS_1 WHERE user=? AND interest=?';
+  const params = [req.params.username, req.body.interest];
   connection.query(sql_delete, params,
     function (err) {
       if (err) {
         res.status(405).json({ error: err.message });
         return;
       }
-      res.json({ message: 'Interest successfull deleted', changes: this.changes });
+      res.json({ message: 'Interest successfully deleted', changes: this.changes });
     });
 });
 
+// // Getting the followers to display on profile
+// webapp.get('/profile/followers/:uid', (req, res) => {
+//   // finish the outes correctly
+//   const uid = req.params.uid;
+//   const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two = ${uid} and uid_user_one NOT IN (SELECT user_two FROM BLOCKED_USERS WHERE user_one= ${uid} )) as T ON uid = uid_user_one LIMIT 6`;
+  
+//   connection.query(sql_get,
+//     (err, followers) => {
+//       if (err) {
+//         res.status(405).json({ error: err.message });
+//       }
+//       res.json({
+//         message: '200',
+//         followers,
+//       });
+//     });
+// });
+
 // Getting the followers to display on profile
-webapp.get('/profile/followers/:uid', (req, res) => {
+webapp.get('/profile/followers/:username', (req, res) => {
   // finish the outes correctly
-  const uid = req.params.uid;
-  const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two = ${uid} and uid_user_one NOT IN (SELECT user_two FROM BLOCKED_USERS WHERE user_one= ${uid} )) as T ON uid = uid_user_one LIMIT 6`;
+  const username = req.params.username;
+  const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT user_one FROM FOLLOWERS_1 WHERE user_two = '${username}' and user_one NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one= '${username}' )) as T ON username = user_one LIMIT 6`;
   
   connection.query(sql_get,
     (err, followers) => {
@@ -332,12 +450,46 @@ webapp.get('/profile/followers/:uid', (req, res) => {
     });
 });
 
+// // Getting the friends to display on profile
+// webapp.get('/profile/friends/:uid', (req, res) => {
+//   const uid = req.params.uid;
+//   const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two= ${uid} AND uid_user_one in (SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one= ${uid}) AND uid_user_one NOT IN (SELECT user_two FROM BLOCKED_USERS WHERE user_one= ${uid})) AS T ON uid = uid_user_one`;
+  
+//   connection.query(sql_get,
+//     (err, followers) => {
+//       if (err) {
+//         res.status(405).json({ error: err.message });
+//       }
+//       res.json({
+//         message: '200',
+//         followers,
+//       });
+//     });
+// });
+
 // Getting the friends to display on profile
-webapp.get('/profile/friends/:uid', (req, res) => {
-  const uid = req.params.uid;
-  const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT uid_user_one FROM FOLLOWERS WHERE uid_user_two= ${uid} AND uid_user_one in (SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one= ${uid}) AND uid_user_one NOT IN (SELECT user_two FROM BLOCKED_USERS WHERE user_one= ${uid})) AS T ON uid = uid_user_one`;
+webapp.get('/profile/friends/:username', (req, res) => {
+  const username = req.params.username;
+  console.log(username);
+  const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT user_one FROM FOLLOWERS_1 WHERE user_two= '${username}' AND user_one in (SELECT user_two FROM FOLLOWERS_1 WHERE user_one= '${username}') AND user_one NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one= '${username}')) AS T ON username = user_one`;
   
   connection.query(sql_get,
+    (err, friends) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        friends,
+      });
+    });
+});
+
+webapp.get('/followers/:uid', (req, res) => {
+  // finish the outes correctly
+  const sql_get = 'SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one=?';
+  const params = [req.params.uid];
+  connection.query(sql_get, params,
     (err, followers) => {
       if (err) {
         res.status(405).json({ error: err.message });
@@ -350,9 +502,9 @@ webapp.get('/profile/friends/:uid', (req, res) => {
 });
 
 // blocking a follower
-webapp.post('/block/:uid', (req, res) => {
-  const sql_insert = 'INSERT INTO BLOCKED_USERS ( user_one, user_two ) VALUES(?, (SELECT uid FROM USERS WHERE username = ?))';
-  const params = [req.params.uid, req.body.follower];
+webapp.post('/block/:username', (req, res) => {
+  const sql_insert = 'INSERT INTO BLOCKED_USERS_1 ( user_one, user_two ) VALUES(?,?)';
+  const params = [req.params.username, req.body.follower];
   connection.query(sql_insert, params,
     function (err) {
       if (err) {
@@ -363,10 +515,10 @@ webapp.post('/block/:uid', (req, res) => {
     });
 });
 
-// blocking a follower
-webapp.post('/follow/:uid', (req, res) => {
-  const sql_insert = 'INSERT INTO FOLLOWERS ( uid_user_one, uid_user_two ) VALUES(?, (SELECT uid FROM USERS WHERE username = ?))';
-  const params = [req.params.uid, req.body.follower];
+// following a follower
+webapp.post('/follow/:username', (req, res) => {
+  const sql_insert = 'INSERT INTO FOLLOWERS_1 ( user_one, user_two ) VALUES(?,?)';
+  const params = [req.params.username, req.body.follower];
   connection.query(sql_insert, params,
     function (err) {
       if (err) {
@@ -378,9 +530,9 @@ webapp.post('/follow/:uid', (req, res) => {
 });
 
 // unfollowing a user
-webapp.put('/unfollow/:uid', (req, res) => {
-  const sql_unfollow = 'DELETE FROM FOLLOWERS WHERE uid_user_one = ? AND uid_user_two IN (SELECT uid FROM USERS WHERE username = ?)';
-  const params = [req.params.uid, req.body.follower];
+webapp.put('/unfollow/:username', (req, res) => {
+  const sql_unfollow = 'DELETE FROM FOLLOWERS_1 WHERE user_one = ? AND user_two = ?';
+  const params = [req.params.username, req.body.follower];
   console.log(params);
   connection.query(sql_unfollow, params,
     function (err) {
@@ -392,25 +544,21 @@ webapp.put('/unfollow/:uid', (req, res) => {
     });
 });
 
-
-webapp.get('/followers', (req, res) => {
+//unblocking a user
+webapp.put('/unblock/:username', (req, res) => {
+  const sql_unfollow = 'DELETE FROM BLOCKED_USERS_1 WHERE user_one = ? AND user_two = ?';
+  const params = [req.params.username, req.body.follower];
+  console.log(params);
+  connection.query(sql_unfollow, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'user successfully unblocked', changes: this.changes });
+    });
 });
 
-// removing profile picture
-// webapp.put('/profile/delete/profile_pic/:uid', (req, res)=> {
-//     const sql_remove = 'UPDATE USERS SET profile_picture=? WHERE uid=?';
-//     const params = [req.params.uid, req.body.url];
-//     if(url != null && )
-//     connection.run(sql_remove, params,
-//         function(err){
-//             if(err) {
-//                 res.status(405).json({error: err.message});
-//                 return;
-//             }
-//             res.json({message: 'renoved', changes: this.changes});
-//         }
-//     );
-// });
 // updating picture
 
 // deleting picture
@@ -423,57 +571,49 @@ webapp.get('/followers', (req, res) => {
 /*                                CREATE TWEET                                */
 /* -------------------------------------------------------------------------- */
 
-webapp.get('/home', (req, res) => {
-  console.log('Home page in!');
-  res.render('homepage.html');
-  /* const sql = 'SELECT * from TWEETS';
-  const params = [];
-  db.query(sql, params, (err, rows) => {
+webapp.get('/home/:uid', (req, res) => {
+  const sql = 'SELECT username from USERS WHERE uid=?';
+  const params = [req.params.uid];
+  connection.query(sql, params, (err, user) => {
       if (err) {
           res.status(404).json({ error: err.message });
           return;
-      } else {
       }
       res.json({
           message: 'successful operation',
-          data: rows,
+          data: user,
       });
-  }); */
+  });
 });
 
-webapp.post('/createTweet', (req, res) => {
-  console.log('Create a Tweet');
-  /* if (!req.body.username) {
-       res.status(400).json({ error: 'missing username' });
-       return;
-   } */
-
+// Adding tweet
+webapp.post('/createTweet/:uid', (req, res) => {
+  console.log("Creation of Tweet");
   const newTweet = {
-    uid: req.body.ui,
-    type: req.body.type,
+    uid: req.params.uid,
+    type: 'text',
     content: req.body.content,
     tweet_date: Date.now(),
     tweet_likes: 0,
   };
 
-  // insert newTweet in table TWEET
+  // insert newTweet in table TWEETS
   const sql = 'INSERT INTO TWEETS (uid, tweet_id, type, content, tweet_date, tweet_likes) VALUES (?,?,?,?,?,?)';
   const values = [newTweet.uid, newTweet.tweet_id, newTweet.type, newTweet.content, newTweet.tweet_date, newTweet.tweet_likes];
-  db.run(sql, values, (err, result) => {
-    if (err) {
-      console.log('here');
-      res.status(400).json({ error: err.message });
-    } else {
-      console.log('successful creation of tweet');
-      res.redirect('/home');
-    }
-  });
+  connection.query(sql, values,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Tweet successfully added', changes: this.changes });
+    });
 });
 
-/* webapp.post('/deleteTweet/', (req, res) => {
+webapp.post('/deleteTweet/:tweetid', (req, res) => {
     console.log('Delete a Tweet');
     const sql = 'DELETE FROM TWEETS WHERE tweet_id = ?';
-    const values = [req.body.tweet_id];
+    const values = [req.params.tweetid];
     db.run(sql, values, function(err, result) {
         if (err) {
             res.status(400).json({ error: err.message });
@@ -481,10 +621,10 @@ webapp.post('/createTweet', (req, res) => {
         }
         res.json({
             message : 'sucessful deletion of tweet',
-            tweet: req.body.tweet_id
+            data: result
         });
     });
-}); */
+});
 
 webapp.use((_req, res) => {
   res.status(404);

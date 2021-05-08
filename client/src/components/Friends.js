@@ -1,35 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Followers.css';
 import Friend from './Friend';
 import { blockFollower, getFriends, unfollowUser } from './Module';
+import idContext from './Context';
 
-export default function Friends({ id }) {
+export default function Friends() {
+  const user = useContext(idContext);
   const [friends, setFriends] = useState([]);
   useEffect(() => {
-    getFriends(id).then((result) => {
-      setFriends(result.data.followers);
+    getFriends(user).then((result) => {
+      setFriends(result.data.friends);
     });
   }, []);
 
   const handleB = (username) => {
-    blockFollower(id, username).then((res) => {
+    blockFollower(user, username).then((res) => {
       console.log(res.message);
-      getFriends(id).then((result) => {
-        setFriends(result.data.followers);
+      getFriends(user).then((result) => {
+        setFriends(result.data.friends);
       });
     });
   };
 
   const handleU = (username) => {
-    unfollowUser(id, username).then((res) => {
+    unfollowUser(user, username).then((res) => {
       console.log(res.message);
-      getFriends(id).then((result) => {
-        setFriends(result.data.followers);
+      getFriends(user).then((result) => {
+        setFriends(result.data.friends);
       });
     });
   };
-
-  const items = friends.map((user) => <Friend info={user} handleB={handleB} handleU={handleU} />);
+  console.log(friends);
+  const items = friends.map((e) => <Friend info={e} handleB={handleB} handleU={handleU} />);
   return (
     <div className="box-container">
       <div className="buttonFollowers">

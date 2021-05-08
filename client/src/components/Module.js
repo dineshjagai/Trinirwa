@@ -8,8 +8,19 @@ export function getUserInformation(username) {
   return prm;
 }
 
-export function addInterest(newInterest, id) {
-  const addUrl = `/profile/interest/${id}`;
+// export function addInterest(newInterest, id) {
+//   const addUrl = `/profile/interest/${id}`;
+//   return axios({
+//     method: 'POST',
+//     url: addUrl,
+//     data: {
+//       interest: newInterest,
+//     },
+//   });
+// }
+
+export function addInterest(newInterest, username) {
+  const addUrl = `/profile/interest/${username}`;
   return axios({
     method: 'POST',
     url: addUrl,
@@ -19,8 +30,19 @@ export function addInterest(newInterest, id) {
   });
 }
 
-export function deleteInterest(interestToDelete, id) {
-  const delUrl = `/profile/delete/interest/${id}`;
+// export function deleteInterest(interestToDelete, id) {
+//   const delUrl = `/profile/delete/interest/${id}`;
+//   return axios({
+//     method: 'DELETE',
+//     url: delUrl,
+//     data: {
+//       interest: interestToDelete,
+//     },
+//   });
+// }
+
+export function deleteInterest(interestToDelete, username) {
+  const delUrl = `/profile/delete/interest/${username}`;
   return axios({
     method: 'DELETE',
     url: delUrl,
@@ -38,24 +60,47 @@ export function fetchTweets(id) {
   });
 }
 
-export function getProfileData(id) {
-  const getUrl = `/profile/${id}`;
+// export function getProfileData(id) {
+//   const getUrl = `/profile/${id}`;
+//   return axios({
+//     method: 'GET',
+//     url: getUrl,
+//   });
+// }
+
+export function getProfileData(username) {
+  const getUrl = `/profile/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
   });
 }
 
-export function getFollowers(id) {
-  const getUrl = `/profile/followers/${id}`;
+// export function getFollowers(id) {
+//   const getUrl = `/profile/followers/${id}`;
+//   return axios({
+//     method: 'GET',
+//     url: getUrl,
+//   });
+// }
+export function getFollowers(username) {
+  const getUrl = `/profile/followers/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
   });
 }
 
-export function getFriends(id) {
-  const getUrl = `/profile/friends/${id}`;
+// export function getFriends(id) {
+//   const getUrl = `/profile/friends/${id}`;
+//   return axios({
+//     method: 'GET',
+//     url: getUrl,
+//   });
+// }
+
+export function getFriends(username) {
+  const getUrl = `/profile/friends/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -96,6 +141,24 @@ export function blockFollower(id, username) {
   });
 }
 
+// Home modules
+export function getUsername(id) {
+  return axios({
+    method: 'GET',
+    url: `/home/${id}`,
+  });
+}
+
+export function addTweet(tweet, id) {
+  return axios({
+    method: 'POST',
+    url: `/createTweet/${id}`,
+    data: {
+      content: tweet,
+    },
+  });
+}
+
 export function followUser(id, username) {
   const insUrl = `/follow/${id}`;
   return axios({
@@ -117,3 +180,48 @@ export function unfollowUser(id, username) {
     },
   });
 }
+
+export function fetchFollowers(id) {
+  return axios({
+    method: 'GET',
+    url: `/followers/${id}`,
+  });
+}
+
+export const addUser = (usernameReg, passwordOneReg, firstName, lastName, email) => {
+  const prm = axios({
+    method: 'POST',
+    url: '/register',
+    data: {
+      username: usernameReg,
+      password: passwordOneReg,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+    },
+  });
+  return prm;
+};
+
+export const getUid = (usernameReg) => {
+  const prm = axios({
+    method: 'POST',
+    url: '/userUid',
+    data: {
+      username: usernameReg,
+    },
+  });
+  return prm;
+};
+
+export const userLogin = (usernameReg, password) => {
+  const prm = axios({
+    method: 'POST',
+    url: '/login',
+    data: {
+      username: usernameReg,
+      password,
+    },
+  });
+  return prm;
+};

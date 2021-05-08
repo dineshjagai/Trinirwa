@@ -1,21 +1,23 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Home.css';
 import NavBar from './navBar';
 import SideBar from './Sidebar';
-import CommentBox from './CommentBox';
+// import CommentBox from './CommentBox';
+import idContext from './Context';
 
-export default function Home(props) {
-  const words = (window.location.href).split('/');
-  const uid = words[words.length - 1];
-  // let uid = props.uid; // current user
-  const { username } = props;
-
+export default function Home({ uid }) {
+  const [id, setId] = useState('');
+  console.log(`uid home page${uid}`);
+  useEffect(() => {
+    setId(id);
+  }, [id]);
+  const user = useContext(idContext);
+  console.log(user);
   return (
-
     <div className="home">
       <NavBar />
-      <SideBar uid={uid} username={username} />
-      <CommentBox />
+      <SideBar uid={uid} />
+      {/* <CommentBox uid={uid} /> */}
     </div>
   );
 }
