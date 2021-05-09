@@ -225,3 +225,12 @@ export const userLogin = (usernameReg, password) => {
   });
   return prm;
 };
+
+export const searchFriend = (username, input) => {
+  console.log(`search friend ${username}, typeof ${typeof (input)}@@@@@@@@@@@@`);
+  const promise = axios({
+    method: 'GET',
+    url: `/search/${username}/${input}`,
+  });
+  return promise;
+};
