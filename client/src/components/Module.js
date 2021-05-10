@@ -225,3 +225,25 @@ export const userLogin = (usernameReg, password) => {
   });
   return prm;
 };
+
+export const addProfilePicture = (username, profilePicture) => {
+  const prm = axios({
+    method: 'POST',
+    url: '/uploadProfilePicture',
+    data: {
+      username,
+      profilePicture,
+    },
+  });
+  return prm;
+};
+
+// export const uploadFile = () => {
+//   const prm = axios({
+//     method: 'POST',
+//     url: '/uploadFile',
+//     data: {
+//     },
+//   });
+//   return prm;
+// };

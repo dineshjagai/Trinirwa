@@ -50,7 +50,8 @@ export default function Registration() {
 
     addUser(usernameReg, passwordOneReg, firstNameReg, lastNameReg, email).then((response) => {
       console.log(response);
-      history.push('/Signup/:id');
+      // if valid signup proceed to the login page
+      history.push(`/signup/${usernameReg}`);
     }).catch((e) => {
       console.log(e);
     });
