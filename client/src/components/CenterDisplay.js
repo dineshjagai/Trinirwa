@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
 }));
+// eslint-disable-next-line import/no-unresolved
 const hash = require('object-hash');
 
 export default function Displayer() {
