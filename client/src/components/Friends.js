@@ -3,6 +3,7 @@ import './Followers.css';
 import Friend from './Friend';
 import { blockFollower, getFriends, unfollowUser } from './Module';
 import idContext from './Context';
+import ScrollDialog from './DisplayerDialog';
 
 export default function Friends() {
   const user = useContext(idContext);
@@ -30,12 +31,11 @@ export default function Friends() {
       });
     });
   };
-  console.log(friends);
   const items = friends.map((e) => <Friend info={e} handleB={handleB} handleU={handleU} />);
   return (
     <div className="box-container">
       <div className="buttonFollowers">
-        <button className="btn" id="delete" style={{ color: '#00695c', border: 'none', backgroundColor: 'inherit' }} type="button"> All friends</button>
+        <ScrollDialog />
       </div>
       <div className="title">Friends</div>
       <br />
