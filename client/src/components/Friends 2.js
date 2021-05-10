@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './Followers.css';
-import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import Friend from './Friend';
 import { blockFollower, getFriends, unfollowUser } from './Module';
 import idContext from './Context';
-import ScrollDialog from './DisplayerDialog';
 
 export default function Friends() {
   const user = useContext(idContext);
@@ -32,19 +30,12 @@ export default function Friends() {
       });
     });
   };
+  console.log(friends);
   const items = friends.map((e) => <Friend info={e} handleB={handleB} handleU={handleU} />);
   return (
     <div className="box-container">
       <div className="buttonFollowers">
-        <ScrollDialog
-          secondary="friends"
-          title="All friends"
-          secondTitle="All friends"
-          getFunction={getFriends}
-          Icon={PersonAddDisabledIcon}
-          handle={handleU}
-          iconText="Unfollow"
-        />
+        <button className="btn" id="delete" style={{ color: '#00695c', border: 'none', backgroundColor: 'inherit' }} type="button"> All friends</button>
       </div>
       <div className="title">Friends</div>
       <br />

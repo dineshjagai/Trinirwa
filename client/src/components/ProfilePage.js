@@ -6,7 +6,7 @@ import Followers from './Followers';
 import Friends from './Friends';
 import idContext from './Context';
 import SearchBox from './Search2';
-// import TweetDisplayer from './tweetDisplayer';
+import TweetDisplayer from './tweetDisplayer';
 import {
   addInterest, deleteInterest, getProfileData,
 } from './Module';
@@ -80,12 +80,12 @@ export default function ProfilePage() {
           </div>
         </div>
         <div id="center" className="center">
-          {/* <TweetDisplayer tweets={tweets} />  */}
+          <TweetDisplayer />
         </div>
         <div
           style={{
             position: 'relative',
-            top: '-850px',
+            top: '-710px',
             width: '25%',
             display: 'inline-block',
           }}

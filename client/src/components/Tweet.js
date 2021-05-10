@@ -21,14 +21,13 @@ export default function Tweet({ data }) {
   const classes = useStyles();
   console.log(data.content);
   return (
-    <div id="container_tweet">
+    <div id="container_tweet" style={{ margin: '20px' }}>
       <div id="tweet_header">
         <img className="tweet_header" id="tweet_author_picture" src="https://cdn001.tintin.com/public/tintin/img/static/essentials/tintin-milou.png" alt="" />
         <div className="text">
-          <b style={{ fontSize: '12px' }} id="author_username"> Arnaud Mutabazi</b>
+          <b style={{ fontSize: '12px' }} id="author_username">{data.username}</b>
           <div style={{ fontSize: '12px' }} id="date">
-            {' '}
-            02-8-1992
+            {data.tweet_date}
           </div>
         </div>
 
@@ -43,13 +42,12 @@ export default function Tweet({ data }) {
       </p>
       <Divider variant="middle" />
 
-      <div className="likes" style={{ fontSize: '12px' }} id="tweets_like">10</div>
+      <div className="likes" style={{ fontSize: '12px' }} id="tweets_like">{data.tweet_likes}</div>
       <div className="likes">
         <IconButton aria-label="delete" className={classes.margin}>
           <LikeIcon color="red" />
         </IconButton>
       </div>
-
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './Followers.css';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import Follower from './Follower';
-import ScrollDialog from './ScrollDialog';
+import ScrollDialog from './DisplayerDialog';
 import { blockFollower, followUser, getFollowers } from './Module';
 import idContext from './Context';
 
@@ -37,7 +38,15 @@ export default function Followers() {
   return (
     <div className="box-container">
       <div className="buttonFollowers">
-        <ScrollDialog />
+        <ScrollDialog
+          secondary="follower"
+          title="All followers"
+          secondTitle="All followers"
+          getFunction={getFollowers}
+          Icon={PersonAddIcon}
+          handle={handleF}
+          iconText="Follow"
+        />
       </div>
       <div className="title">Followers</div>
       <br />
