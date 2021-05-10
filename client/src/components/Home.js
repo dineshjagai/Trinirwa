@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './Home.css';
 import NavBar from './navBar';
-import SideBar from './Sidebar';
+// import SideBar from './Sidebar';
 // import CommentBox from './CommentBox';
 import idContext from './Context';
+import Displayer from './CenterDisplay';
 
 export default function Home({ uid }) {
   const [id, setId] = useState('');
@@ -16,8 +17,12 @@ export default function Home({ uid }) {
   return (
     <div className="home">
       <NavBar />
-      <SideBar uid={uid} />
-      {/* <CommentBox uid={uid} /> */}
+      <div
+        style={{
+        }}
+      >
+        <Displayer />
+      </div>
     </div>
   );
 }

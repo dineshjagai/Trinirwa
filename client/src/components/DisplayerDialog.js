@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ScrollDialog({button}) {
+export default function ScrollDialog({ button }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [scroll, setScroll] = useState('paper');

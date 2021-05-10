@@ -3,7 +3,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
-export default function Dropdown() {
+export default function Dropdown({ menu }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -13,7 +13,7 @@ export default function Dropdown() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const items = menu.map((it) => <MenuItem onClick={handleClose}>{it}</MenuItem>);
   return (
     <div>
       <MoreHorizIcon onClick={handleClick} />
@@ -24,7 +24,7 @@ export default function Dropdown() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
+        {items}
       </Menu>
     </div>
   );

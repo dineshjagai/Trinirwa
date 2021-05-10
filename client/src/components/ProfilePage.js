@@ -85,7 +85,7 @@ export default function ProfilePage() {
         <div
           style={{
             position: 'relative',
-            top: '-850px',
+            top: '-500px',
             width: '25%',
             display: 'inline-block',
           }}
