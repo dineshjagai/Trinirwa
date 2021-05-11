@@ -8,7 +8,7 @@ import TextField from '@material-ui/core/TextField';
 import Tweet from './Tweet';
 import idContext from './Context';
 import { addTweet, deleteTweet } from './Module';
-import './CommentBox.css';
+import './CenterDisplay.css';
 // import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 // eslint-disable-next-line import/no-unresolved
 const hash = require('object-hash');
 
-export default function Displayer() {
+export default function DisplayerTweets() {
   const [items, setItems] = useState(new Map());
   const [update, setUpdate] = useState(false);
   const [count, setCount] = useState(255);

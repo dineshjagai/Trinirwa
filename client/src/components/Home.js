@@ -4,7 +4,8 @@ import NavBar from './navBar';
 // import SideBar from './Sidebar';
 // import CommentBox from './CommentBox';
 import idContext from './Context';
-import Displayer from './CenterDisplay';
+import DisplayerTweets from './CenterDisplay';
+import SideBar from './SidebarU';
 
 export default function Home({ uid }) {
   const [id, setId] = useState('');
@@ -15,13 +16,21 @@ export default function Home({ uid }) {
   const user = useContext(idContext);
   console.log(user);
   return (
-    <div className="home">
+    <div>
       <NavBar />
-      <div
-        style={{
-        }}
-      >
-        <Displayer />
+      <div className="home">
+        <div
+          style={{
+          }}
+        >
+          <SideBar />
+        </div>
+        <div
+          style={{
+          }}
+        >
+          <DisplayerTweets />
+        </div>
       </div>
     </div>
   );
