@@ -1,11 +1,13 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Profile from './ProfilePicture';
 import NavBar from './navBar';
 import Displayer from './Displayer';
 import Followers from './Followers';
 import Friends from './Friends';
 import idContext from './Context';
-import SearchBox from './Search2';
+// import SearchBox from './Search2';
+import DisplayerTweets from './CenterDisplay';
+import './ProfilePage.css';
 // import TweetDisplayer from './tweetDisplayer';
 import {
   addInterest, deleteInterest, getProfileData,
@@ -53,45 +55,35 @@ export default function ProfilePage() {
 
   return madeQuery ? (
     <div className="profile">
-      <div style={{
-        width: '98%', margin: 'auto',
-      }}
+      <div
+        style={{
+          width: '98%', margin: 'auto',
+        }}
       >
         <div style={{ position: 'relative', top: '0px' }} className="rest">
           <NavBar />
           <Profile data={info} user={username} />
-          <br />
-          <div
-            style={{
-              width: '30%', margin: 'auto', marginRight: '1%',
-            }}
-            className="center"
-          >
-            <Displayer
-              key={childKey}
-              interests={interests}
-              addInterest={handleAddInterest}
-              deleteInterest={handleDeleteInterest}
-            />
-            <br />
-            <Friends />
-            <br />
-            <Followers />
+        </div>
+        <div className="all_boxes">
+          <div className="left-boxes">
+            <div className="left-Displayer">
+              <Displayer
+                key={childKey}
+                interests={interests}
+                addInterest={handleAddInterest}
+                deleteInterest={handleDeleteInterest}
+              />
+            </div>
+            <div className="left-friends">
+              <Friends />
+            </div>
+            <div className="left-followers">
+              <Followers />
+            </div>
           </div>
-        </div>
-        <div id="center" className="center">
-          {/* <TweetDisplayer tweets={tweets} />  */}
-        </div>
-        <div
-          style={{
-            position: 'relative',
-            top: '-500px',
-            width: '25%',
-            display: 'inline-block',
-          }}
-          className="search"
-        >
-          <SearchBox />
+          <div className="right_boxes">
+            <DisplayerTweets />
+          </div>
         </div>
       </div>
     </div>
