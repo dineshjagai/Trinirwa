@@ -237,7 +237,13 @@ webapp.get('/numberFailedLogins/:username', (req, res) => {
   const sql_select = 'SELECT  number_failed_logins FROM USERS WHERE username = ?';
   connection.query(sql_select, params, (err, row) => {
     // console.log(`numberFailedLogins called with numberFailedLogins, result = }${Array.from(res)}`);
-    // console.log(req.params);
+    // console.log();
+    // TODO: FIXME
+    // if (!row[0]) {
+    //   const status = 500;
+    //   res.status(status).json({ error: 'invalid username' });
+    //   return;
+    // }
 
     if (err) {
       const status = err.status || 500;
