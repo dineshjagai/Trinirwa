@@ -93,7 +93,7 @@ webapp.post('/register', (req, res) => {
     connection.query(
       'INSERT INTO USERS (username, password, first_name, last_name,email, followers_count, is_logged_in, tweets_count, is_live, date) VALUES (?,?,?,?,?,?,?,?,?,?)',
       [username, hash, first_name, last_name, email, followerCount,
-        isLoggedIn, tweetsCount, isLive, datetime], (err) => {
+        isLoggedIn, tweetsCount, isLive, datetime], (err, result) => {
         if (err) {
           const status = err.status || 500;
           res.status(status).json({ error: err.message });
@@ -101,6 +101,7 @@ webapp.post('/register', (req, res) => {
         }
         res.send({
           message: 'success',
+          user: result,
         });
       },
     );

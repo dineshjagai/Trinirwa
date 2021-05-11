@@ -32,19 +32,16 @@ describe('Test endpoints', () => {
     is_live: 0,
     date: '2021-05-10',
     isDeactivated: 0,
-    number_failed_logins: 0
+    number_failed_logins: 0,
   };
 
-  test('/register endpoint test', () => 
-    request(webapp).get('/register')
-    .send( {
+  test('/register endpoint test', () => request(webapp).get('/register')
+    .send({
       username: 'isimbib',
       password: '1234',
     })
     .expect(200)
     .then((response) => {
       expect(JSON.parse(response.text).user).toStrictEqual(testUser);
-    });
-    
-  });
+    }));
 });
