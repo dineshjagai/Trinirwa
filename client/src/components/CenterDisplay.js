@@ -86,6 +86,10 @@ export default function DisplayerTweets() {
       console.log(err.message);
     });
   }, []);
+  const goLiveHandler = () => {
+    alert('I clicked live');
+  };
+
   return (
     <div className="container_center">
       <div
@@ -125,6 +129,7 @@ export default function DisplayerTweets() {
             variant="contained"
             color="secondary"
             className={classes.button}
+            onClick={goLiveHandler}
             startIcon={<LiveTvIcon />}
           >
             Go live
