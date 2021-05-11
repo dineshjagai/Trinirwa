@@ -28,11 +28,12 @@ export default function Tweet({ data, handleDelete }) {
   useEffect(() => {
   }, [avatar]);
   const date = (data.tweet_date.split('T'))[0];
+  const newAvatar = `/viewFile/${avatar}`;
   return (
     <div id="container_tweet">
       <div className="tweet_header">
         <div className="tweet_img">
-          <img className="tweet_header" id="tweet_author_picture" src={avatar} alt="" />
+          <img className="tweet_header" id="tweet_author_picture" src={newAvatar} alt="" />
         </div>
         <div className="tweet_text">
           <span
