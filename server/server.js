@@ -5,7 +5,6 @@ const webapp = express();
 
 // impporting database
 const mysql = require('mysql');
-const path = require('path');
 
 const cors = require('cors');
 
@@ -80,7 +79,7 @@ webapp.post('/register', (req, res) => {
   const { email } = req.body;
   // get the current date time in MYSQL format
   const datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
-  console.log(datetime);
+  // console.log(datetime);
   const followerCount = 0;
   const isLoggedIn = 0;
   const tweetsCount = 0;
@@ -116,7 +115,7 @@ webapp.get('/login', (req, res) => {
 });
 
 webapp.post('/userUid', (req, res) => {
-  console.log('Get the user id');
+  // console.log('Get the user id');
   const sql = 'select uid from USERS where username = ?';
   const { username } = req.body;
   const params = [username];
@@ -136,13 +135,13 @@ webapp.post('/userUid', (req, res) => {
 webapp.post('/login', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
-  console.log(`username:${username}`);
+  // console.log(`username:${username}`);
 
   connection.query(
     'SELECT * FROM USERS WHERE username = ?;',
     username,
     (err, result) => {
-      if (err) {
+      if ((err) || !(result)) {
         res.send({ err });
       }
 
@@ -163,6 +162,30 @@ webapp.post('/login', (req, res) => {
   );
 });
 
+webapp.put('/resetPassword', (req, res) => {
+  const { username } = req.body;
+  const { password } = req.body;
+
+  bcrypt.hash(password, saltRounds, (hasherr, hash) => {
+    if (hasherr) {
+      console.log(hasherr);
+    }
+    connection.query(
+      'UPDATE USERS SET password = ? WHERE (username = ?)',
+      [hash, username], (err) => {
+        if (err) {
+          const status = err.status || 500;
+          res.status(status).json({ error: err.message });
+          return;
+        }
+        res.send({
+          message: 'success',
+        });
+      },
+    );
+  });
+});
+
 webapp.post('/uploadProfilePicture', (req, res) => {
   const { username } = req.body;
   const { profilePicture } = req.body;
@@ -171,6 +194,94 @@ webapp.post('/uploadProfilePicture', (req, res) => {
   connection.query(
     'UPDATE USERS SET profile_picture = ? WHERE username = ?',
     params, (err) => {
+      if (err) {
+        const status = err.status || 500;
+        res.status(status).json({ error: err.message });
+        return;
+      }
+      res.send({
+        message: 'success',
+      });
+    },
+  );
+});
+
+// set the number of failed logins
+webapp.post('/updateNumberFailedLogins', (req, res) => {
+  const { username } = req.body;
+  const { numberOfFailedLogins } = req.body;
+  const params = [numberOfFailedLogins, username];
+  // console.log(`updateNumberFailedLogins called with numberOfFailedLogins as ${numberOfFailedLogins}`);
+  // console.log(params);
+
+  connection.query(
+    'UPDATE USERS SET number_failed_logins = ? WHERE username = ?',
+    params, (err) => {
+      if (err) {
+        const status = err.status || 500;
+        res.status(status).json({ error: err.message });
+        return;
+      }
+      res.send({
+        message: 'success',
+      });
+    },
+  );
+});
+// get the number of failed logins
+webapp.get('/numberFailedLogins/:username', (req, res) => {
+  const params = [req.params.username];
+  // console.log(req.params);
+
+  const sql_select = 'SELECT  number_failed_logins FROM USERS WHERE username = ?';
+  connection.query(sql_select, params, (err, row) => {
+    // console.log(`numberFailedLogins called with numberFailedLogins, result = }${Array.from(res)}`);
+    // console.log(req.params);
+
+    if (err) {
+      const status = err.status || 500;
+      res.status(status).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: '200',
+      data: row,
+    });
+  });
+});
+
+// get the number of failed logins
+webapp.get('/dateUserLastLockedOut/:username', (req, res) => {
+  const params = [req.params.username];
+  // console.log(req.params);
+  const sql_select = 'SELECT date_last_locked_out FROM USERS WHERE username = ?';
+  connection.query(sql_select, params, (err, row) => {
+    // console.log(`dateUserLastLockedOut called with dateUserLastLockedOut, result = }${Array.from(res)}`);
+    // console.log(req.params);
+
+    if (err) {
+      const status = err.status || 500;
+      res.status(status).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: '200',
+      data: row,
+    });
+  });
+});
+
+// set the number of failed logins
+webapp.post('/setLockOutTime', (req, res) => {
+  const dateTime = new Date().toISOString();
+  const { username } = req.body;
+  const params = [dateTime, username];
+  // console.log(`dateTime =${dateTime}`);
+  // console.log(`username =${username}`);
+  connection.query(
+    'UPDATE USERS SET date_last_locked_out = ? WHERE username = ?',
+    params, (err) => {
+      // console.log('setLockOutTime called with setLockOutTime');
       if (err) {
         const status = err.status || 500;
         res.status(status).json({ error: err.message });
@@ -195,7 +306,7 @@ const upload = multer({ storage: fileStorageEngine });
 
 // Single File Route Handler
 webapp.post('/uploadFile', upload.single('image'), (req, res) => {
-  console.log(req.file);
+  // console.log(req.file);
   uploadFile(req.file.filename);
   res.json({
     message: 'success',
@@ -209,7 +320,7 @@ webapp.get('/viewFile/:key', async (req, res) => {
     if (b) {
       // successful, print the message
       const readStream = readFile(req.params.key);
-      console.log(`ress${res[0]}`);
+      // console.log(`ress${res[0]}`);
       readStream.pipe(res);
     } else {
       res.send({
@@ -312,10 +423,10 @@ webapp.put('/profile/deactivate/:username', (req, res) => {
       res.status(401).json({ error: err.message });
       return;
     }
-    console.log(username);
+    // console.log(username);
     if (result.length > 0) {
       bcrypt.compare(password, result[0].password, (error, response) => {
-        console.log(response);
+        // console.log(response);
         if (error) {
           res.status(401).json({ error: err.message });
         } else if (response) {
@@ -440,7 +551,7 @@ webapp.get('/profile/followers/:username', (req, res) => {
 // Getting the friends to display on profile
 webapp.get('/profile/friends/:username', (req, res) => {
   const { username } = req.params;
-  console.log(username);
+  // console.log(username);
   const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT user_one FROM FOLLOWERS_1 WHERE user_two= '${username}' AND user_one in (SELECT user_two FROM FOLLOWERS_1 WHERE user_one= '${username}') AND user_one NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one= '${username}')) AS T ON username = user_one`;
 
   connection.query(sql_get,

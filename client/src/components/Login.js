@@ -13,7 +13,7 @@ export default function Login({ handle }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const sent = useContext(idContext);
-  console.log(sent);
+  // console.log(sent);
   // const history = useHistory();
   // const [uid, setUid] = useState('');
   // const [count, setCount] = useState(0);
@@ -80,7 +80,7 @@ export default function Login({ handle }) {
           </div>
           <p>
             Forgot Password?&nbsp;
-            <Link to="/">Click here to reset!</Link>
+            <Link to="/resetPassword">Click here to reset!</Link>
           </p>
           <div className="form-group text-center">
             <Link to="/home">

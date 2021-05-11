@@ -72,7 +72,7 @@ export function deactivateProfile(id, inputPassword) {
     },
   });
 }
-
+// change the password in the profile page
 export function updatePassword(id, newPass, oldPass) {
   const upUrl = `/profile/password/${id}`;
   return axios({
@@ -81,6 +81,19 @@ export function updatePassword(id, newPass, oldPass) {
     data: {
       newPassword: newPass,
       oldPassword: oldPass,
+    },
+  });
+}
+
+// change the password in the login page
+export function resetPassword(username, newPassword) {
+  const upUrl = '/resetPassword';
+  return axios({
+    method: 'PUT',
+    url: upUrl,
+    data: {
+      username,
+      password: newPassword,
     },
   });
 }
@@ -230,3 +243,42 @@ export function deleteTweet(tweetid) {
     url: delUrl,
   });
 }
+
+export const getNumberFailedLogins = (username) => {
+  const prm = axios({
+    method: 'GET',
+    url: `/numberFailedLogins/${username}`,
+  });
+  return prm;
+};
+
+export const updateNumberFailedLogins = (username, numberOfFailedLogins) => {
+  const addUrl = '/updateNumberFailedLogins';
+  return axios({
+    method: 'POST',
+    url: addUrl,
+    data: {
+      username,
+      numberOfFailedLogins,
+    },
+  });
+};
+
+export const getDateUserLastLockedOut = (username) => {
+  const prm = axios({
+    method: 'GET',
+    url: `/dateUserLastLockedOut/${username}`,
+  });
+  return prm;
+};
+
+export const setLockOutTime = (username) => {
+  const addUrl = '/setLockOutTime';
+  return axios({
+    method: 'POST',
+    url: addUrl,
+    data: {
+      username,
+    },
+  });
+};
