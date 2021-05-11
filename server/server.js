@@ -1,11 +1,11 @@
 // create express app
-
 const express = require('express');
 
 const webapp = express();
 
 // impporting database
 const mysql = require('mysql');
+const path = require('path');
 
 const cors = require('cors');
 
@@ -14,7 +14,19 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
+
+const fs = require('fs');
+const util = require('util');
+
+const unlinkFile = util.promisify(fs.unlink);
+const multer = require('multer');
 const auth = require('./authentication.js');
+
+// const upload = multer({ dest: './uploads/' });
+
+const {
+  checkKey, uploadFile, readFile, deleteFile,
+} = require('./file_upload/s3fileupload.js');
 
 const config = require('./db_connection.js');
 
@@ -31,7 +43,7 @@ webapp.use(bodyParser.json());
 webapp.listen(port, () => {
   console.log(`Server running on port:${port}`);
 });
-
+// webapp.use(express.static(__dirname, 'public'));
 webapp.use(express.json());
 webapp.use(
   cors({
@@ -66,22 +78,30 @@ webapp.post('/register', (req, res) => {
   const { first_name } = req.body;
   const { last_name } = req.body;
   const { email } = req.body;
-  const datetime = new Date('en-US').toLocaleString();
+  // get the current date time in MYSQL format
+  const datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  console.log(datetime);
   const followerCount = 0;
-  const isLoggedIn = 1;
+  const isLoggedIn = 0;
   const tweetsCount = 0;
   const isLive = 0;
 
-  bcrypt.hash(password, saltRounds, (err, hash) => {
-    if (err) {
-      console.log(err);
+  bcrypt.hash(password, saltRounds, (hasherr, hash) => {
+    if (hasherr) {
+      console.log(hasherr);
     }
     connection.query(
-      'INSERT INTO USERS (username, password, first_name, last_name,email, date, followers_count, is_logged_in, tweets_count, is_live, date) VALUES (?,?,?,?,?,?,?,?,?,?)',
+      'INSERT INTO USERS (username, password, first_name, last_name,email, followers_count, is_logged_in, tweets_count, is_live, date) VALUES (?,?,?,?,?,?,?,?,?,?)',
       [username, hash, first_name, last_name, email, followerCount,
-        isLoggedIn, tweetsCount, isLive, datetime],
-      (err, result) => {
-        console.log(err);
+        isLoggedIn, tweetsCount, isLive, datetime], (err) => {
+        if (err) {
+          const status = err.status || 500;
+          res.status(status).json({ error: err.message });
+          return;
+        }
+        res.send({
+          message: 'success',
+        });
       },
     );
   });
@@ -143,6 +163,72 @@ webapp.post('/login', (req, res) => {
   );
 });
 
+webapp.post('/uploadProfilePicture', (req, res) => {
+  const { username } = req.body;
+  const { profilePicture } = req.body;
+  const params = [profilePicture, username];
+
+  connection.query(
+    'UPDATE USERS SET profile_picture = ? WHERE username = ?',
+    params, (err) => {
+      if (err) {
+        const status = err.status || 500;
+        res.status(status).json({ error: err.message });
+        return;
+      }
+      res.send({
+        message: 'success',
+      });
+    },
+  );
+});
+
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads'); // important this is a direct path fron our current file to storage location
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}--${file.originalname}`);
+  },
+});
+const upload = multer({ storage: fileStorageEngine });
+
+// Single File Route Handler
+webapp.post('/uploadFile', upload.single('image'), (req, res) => {
+  console.log(req.file);
+  uploadFile(req.file.filename);
+  res.json({
+    message: 'success',
+    data: req.file.filename,
+  });
+});
+
+webapp.get('/viewFile/:key', async (req, res) => {
+  const b = await checkKey(req.params.key);
+  try {
+    if (b) {
+      // successful, print the message
+      const readStream = readFile(req.params.key);
+      console.log(`ress${res[0]}`);
+      readStream.pipe(res);
+    } else {
+      res.send({
+        message: 'unsuccessful',
+      });
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+webapp.get('/readFile', (req, res) => {
+  const { fileName } = req.body;
+  readFile(fileName);
+  res.send({
+    message: 'success',
+  });
+});
+
 /* -------------------------------------------------------------------------- */
 /*                        PROFILE AND TWEETS ENDPOINTS                        */
 /* -------------------------------------------------------------------------- */
@@ -193,13 +279,13 @@ webapp.get('/profile/:username', (req, res) => {
 });
 
 /**
- * Retrieving all tweets of users
- * route to be updated for infinitely scrolling list
- * * */
+   * Retrieving all tweets of users
+   * route to be updated for infinitely scrolling list
+   * * */
 
-webapp.get('/profile/tweet/:uid', (req, res) => {
-  const sql_select = 'SELECT * FROM TWEETS WHERE uid=?';
-  const params = [req.params.uid];
+webapp.get('/profile/tweet/:username', (req, res) => {
+  const sql_select = 'SELECT * FROM TWEETS_1 WHERE user=?';
+  const params = [req.params.username];
   connection.query(sql_select, params, (err, tweets) => {
     if (err) {
       res.status(404).json({
@@ -230,24 +316,24 @@ webapp.get('/profile/tweets/:username', (req, res) => {
 });
 
 // deactivating profile
-webapp.delete('/profile/delete/:uid', (req, res) => {
-  const sql_get = 'SELECT password FROM USERS WHERE uid=?';
-  const sql_deact = 'UPDATE USERS SET isDeactivated = true WHERE uid =?';
-  const id = req.params.uid;
+webapp.put('/profile/deactivate/:username', (req, res) => {
+  const sql_get = 'SELECT password FROM USERS WHERE username=?';
+  const sql_deact = 'UPDATE USERS SET isDeactivated = true WHERE username =?';
+  const user = req.params.username;
   const { password } = req.body;
-  connection.query(sql_get, id, (err, result) => {
+  connection.query(sql_get, user, (err, result) => {
     if (err) {
       res.status(401).json({ error: err.message });
       return;
     }
-    console.log(id);
+    console.log(username);
     if (result.length > 0) {
       bcrypt.compare(password, result[0].password, (error, response) => {
         console.log(response);
         if (error) {
           res.status(401).json({ error: err.message });
         } else if (response) {
-          connection.query(sql_deact, id,
+          connection.query(sql_deact, user,
             function (err) {
               if (err) {
                 res.status(500).json({ error: err.message });
@@ -417,6 +503,21 @@ webapp.get('/followers/:uid', (req, res) => {
     });
 });
 
+webapp.get('/profile/avatar/:username', (req, res) => {
+  const sql_get = 'SELECT profile_picture FROM USERS WHERE username=?';
+  const params = req.params.username;
+  connection.query(sql_get, params, (err, avatar) => {
+    if (err) {
+      res.status(405).json({
+        error: err.message,
+      });
+    }
+    res.json({
+      message: 'Profile retrieved successfully!',
+      avatar,
+    });
+  });
+});
 // blocking a follower
 webapp.post('/block/:username', (req, res) => {
   const sql_insert = 'INSERT INTO BLOCKED_USERS_1 ( user_one, user_two ) VALUES(?,?)';
@@ -520,20 +621,15 @@ webapp.get('/home/:uid', (req, res) => {
 });
 
 // Adding tweet
-webapp.post('/createTweet/:uid', (req, res) => {
-  console.log('Creation of Tweet');
-  const newTweet = {
-    uid: req.params.uid,
-    type: 'text',
-    content: req.body.content,
-    tweet_date: Date.now(),
-    tweet_likes: 0,
-  };
-
+webapp.post('/createTweet/:username', (req, res) => {
+  const input = req.body;
+  console.log(input);
   // insert newTweet in table TWEETS
-  const sql = 'INSERT INTO TWEETS (uid, tweet_id, type, content, tweet_date, tweet_likes) VALUES (?,?,?,?,?,?)';
-  const values = [newTweet.uid, newTweet.tweet_id, newTweet.type, newTweet.content, newTweet.tweet_date, newTweet.tweet_likes];
-  connection.query(sql, values,
+  const sql = 'INSERT INTO TWEETS_1 (user, tweet_id, type, content, tweet_date, tweet_likes) VALUES (?,?,?,?,?,?)';
+  const params = [req.params.username, input.tweetId, input.type,
+    input.content, input.tweet_date, 0];
+  console.log(params);
+  connection.query(sql, params,
     function (err) {
       if (err) {
         res.status(405).json({ error: err.message });
@@ -543,11 +639,11 @@ webapp.post('/createTweet/:uid', (req, res) => {
     });
 });
 
-webapp.post('/deleteTweet/:tweetid', (req, res) => {
-  console.log('Delete a Tweet');
-  const sql = 'DELETE FROM TWEETS WHERE tweet_id = ?';
-  const values = [req.params.tweetid];
-  db.run(sql, values, (err, result) => {
+webapp.delete('/tweet/delete/:tweetid', (req, res) => {
+  const input = req.params.tweetid;
+  console.log(`this is my tweetId: ${input}`);
+  const sql = `DELETE FROM TWEETS_1 WHERE tweet_id = '${input}'`;
+  connection.query(sql, (err, result) => {
     if (err) {
       res.status(400).json({ error: err.message });
       return;

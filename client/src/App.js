@@ -7,6 +7,9 @@ import ProfilePage from './components/ProfilePage';
 import Login from './components/Login';
 import Home from './components/Home';
 import { IdProvider } from './components/Context';
+import Signup from './components/Signup';
+import Temp from './components/Temp';
+
 // import ProfilePage from './components/ProfilePage';
 import { userLogin, getUid } from './components/Module';
 
@@ -62,8 +65,10 @@ function App() {
         <Route path="/" exact render={() => <Registration />} />
         <Route path="/registration" exact render={() => <Registration />} />
         <Route path="/login" exact render={() => <Login handle={handelLoginUid} />} />
+        <Route path="/signup/:username" exact render={() => <Signup />} />
         <Route path="/home" component={() => <Home />} />
         <Route path="/profile" exact render={() => <ProfilePage />} />
+        <Route path="/temp" exact render={() => <Temp />} />
       </Router>
     </IdProvider>
   );

@@ -1,6 +1,6 @@
 
 .commentBox {
-    margin-left: 300px;
+    margin-left: px;
     margin-right: 500px;
     margin-top: 50px;
     border: 0.5px;
@@ -48,5 +48,16 @@ input[type="text"] {
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+.container_center {
+    width: 35%;
+    margin: auto;
+}
+.whatIsOn {
+    margin-bottom: 4%;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.tContainer {
+    margin-bottom: 2%;
 }
 

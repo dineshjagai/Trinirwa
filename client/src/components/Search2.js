@@ -59,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function SearchBox() {
-  console.log('got here');
   const classes = useStyles();
   const [items, setItems] = useState([]);
   const [results, setResults] = useState([]);

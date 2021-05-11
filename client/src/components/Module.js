@@ -8,17 +8,6 @@ export function getUserInformation(username) {
   return prm;
 }
 
-// export function addInterest(newInterest, id) {
-//   const addUrl = `/profile/interest/${id}`;
-//   return axios({
-//     method: 'POST',
-//     url: addUrl,
-//     data: {
-//       interest: newInterest,
-//     },
-//   });
-// }
-
 export function addInterest(newInterest, username) {
   const addUrl = `/profile/interest/${username}`;
   return axios({
@@ -29,17 +18,6 @@ export function addInterest(newInterest, username) {
     },
   });
 }
-
-// export function deleteInterest(interestToDelete, id) {
-//   const delUrl = `/profile/delete/interest/${id}`;
-//   return axios({
-//     method: 'DELETE',
-//     url: delUrl,
-//     data: {
-//       interest: interestToDelete,
-//     },
-//   });
-// }
 
 export function deleteInterest(interestToDelete, username) {
   const delUrl = `/profile/delete/interest/${username}`;
@@ -52,21 +30,13 @@ export function deleteInterest(interestToDelete, username) {
   });
 }
 
-export function fetchTweets(id) {
-  const getUrl = `/profile/tweet/${id}`;
+export function fetchTweets(username) {
+  const getUrl = `/profile/tweet/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
   });
 }
-
-// export function getProfileData(id) {
-//   const getUrl = `/profile/${id}`;
-//   return axios({
-//     method: 'GET',
-//     url: getUrl,
-//   });
-// }
 
 export function getProfileData(username) {
   const getUrl = `/profile/${username}`;
@@ -76,13 +46,6 @@ export function getProfileData(username) {
   });
 }
 
-// export function getFollowers(id) {
-//   const getUrl = `/profile/followers/${id}`;
-//   return axios({
-//     method: 'GET',
-//     url: getUrl,
-//   });
-// }
 export function getFollowers(username) {
   const getUrl = `/profile/followers/${username}`;
   return axios({
@@ -116,9 +79,9 @@ export function getFriends(username) {
 }
 
 export function deactivateProfile(id, inputPassword) {
-  const delUrl = `/profile/delete/${id}`;
+  const delUrl = `/profile/deactivate/${id}`;
   return axios({
-    method: 'DELETE',
+    method: 'PUT',
     url: delUrl,
     data: {
       password: inputPassword,
@@ -176,12 +139,24 @@ export function getUsername(id) {
   });
 }
 
-export function addTweet(tweet, id) {
+// Home modules
+export function getAvatar(user) {
+  return axios({
+    method: 'GET',
+    url: `/profile/avatar/${user}`,
+  });
+}
+
+export function addTweet(data) {
+  console.log(data);
   return axios({
     method: 'POST',
-    url: `/createTweet/${id}`,
+    url: `/createTweet/${data.username}`,
     data: {
-      content: tweet,
+      content: data.content,
+      tweet_date: data.tweet_date,
+      type: data.type,
+      tweetId: data.tweet_id,
     },
   });
 }
@@ -253,6 +228,27 @@ export const userLogin = (usernameReg, password) => {
   return prm;
 };
 
+export const addProfilePicture = (username, profilePicture) => {
+  const prm = axios({
+    method: 'POST',
+    url: '/uploadProfilePicture',
+    data: {
+      username,
+      profilePicture,
+    },
+  });
+  return prm;
+};
+
+// export const uploadFile = () => {
+//   const prm = axios({
+//     method: 'POST',
+//     url: '/uploadFile',
+//     data: {
+//     },
+//   });
+//   return prm;
+// };
 export const searchFriend = (username, input) => {
   console.log(`search friend ${username}, typeof ${typeof (input)}@@@@@@@@@@@@`);
   const promise = axios({
@@ -261,3 +257,11 @@ export const searchFriend = (username, input) => {
   });
   return promise;
 };
+
+export function deleteTweet(tweetid) {
+  const delUrl = `/tweet/delete/${tweetid}`;
+  return axios({
+    method: 'DELETE',
+    url: delUrl,
+  });
+}

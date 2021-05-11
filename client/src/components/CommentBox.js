@@ -1,93 +1,118 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './CommentBox.css';
-import { addTweet, fetchFollowers, fetchTweets } from './Module';
-import TweetDisplayer from './tweetDisplayer';
+// import { addTweet } from './Module';
+// import TweetDisplayer from './tweetDisplayer';
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import LiveTvIcon from '@material-ui/icons/LiveTv';
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
+import idContext from './Context';
+import Tweet from './Tweet';
 
-export default function CommentBox({ uid }) {
-  const [comment, setComment] = useState('');
-  const [followers, setFollowers] = useState([{}]);
-  const [tweets, setTweets] = useState([{}]);
-  const [allUserTweetsIn, setAllUserTweetsIn] = useState(false);
-  const allTweets = [];
-  const numberOfTweets = allTweets.length;
-  const [allFollowersTweetsIn, setAllFollowersTweetsIn] = useState(false);
-
+export default function CommentBox() {
+  // const [followers, setFollowers] = useState([{}]);
+  // const [tweets, setTweets] = useState([{}]);
+  const [items, setItems] = useState([]);
+  const [posted, setPosted] = useState(false);
+  // const [allUserTweetsIn, setAllUserTweetsIn] = useState(false);
+  // const allTweets = [];
+  // const [tweetsIn, setTweetIn] = useState([{}]);
+  // const [allFollowersTweetsIn, setAllFollowersTweetsIn] = useState(false);
+  const user = useContext(idContext);
   const onCancel = () => {
-    setComment('');
-  };
-
-  const onChange = (event) => {
-    setComment(event.target.value);
   };
 
   const postTweet = () => {
-    addTweet(comment, uid);
-    setComment('');
+    console.log(document.getElementById('tweet').value);
+    const input = document.getElementById('tweet').value;
+    const dateTime = new Date().toISOString();
+    const newTweet = {
+      user,
+      type: 'text',
+      content: input,
+      tweet_date: dateTime,
+      tweet_likes: 0,
+    };
+    const toAdd = <Tweet data={newTweet} />;
+    console.log(items.length);
+    const newItems = items;
+    newItems.push(toAdd);
+    setPosted(true);
+    setItems(newItems);
+    console.log(items.length);
+    // addTweet(input, dateTime, user);
   };
 
-  useEffect(() => {
-    if (tweets.data) {
-      setAllUserTweetsIn(true);
-    }
-  }, [tweets]);
+  // const getTweets = () => {
+  //   // Tweets from User
+  //   console.log(user);
+  //   fetchTweets(user).then((result) => {
+  //     setTweets(result.data);
+  //   });
+  //   console.log(tweets);
+  //   // Get follower Ids
+  //   // fetchFollowers(uid).then((result) => {
+  //   //   setFollowers(result.data);
+  //   // });
+  //   // console.log(followers);
 
-  useEffect(() => {
-    if (allUserTweetsIn) {
-      let i = 0;
-      for (i = 0; i < tweets.data.length; i += 1) {
-        allTweets.push(tweets.data[i]);
-      }
-    }
-  }, [allUserTweetsIn]);
+  //   if (tweets.data) {
+  //     setAllUserTweetsIn(true);
+  //     if (allUserTweetsIn) {
+  //       let i = 0;
+  //       for (i = 0; i < tweets.data.length; i += 1) {
+  //         allTweets.push(tweets.data[i]);
+  //       }
+  //     }
+  //   }
 
-  useEffect(() => {
-    if (followers.data) {
-      setAllFollowersTweetsIn(true);
-    }
-  }, [followers]);
+  //   // if (followers.followers) {
+  //   //   setAllFollowersTweetsIn(true);
 
-  useEffect(() => {
-    if (allFollowersTweetsIn) {
-      let i = 0;
-      for (i = 0; i < followers.data.length; i += 1) {
-        fetchTweets(followers.data[i].uid_user_two).then((result) => {
-          if (result.data.data[0]) {
-            allTweets.push(result.data.data[0]);
-          }
-        });
-      }
-    }
-  }, [allFollowersTweetsIn]);
+  //   //   if (allFollowersTweetsIn) {
+  //   //     let i = 0;
+  //   //     for (i = 0; i < followers.followers.length; i += 1) {
+  //   //       fetchTweets(followers.followers[i].uid_user_two).then((result) => {
+  //   //         if (result.data.data[0]) {
+  //   //           allTweets.push(result.data.data[0]);
+  //   //         }
+  //   //       });
+  //   //     }
+  //   //   }
+  //   // }
+  //   setTweetIn(allTweets);
+  //   // console.log(allTweets);
+  // };
 
-  useEffect(() => {
-    // Tweets from User
-    fetchTweets(uid).then((result) => {
-      setTweets(result.data);
-    });
-    // Get follower Ids
-    fetchFollowers(uid).then((result) => {
-      setFollowers(result.data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getTweets();
+  // }, []);
 
-  if (allTweets.length !== numberOfTweets) {
-    console.log('Got here number!');
-    window.location.reload(false);
-  }
+  // useEffect(() => {
+  //   const newItems = tweetsIn.map((tweet) => <Tweet key={tweet.tweet_id} data={tweet} />);
+  //   setItems(newItems);
+  // }, [items]);
+
+  // const items = tweetsIn.map((tweet) => <Tweet key={tweet.tweet_id} data={tweet} />);
+
+  // console.log(allTweets);
+  useEffect(() => {
+    setPosted(false);
+    console.log(`${items.length}, here`);
+  }, [posted]);
 
   return (
     <div className="feed">
       <div className="commentBox">
         <form action="#" method="post">
-          <input type="text" onChange={onChange} value={comment} placeholder="What's on your mind?" />
+          <input id="tweet" type="text" placeholder="What's on your mind?" />
           <div className="btn">
-            <button type="submit" className="comment" disabled={comment.length < 1} onClick={postTweet}>TWEET</button>
-            <button type="button" className="cancel" onClick={onCancel}>CANCEL</button>
+            <button type="submit" className="comment" onClick={postTweet}>Tweet</button>
+            <button type="button" className="cancel" onClick={onCancel}>C</button>
           </div>
         </form>
       </div>
-      <div className="center">
-        <TweetDisplayer tweets={allTweets} />
+      <div>
+        {items}
       </div>
     </div>
 

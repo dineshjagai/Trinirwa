@@ -19,11 +19,14 @@ export default function Profile(props) {
     });
   };
 
+  const profilePic = props.data.profile_picture;
+  console.log(`pics${profilePic}`);
+  const profilePicUrl = `/viewFile/${profilePic}`;
   return (
     <div className="container-profile">
       <div className="pictures">
-        <img src={props.data.profile_picture} alt="" id="overlay" />
-        <img src={props.data.profile_picture} alt="" id="originalDiv" />
+        <img src={profilePicUrl} alt="" id="overlay" />
+        <img src={profilePicUrl} alt="" id="originalDiv" />
       </div>
       <br />
       <div className="username">
