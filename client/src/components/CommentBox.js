@@ -2,11 +2,11 @@ import React, { useState, useContext, useEffect } from 'react';
 import './CommentBox.css';
 // import { addTweet } from './Module';
 // import TweetDisplayer from './tweetDisplayer';
-import Tweet from './Tweet';
-import idContext from './Context';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import LiveTvIcon from '@material-ui/icons/LiveTv';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
+import idContext from './Context';
+import Tweet from './Tweet';
 
 export default function CommentBox() {
   // const [followers, setFollowers] = useState([{}]);

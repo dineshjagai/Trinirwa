@@ -7,11 +7,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import React, { useContext, useEffect, useState } from 'react';
-import { searchFriend } from './Module';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import Tooltip from '@material-ui/core/Tooltip';
+import { searchFriend, followUser, getFollowers } from './Module';
 import idContext from './Context';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    left: '25px',
     width: '100%',
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
@@ -60,7 +63,18 @@ export default function SearchBox() {
   const [items, setItems] = useState([]);
   const [results, setResults] = useState([]);
   const user = useContext(idContext);
+  // handling following
+  const handleF = (username) => {
+    followUser(user, username).then((res) => {
+      console.log(res.message);
+      getFollowers(user).then((result) => {
+        console.log(result.data.followers);
+      });
+    });
+  };
+
   const createItem = (data) => {
+    console.log(data.profile_picture);
     const toRet = (
       <ListItem>
         <ListItemAvatar>
@@ -69,7 +83,10 @@ export default function SearchBox() {
             src={data.profile_picture}
           />
         </ListItemAvatar>
-        <ListItemText primary={data.username} secondary="follower" />
+        <ListItemText primary={data.username} secondary="hey" />
+        <Tooltip title="follow" placement="top">
+          <PersonAddIcon className="button" color="secondary" onClick={() => handleF(data.username)} />
+        </Tooltip>
       </ListItem>
     );
     return toRet;

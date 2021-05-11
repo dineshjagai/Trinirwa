@@ -1,10 +1,24 @@
 /* eslint-disable react/destructuring-assignment */
-import React from 'react';
+import React, { useContext } from 'react';
 import './Profile.css';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 import DialogPassword from './DialogPassword';
 import DialogPasswordChange from './DialogPasswordChange';
+import ScrollDialog from './DisplayerDialog';
+import { getBlockedFollowers, unBlockUser } from './Module';
+import idContext from './Context';
 
 export default function Profile(props) {
+  const user = useContext(idContext);
+  const handleUnblock = (username) => {
+    unBlockUser(user, username).then((res) => {
+      console.log(res.message);
+      getBlockedFollowers(user).then((result) => {
+        console.log(result.data.friends);
+      });
+    });
+  };
+
   const profilePic = props.data.profile_picture;
   console.log(`pics${profilePic}`);
   const profilePicUrl = `/viewFile/${profilePic}`;
@@ -19,6 +33,15 @@ export default function Profile(props) {
         <span id="username">{props.data.username}</span>
       </div>
       <div className="deleteButton">
+        <ScrollDialog
+          secondary="blocked"
+          title="My Blocked Users"
+          secondTitle="Blocked Users"
+          getFunction={getBlockedFollowers}
+          Icon={LockOpenIcon}
+          handle={handleUnblock}
+          iconText="Unblock User"
+        />
         <DialogPassword id={1220} />
         <DialogPasswordChange id={1220} />
       </div>

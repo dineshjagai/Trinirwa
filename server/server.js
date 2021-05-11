@@ -92,7 +92,7 @@ webapp.post('/register', (req, res) => {
     connection.query(
       'INSERT INTO USERS (username, password, first_name, last_name,email, followers_count, is_logged_in, tweets_count, is_live, date) VALUES (?,?,?,?,?,?,?,?,?,?)',
       [username, hash, first_name, last_name, email, followerCount,
-        isLoggedIn, tweetsCount, isLive, datetime], (err) => {
+        isLoggedIn, tweetsCount, isLive, datetime], (err, result) => {
         if (err) {
           const status = err.status || 500;
           res.status(status).json({ error: err.message });
@@ -100,6 +100,7 @@ webapp.post('/register', (req, res) => {
         }
         res.send({
           message: 'success',
+          user: result,
         });
       },
     );
@@ -412,6 +413,20 @@ webapp.get('/profile/tweet/:username', (req, res) => {
   });
 });
 
+webapp.get('/profile/tweets/:username', (req, res) => {
+  const sql_select = 'SELECT USERS.username, TWEETS_1.* FROM TWEETS_1 INNER JOIN USERS ON USERS.username = TWEETS_1.user WHERE TWEETS_1.user = ?';
+  const params = [req.params.username];
+  connection.query(sql_select, params, (err, tweets) => {
+    if (err) {
+      res.status(405).json({ error: err.message });
+    }
+    res.json({
+      message: '200',
+      tweets,
+    });
+  });
+});
+
 // deactivating profile
 webapp.put('/profile/deactivate/:username', (req, res) => {
   const sql_get = 'SELECT password FROM USERS WHERE username=?';
@@ -670,6 +685,23 @@ webapp.put('/unblock/:username', (req, res) => {
         return;
       }
       res.json({ message: 'user successfully unblocked', changes: this.changes });
+    });
+});
+
+// get blocked users
+webapp.get('/blocked/:username', (req, res) => {
+  const { username } = req.params;
+  const sql = `SELECT USERS.profile_picture, USERS.username, BLOCKED_USERS_1.user_two FROM USERS INNER JOIN BLOCKED_USERS_1 ON BLOCKED_USERS_1.user_two = USERS.username WHERE BLOCKED_USERS_1.user_one = '${username}'`;
+
+  connection.query(sql,
+    (err, friends) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        friends,
+      });
     });
 });
 

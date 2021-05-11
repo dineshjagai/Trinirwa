@@ -54,6 +54,22 @@ export function getFollowers(username) {
   });
 }
 
+export function getTweets(username) {
+  const getUrl = `/profile/tweets/${username}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}
+
+// export function getFriends(id) {
+//   const getUrl = `/profile/friends/${id}`;
+//   return axios({
+//     method: 'GET',
+//     url: getUrl,
+//   });
+// }
+
 export function getFriends(username) {
   const getUrl = `/profile/friends/${username}`;
   return axios({
@@ -105,6 +121,25 @@ export function blockFollower(id, username) {
     url: insUrl,
     data: {
       follower: username,
+    },
+  });
+}
+
+export function getBlockedFollowers(username) {
+  const insUrl = `/blocked/${username}`;
+  return axios({
+    method: 'GET',
+    url: insUrl,
+  });
+}
+
+export function unBlockUser(username, blocked) {
+  const insUrl = `/unblock/${username}`;
+  return axios({
+    method: 'PUT',
+    url: insUrl,
+    data: {
+      follower: blocked,
     },
   });
 }

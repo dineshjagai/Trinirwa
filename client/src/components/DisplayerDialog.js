@@ -9,8 +9,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
+import Tooltip from '@material-ui/core/Tooltip';
 import idContext from './Context';
-import { getFriends } from './Module';
+// import { getFriends } from './Module';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,7 +21,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ScrollDialog({ button }) {
+export default function ScrollDialog({
+  secondary, title, secondTitle, getFunction, Icon, handle, iconText,
+}) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [scroll, setScroll] = useState('paper');
@@ -36,16 +39,25 @@ export default function ScrollDialog({ button }) {
             src={data.profile_picture}
           />
         </ListItemAvatar>
-        <ListItemText primary={data.username} secondary="hey" />
+        <ListItemText primary={data.username} secondary={secondary} />
+        <Tooltip title={iconText} placement="top">
+          <Icon className="button" color="secondary" onClick={() => handle(data.username)} />
+        </Tooltip>
       </ListItem>
     );
     return toRet;
   };
   const handleClickOpen = (scrollType) => () => {
     console.log('here');
-    getFriends(user).then((response) => {
-      const newItems = response.data.friends.map((e) => createItem(e));
-      console.log(response.data.friends);
+    getFunction(user).then((response) => {
+      let newItems = [];
+      if (response.data.friends) {
+        newItems = response.data.friends.map((e) => createItem(e));
+        console.log(response.data.friends);
+      } else if (response.data.followers) {
+        newItems = response.data.followers.map((e) => createItem(e));
+        console.log(response.data.followers);
+      }
       setItems(newItems);
     }).catch((error) => {
       console.log(error.message);
@@ -82,7 +94,7 @@ export default function ScrollDialog({ button }) {
         }}
         type="button"
       >
-        All friends
+        {title}
       </button>
       <Dialog
         open={open}
@@ -91,7 +103,7 @@ export default function ScrollDialog({ button }) {
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <DialogTitle id="scroll-dialog-title">All friends</DialogTitle>
+        <DialogTitle id="scroll-dialog-title">{secondTitle}</DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
           <List className={classes.root}>
             {items}

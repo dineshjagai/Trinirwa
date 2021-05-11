@@ -1,14 +1,15 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import BlockIcon from '@material-ui/icons/Block';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import ChatIcon from '@material-ui/icons/Chat';
 import Tooltip from '@material-ui/core/Tooltip';
+import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import './Follower.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
-      margin: theme.spacing(2),
+      margin: theme.spacing(1.5),
       borderRadius: '100%',
       padding: 0,
       overflow: 'none',
@@ -16,23 +17,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Follower({ info, handleB, handleF }) {
+export default function Friend({
+  info, handleB, handleMessage, handleU,
+}) {
   const classes = useStyles();
   return (
     <div className="Container_two">
       <div className={classes.root}>
+        <Tooltip title="Message" placement="top">
+          <ChatIcon className="button" onClick={() => handleMessage} />
+        </Tooltip>
         <Tooltip title="Block user" placement="top">
           <BlockIcon className="button" color="secondary" onClick={() => handleB(info.username)} />
         </Tooltip>
-        <Tooltip title="Follow" placement="top">
-          <PersonAddIcon className="button" onClick={() => handleF(info.username)} />
+        <Tooltip title="Unfollow" placement="top">
+          <PersonAddDisabledIcon className="button" onClick={() => handleU(info.username)} />
         </Tooltip>
       </div>
       <div className="followerContainer">
         <div className="myimgContainer">
           <img
             className="myimg"
-            src={`/viewFile/${info.profile_picture}`}
+            src={info.profile_picture}
             alt=""
           />
         </div>

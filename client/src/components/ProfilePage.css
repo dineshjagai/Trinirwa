@@ -1,0 +1,22 @@
+.all_boxes {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.all_boxes > div {
+    margin: 10px;
+}
+
+.left-boxes > div {
+    margin: 10px;
+}
+
+.left-boxes {
+    display: flex;
+    flex-direction: column;
+}
+
+.left-friends {
+    
+}
