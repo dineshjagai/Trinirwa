@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Tweet from './Tweet';
+import idContext from './Context';
+import { getTweets } from './Module';
 
-export default function TweetDisplayer({ tweets }) {
-  console.log(tweets);
-  if (tweets.length > 0) {
-    window.location.reload(false);
-    const items = tweets.map((tweet) => <Tweet key={tweet.tweet_id} data={tweet} />);
-    return (
-      <div>
-        {items}
-      </div>
-    );
-  }
+export default function TweetDisplayer() {
+  const user = useContext(idContext);
+  const [tweets, setTweets] = useState([]);
 
-  return (<div />);
+  useEffect(() => {
+    getTweets(user).then((result) => {
+      setTweets(result.data.tweets);
+    });
+  }, []);
+
+  const items = tweets.map((tweet) => <Tweet key={tweet.tweet_id} data={tweet} />);
+  return (
+    <div>
+      {items}
+    </div>
+  );
 }

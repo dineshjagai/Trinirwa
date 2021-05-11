@@ -8,8 +8,19 @@ export function getUserInformation(username) {
   return prm;
 }
 
-export function addInterest(newInterest, id) {
-  const addUrl = `/profile/interest/${id}`;
+// export function addInterest(newInterest, id) {
+//   const addUrl = `/profile/interest/${id}`;
+//   return axios({
+//     method: 'POST',
+//     url: addUrl,
+//     data: {
+//       interest: newInterest,
+//     },
+//   });
+// }
+
+export function addInterest(newInterest, username) {
+  const addUrl = `/profile/interest/${username}`;
   return axios({
     method: 'POST',
     url: addUrl,
@@ -19,8 +30,19 @@ export function addInterest(newInterest, id) {
   });
 }
 
-export function deleteInterest(interestToDelete, id) {
-  const delUrl = `/profile/delete/interest/${id}`;
+// export function deleteInterest(interestToDelete, id) {
+//   const delUrl = `/profile/delete/interest/${id}`;
+//   return axios({
+//     method: 'DELETE',
+//     url: delUrl,
+//     data: {
+//       interest: interestToDelete,
+//     },
+//   });
+// }
+
+export function deleteInterest(interestToDelete, username) {
+  const delUrl = `/profile/delete/interest/${username}`;
   return axios({
     method: 'DELETE',
     url: delUrl,
@@ -38,16 +60,55 @@ export function fetchTweets(id) {
   });
 }
 
-export function getProfileData(id) {
-  const getUrl = `/profile/${id}`;
+// export function getProfileData(id) {
+//   const getUrl = `/profile/${id}`;
+//   return axios({
+//     method: 'GET',
+//     url: getUrl,
+//   });
+// }
+
+export function getProfileData(username) {
+  const getUrl = `/profile/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
   });
 }
 
-export function getFollowers(id) {
-  const getUrl = `/followers/${id}`;
+// export function getFollowers(id) {
+//   const getUrl = `/profile/followers/${id}`;
+//   return axios({
+//     method: 'GET',
+//     url: getUrl,
+//   });
+// }
+export function getFollowers(username) {
+  const getUrl = `/profile/followers/${username}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}
+
+export function getTweets(username) {
+  const getUrl = `/profile/tweets/${username}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}
+
+// export function getFriends(id) {
+//   const getUrl = `/profile/friends/${id}`;
+//   return axios({
+//     method: 'GET',
+//     url: getUrl,
+//   });
+// }
+
+export function getFriends(username) {
+  const getUrl = `/profile/friends/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -77,6 +138,36 @@ export function updatePassword(id, newPass, oldPass) {
   });
 }
 
+export function blockFollower(id, username) {
+  const insUrl = `/block/${id}`;
+  return axios({
+    method: 'POST',
+    url: insUrl,
+    data: {
+      follower: username,
+    },
+  });
+}
+
+export function getBlockedFollowers(username) {
+  const insUrl = `/blocked/${username}`;
+  return axios({
+    method: 'GET',
+    url: insUrl,
+  });
+}
+
+export function unBlockUser(username, blocked) {
+  const insUrl = `/unblock/${username}`;
+  return axios({
+    method: 'PUT',
+    url: insUrl,
+    data: {
+      follower: blocked,
+    },
+  });
+}
+
 // Home modules
 export function getUsername(id) {
   return axios({
@@ -91,6 +182,28 @@ export function addTweet(tweet, id) {
     url: `/createTweet/${id}`,
     data: {
       content: tweet,
+    },
+  });
+}
+
+export function followUser(id, username) {
+  const insUrl = `/follow/${id}`;
+  return axios({
+    method: 'POST',
+    url: insUrl,
+    data: {
+      follower: username,
+    },
+  });
+}
+
+export function unfollowUser(id, username) {
+  const insUrl = `/unfollow/${id}`;
+  return axios({
+    method: 'PUT',
+    url: insUrl,
+    data: {
+      follower: username,
     },
   });
 }
@@ -138,4 +251,13 @@ export const userLogin = (usernameReg, password) => {
     },
   });
   return prm;
+};
+
+export const searchFriend = (username, input) => {
+  console.log(`search friend ${username}, typeof ${typeof (input)}@@@@@@@@@@@@`);
+  const promise = axios({
+    method: 'GET',
+    url: `/search/${username}/${input}`,
+  });
+  return promise;
 };
