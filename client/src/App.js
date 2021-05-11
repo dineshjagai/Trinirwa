@@ -19,15 +19,7 @@ function App() {
   const [count, setCount] = useState(0);
   Axios.defaults.withCredentials = true;
 
-  // useEffect(() => setUid(uid), [uid, count]);
   useEffect(() => console.log(`changed uid ${uid}`), [uid]);
-  // useEffect(() => {
-  //   if (true) {
-  //     window.history.replaceState({ uid }, 'new page', '/home');
-  //     window.location.reload();
-  //   }
-  // }, [uid]);
-
   const handelLoginUid = (username, password) => {
     setUsername(username);
     userLogin(username, password).then((response) => {
@@ -35,8 +27,6 @@ function App() {
         alert(response.data.message);
         window.history.replaceState(null, 'new page', '/login');
         window.location.reload();
-        // setUsername('');
-        // setPassword('');
         setUid('');
         setCount(count + 1);
         if (count >= 3) {
@@ -49,8 +39,6 @@ function App() {
         let fetchedUid = null;
         getUid(username).then((res) => {
           [fetchedUid] = [Array.from(res.data.data)[0].uid];
-          console.log('fetched UID = ');
-          console.log(fetchedUid);
           setUid(fetchedUid);
         }).catch((e) => {
           console.log(e);

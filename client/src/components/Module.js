@@ -190,6 +190,13 @@ export function fetchFollowers(id) {
   });
 }
 
+export function fetchAllFollowers(username) {
+  return axios({
+    method: 'GET',
+    url: `/all/followers/${username}`,
+  });
+}
+
 export const addUser = (usernameReg, passwordOneReg, firstName, lastName, email) => {
   const prm = axios({
     method: 'POST',
@@ -258,10 +265,51 @@ export const searchFriend = (username, input) => {
   return promise;
 };
 
-export function deleteTweet(tweetid) {
-  const delUrl = `/tweet/delete/${tweetid}`;
+export function deleteTweet(tweetId) {
+  const delUrl = `/tweet/delete/${tweetId}`;
   return axios({
     method: 'DELETE',
     url: delUrl,
+  });
+}
+
+export function updateTweetLikes(tweetId, tweetLikes) {
+  const putUrl = `/tweet/likes/${tweetId}`;
+  return axios({
+    method: 'PUT',
+    url: putUrl,
+    data: {
+      likes: tweetLikes,
+    },
+  });
+}
+
+export function isLiked(user, tweetId) {
+  const getUrl = `/tweet/isliked/${user}/${tweetId}/`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}
+
+export function likeTweet(user, tweetId) {
+  const insUrl = `/tweet/like/${user}/`;
+  return axios({
+    method: 'POST',
+    url: insUrl,
+    data: {
+      tweetid: tweetId,
+    },
+  });
+}
+
+export function unLikeTweet(user, tweetId) {
+  const putUrl = `/tweet/unlike/${user}/`;
+  return axios({
+    method: 'PUT',
+    url: putUrl,
+    data: {
+      tweetid: tweetId,
+    },
   });
 }
