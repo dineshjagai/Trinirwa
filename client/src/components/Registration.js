@@ -49,7 +49,7 @@ export default function Registration() {
     addUser(usernameReg, passwordOneReg, firstNameReg, lastNameReg, email).then((response) => {
       console.log(response);
       // if valid signup proceed to the login page
-      history.push(`/signup/${usernameReg}`);
+      history.push('/signup');
     }).catch((e) => {
       console.log(e);
     });
