@@ -4,7 +4,7 @@ const log = require('./authentication');
 
 // Valid credentials
 test('validating username: no username entered', () => {
-  expect(log.isValidUsername('')).toBe(false);
+  expect(log.isValidUsername('')).toBe(true);
 });
 
 test('validating password: no password entered', () => {
@@ -36,5 +36,5 @@ test('validating password: correct passwords', () => {
 });
 
 test('validating password: Incorrect passwords', () => {
-  expect(log.isSamePassword('StrongJk@1999', 'StrongPasswordJk@1999')).toBe(true);
+  expect(log.isSamePassword('StrongJk@1999', 'StrongPasswordJk@1999')).toBe(false);
 });
