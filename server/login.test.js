@@ -32,9 +32,9 @@ test('validating username: correct username', () => {
 });
 
 test('validating password: correct passwords', () => {
-  expect(log.isValidUsername('StrongPasswordJk@1999', 'StrongPasswordJk@1999')).toBe(true);
+  expect(log.isSamePassword('StrongPasswordJk@1999', 'StrongPasswordJk@1999')).toBe(true);
 });
 
 test('validating password: Incorrect passwords', () => {
-  expect(log.isValidUsername('StrongJk@1999', 'StrongPasswordJk@1999')).toBe(true);
+  expect(log.isSamePassword('StrongJk@1999', 'StrongPasswordJk@1999')).toBe(true);
 });
