@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Followers.css';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import Friend from './Friend';
 import { blockFollower, getFriends, unfollowUser } from './Module';
-import idContext from './Context';
 import ScrollDialog from './DisplayerDialog';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function Friends() {
-  const user = useContext(idContext);
+  const user = getCurrentUsername();
   const [friends, setFriends] = useState([]);
   useEffect(() => {
     getFriends(user).then((result) => {

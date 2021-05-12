@@ -13,7 +13,6 @@ export default function Sidebar() {
     const path = '/profile';
     history.push(path);
   };
-  // const user = useContext(idContext);
   const user = getCurrentUsername();
 
   useEffect(() => {

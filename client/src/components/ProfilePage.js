@@ -17,7 +17,6 @@ import {
 } from '../auth/authServices';
 
 export default function ProfilePage() {
-  // const username = useContext(idContext);
   const username = getCurrentUsername();
   const [info, setData] = useState([{}]);
   const [interests, setInterests] = useState(new Set());

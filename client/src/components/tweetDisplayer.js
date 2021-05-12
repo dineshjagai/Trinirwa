@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Tweet from './Tweet';
-import idContext from './Context';
 import { getTweets } from './Module';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function TweetDisplayer() {
-  const user = useContext(idContext);
+  const user = getCurrentUsername();
   const [tweets, setTweets] = useState([]);
 
   useEffect(() => {

@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Followers.css';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import Follower from './Follower';
 import ScrollDialog from './DisplayerDialog';
 import { blockFollower, followUser, getFollowers } from './Module';
-import idContext from './Context';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function Followers() {
-  const user = useContext(idContext);
+  const user = getCurrentUsername();
   const [list, setFollowers] = useState([]);
   useEffect(() => {
     getFollowers(user).then((result) => {
