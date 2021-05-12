@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -7,8 +8,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import isValidPassword from './authentication';
 import { updatePassword } from './Module';
+import { getCurrentUsername } from '../auth/authServices';
 
-export default function DialogPasswordChange({ id }) {
+export default function DialogPasswordChange() {
+  const username = getCurrentUsername();
   const [open, setOpen] = useState(false);
   const [checker, setChecker] = useState(true);
   const [isValid, setIsValid] = useState(true);
@@ -29,9 +32,13 @@ export default function DialogPasswordChange({ id }) {
     const oldIsNull = oldPassword !== '';
     const newIsNull = newPassword !== '';
     if (checker && isValid && isNotEqual && newIsNull && oldIsNull) {
-      updatePassword(id, newPassword, oldPassword).then((response) => {
-        console.log(response);
-      });
+      updatePassword(username, newPassword, oldPassword).then((response) => {
+        if (response.status === 200) {
+          setOpen(false);
+        } else {
+          setOpen(true);
+        }
+      }).catch((err) => console.log(err.message));
     }
   };
   return (

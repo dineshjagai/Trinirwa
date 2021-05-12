@@ -1,34 +1,89 @@
 /* eslint-disable no-unused-vars */
 import 'bootstrap/dist/css/bootstrap.css';
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
 import './tweet.css';
 import LikeIcon from '@material-ui/icons/FavoriteBorderRounded';
 import IconButton from '@material-ui/core/IconButton';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import Tooltip from '@material-ui/core/Tooltip';
-import { getAvatar } from './Module';
-import idContext from './Context';
+import {
+  getAvatar,
+  updateTweetLikes,
+  isLiked,
+  unLikeTweet,
+  likeTweet,
+} from './Module';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function Tweet({ data, handleDelete }) {
-  const user = useContext(idContext);
+  const user = getCurrentUsername();
+  const [isLikedBool, setIsLike] = useState(false);
+  const [likes, setLikes] = useState(data.tweet_likes);
   const [id] = useState(data.tweet_id);
-  const [isOwner] = useState(data.username === user);
+  const [isOwner] = useState(data.user === user);
   const [avatar, setAvatar] = useState('');
-  useEffect(() => {
-    getAvatar(data.username).then((res) => {
-      console.log(res.data.avatar[0]);
+  // eslint-disable-next-line eqeqeq
+  const [isMedia] = useState(data.type == 'media');
+
+  const getData = async () => {
+    await getAvatar(data.user).then((res) => {
       setAvatar(res.data.avatar[0].profile_picture);
-      console.log(id);
     }).catch((err) => {
       console.log(err.message);
     });
-  }, []);
+    await isLiked(user, data.tweet_id).then((res) => {
+      if (res.data.bool.length) {
+        setIsLike(true);
+      } else {
+        setIsLike(false);
+      }
+    }).catch((err) => {
+      console.log(err.message);
+    });
+  };
+  const handleLike = () => {
+    if (isLikedBool) {
+      unLikeTweet(user, id).then((res) => {
+        if (res.status === 200) {
+          updateTweetLikes(id, likes - 1).then((result) => {
+            console.log(result.message);
+            setLikes(likes - 1);
+          }).catch((err) => {
+            console.log(err.message);
+          });
+        }
+      }).catch((err) => {
+        console.log(err.message);
+      });
+    } else {
+      likeTweet(user, id).then((res) => {
+        updateTweetLikes(id, likes + 1).then((result) => {
+          console.log(result);
+          setLikes(likes + 1);
+        }).catch((err) => {
+          console.log(err.message);
+        });
+      }).catch((err) => {
+        console.log(err.message);
+      });
+    }
+    setIsLike(!isLikedBool);
+  };
 
   useEffect(() => {
-  }, [avatar]);
+    getData();
+  }, []);
   const date = (data.tweet_date.split('T'))[0];
   const newAvatar = `/viewFile/${avatar}`;
+  const newPicture = `/viewFile/${data.content}`;
+  let newMediaTweet;
+  if (isMedia) {
+    newMediaTweet = <img className="tweet_image" id="tweet_media_picture" src={newPicture} alt="" />;
+  } else {
+    newMediaTweet = data.content;
+  }
+
   return (
     <div id="container_tweet">
       <div className="tweet_header">
@@ -43,7 +98,8 @@ export default function Tweet({ data, handleDelete }) {
             }}
             id="author_username"
           >
-            {data.username}
+
+            {data.user}
           </span>
           <span style={{ fontSize: '10px' }} id="date">
             {date}
@@ -67,20 +123,22 @@ export default function Tweet({ data, handleDelete }) {
       <Divider variant="middle" />
       <div className="tweet_content">
         <p style={{ textAlign: 'left' }}>
-          {data.content}
+          {newMediaTweet}
         </p>
       </div>
       <div className="tweet_bottom">
         <div className="likes">
           <IconButton
+            onClick={handleLike}
             style={{
               borderRadius: '50%',
               padding: '3',
-              color: 'red',
+              color: isLikedBool ? 'red' : 'black',
             }}
           >
             <LikeIcon />
           </IconButton>
+          <span>{`${likes} likes`}</span>
         </div>
       </div>
     </div>

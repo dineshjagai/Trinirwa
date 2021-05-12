@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Profile from './ProfilePicture';
 import NavBar from './navBar';
 import Displayer from './Displayer';
 import Followers from './Followers';
 import Friends from './Friends';
-import idContext from './Context';
+
 // import SearchBox from './Search2';
 import DisplayerTweets from './CenterDisplay';
 import './ProfilePage.css';
@@ -12,9 +12,10 @@ import './ProfilePage.css';
 import {
   addInterest, deleteInterest, getProfileData,
 } from './Module';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function ProfilePage() {
-  const username = useContext(idContext);
+  const username = getCurrentUsername();
   const [info, setData] = useState([{}]);
   const [interests, setInterests] = useState(new Set());
   const [madeQuery, setMadeQuery] = useState(false);
@@ -25,6 +26,7 @@ export default function ProfilePage() {
   //     setTweets(result.data);
   //   });
   // };
+  // console.log(`local storage Username = ${newUsername}`);
 
   useEffect(() => {
     getProfileData(username).then((result) => {

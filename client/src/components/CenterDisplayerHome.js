@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import PostAddIcon from '@material-ui/icons/PostAdd';
@@ -7,11 +8,15 @@ import LiveTvIcon from '@material-ui/icons/LiveTv';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import TextField from '@material-ui/core/TextField';
 import Tweet from './Tweet';
-import { addTweet, deleteTweet, getTweets } from './Module';
-import './CenterDisplay.css';
+import { getCurrentUsername } from '../auth/authServices';
+import './CenterDisplayerHome.css';
+
 import {
-  getCurrentUsername,
-} from '../auth/authServices';
+  addTweet,
+  deleteTweet,
+  fetchAllTweets,
+} from './Module';
+import './CenterDisplay.css';
 // import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
@@ -23,12 +28,13 @@ const useStyles = makeStyles((theme) => ({
 const hash = require('object-hash');
 
 export default function DisplayerTweets() {
+  const history = useHistory();
+
   const [items, setItems] = useState(new Map());
   const [update, setUpdate] = useState(false);
   const [count, setCount] = useState(255);
   const [toDisplay] = useState(new Set());
   const classes = useStyles();
-  const history = useHistory();
   const handleChange = (e) => {
     if ((e.target.value).length >= 0) {
       const u = 255 - (e.target.value).length;
@@ -38,18 +44,22 @@ export default function DisplayerTweets() {
   const handleHideOrDelete = (id, isOwner) => {
     if (isOwner) {
       deleteTweet(id).then((res) => {
-        console.log(res.message);
-        setUpdate(true);
+        console.log('message: delete:', res.message);
+        setUpdate(false);
         toDisplay.delete(items.get(id));
         items.delete(id);
       }).catch((err) => {
         console.log(err.message);
       });
+    } else {
+      console.log('not owner');
     }
   };
+
   useEffect(() => {
     setUpdate(false);
   }, [update]);
+
   const user = getCurrentUsername();
   const postTweet = () => {
     setCount(255);
@@ -64,37 +74,91 @@ export default function DisplayerTweets() {
       tweet_date: dateTime,
       tweet_likes: 0,
     };
+    console.log(newTweet);
     const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
     const newItems = items;
     toDisplay.add(toAdd);
+    console.log(toDisplay.length);
     newItems.set(tweetId, toAdd);
     setUpdate(true);
     setItems(newItems);
+    console.log(items.length);
     addTweet(newTweet).then((res) => {
       console.log(res.message);
     }).catch((err) => {
       console.log(err.message);
     });
   };
-  useEffect(() => {
-    getTweets(user).then((result) => {
-      const temp = (result.data.tweets);
-      temp.forEach((e) => {
-        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={e} /></div>;
 
+  const getData = async () => {
+    fetchAllTweets(user).then((res) => {
+      const { tweets } = res.data;
+      tweets.forEach((e) => {
+        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={e} /></div>;
         toDisplay.add(toAdd);
         items.set(e.tweet_id, toAdd);
       });
-      setUpdate(!update);
-    }).catch((err) => {
-      console.log(err.message);
-    });
+      setUpdate(true);
+    }).catch((err) => console.log(err));
+  };
+  useEffect(() => {
+    getData();
   }, []);
+
   const goLiveHandler = () => {
-    alert('I clicked live');
     history.push('/videochat');
   };
 
+  const postPicture = (e) => {
+    // upload picture
+    const formdata = new FormData();
+    // console.log(e.target.files);
+    const fakePath = document.getElementById('fileInput').value;
+    formdata.append('image', e.target.files[0], fakePath);
+
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow',
+    };
+    const input = document.getElementById('tweet').value;
+    const dateTime = new Date().toISOString();
+    const tweetId = hash(`${input}${user}${dateTime}`);
+
+    fetch('/uploadFile', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const newTweet = {
+          username: user,
+          tweet_id: tweetId,
+          type: 'media',
+          content: JSON.parse(result).data,
+          tweet_date: dateTime,
+          tweet_likes: 0,
+        };
+        console.log(newTweet);
+        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        const newItems = items;
+        toDisplay.add(toAdd);
+        console.log(toDisplay.length);
+        newItems.set(tweetId, toAdd);
+        setUpdate(true);
+        setItems(newItems);
+        console.log(items.length);
+        addTweet(newTweet).then((res) => {
+          console.log(res.message);
+        }).catch((err) => {
+          console.log(err.message);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const postPictureTrigger = () => {
+    document.getElementById('fileInput').click();
+  };
   return (
     <div className="container_center">
       <div
@@ -123,6 +187,7 @@ export default function DisplayerTweets() {
             fullWidth
           />
         </div>
+
         <div
           style={{
             backgroundColor: 'white',
@@ -139,12 +204,13 @@ export default function DisplayerTweets() {
           >
             Go live
           </Button>
-
           <Button
             variant="contained"
             color="secondary"
+            id="button-media"
             className={classes.button}
             startIcon={<AddAPhotoIcon />}
+            onClick={postPictureTrigger}
           >
             Photo/video
           </Button>
@@ -158,6 +224,13 @@ export default function DisplayerTweets() {
           >
             Create post
           </Button>
+          <input
+            className="FileUpload"
+            accept=".jpg,.png,.gif"
+            id="fileInput"
+            type="file"
+            onChange={postPicture}
+          />
         </div>
       </div>
       <div>

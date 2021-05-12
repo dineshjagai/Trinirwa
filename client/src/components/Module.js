@@ -38,6 +38,14 @@ export function fetchTweets(username) {
   });
 }
 
+export function fetchAllTweets(username) {
+  const getUrl = `/tweets/all/${username}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}
+
 export function getProfileData(username) {
   const getUrl = `/profile/${username}`;
   return axios({
@@ -89,14 +97,40 @@ export function deactivateProfile(id, inputPassword) {
   });
 }
 
-export function updatePassword(id, newPass, oldPass) {
-  const upUrl = `/profile/password/${id}`;
+// reactivate the account
+export function reactivateProfile(id, inputPassword) {
+  const delUrl = `/profile/reactivate/${id}`;
+  return axios({
+    method: 'PUT',
+    url: delUrl,
+    data: {
+      password: inputPassword,
+    },
+  });
+}
+
+// change the password in the profile page
+export function updatePassword(username, newPass, oldPass) {
+  const upUrl = `/profile/password/${username}`;
   return axios({
     method: 'PUT',
     url: upUrl,
     data: {
       newPassword: newPass,
       oldPassword: oldPass,
+    },
+  });
+}
+
+// change the password in the login page
+export function resetPassword(username, newPassword) {
+  const upUrl = '/resetPassword';
+  return axios({
+    method: 'PUT',
+    url: upUrl,
+    data: {
+      username,
+      password: newPassword,
     },
   });
 }
@@ -190,7 +224,16 @@ export function fetchFollowers(id) {
   });
 }
 
+export function fetchAllFollowers(username) {
+  return axios({
+    method: 'GET',
+    url: `/all/followers/${username}`,
+  });
+}
+
 export const addUser = (usernameReg, passwordOneReg, firstName, lastName, email) => {
+  // const user
+  localStorage.setItem('username', JSON.stringify(usernameReg));
   const prm = axios({
     method: 'POST',
     url: '/register',
@@ -258,10 +301,90 @@ export const searchFriend = (username, input) => {
   return promise;
 };
 
-export function deleteTweet(tweetid) {
-  const delUrl = `/tweet/delete/${tweetid}`;
+export function deleteTweet(tweetId) {
+  const delUrl = `/tweet/delete/${tweetId}`;
   return axios({
     method: 'DELETE',
     url: delUrl,
   });
 }
+
+export function updateTweetLikes(tweetId, tweetLikes) {
+  const putUrl = `/tweet/likes/${tweetId}`;
+  return axios({
+    method: 'PUT',
+    url: putUrl,
+    data: {
+      likes: tweetLikes,
+    },
+  });
+}
+
+export function isLiked(user, tweetId) {
+  const getUrl = `/tweet/isliked/${user}/${tweetId}/`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}
+
+export function likeTweet(user, tweetId) {
+  console.log(`${user} -----${tweetId}`);
+  const insUrl = `/tweet/like/${user}/`;
+  return axios({
+    method: 'POST',
+    url: insUrl,
+    data: {
+      tweetid: tweetId,
+    },
+  });
+}
+
+export function unLikeTweet(user, tweetId) {
+  const putUrl = `/tweet/unlike/${user}/`;
+  return axios({
+    method: 'PUT',
+    url: putUrl,
+    data: {
+      tweetid: tweetId,
+    },
+  });
+}
+export const getNumberFailedLogins = (username) => {
+  const prm = axios({
+    method: 'GET',
+    url: `/numberFailedLogins/${username}`,
+  });
+  return prm;
+};
+
+export const updateNumberFailedLogins = (username, numberOfFailedLogins) => {
+  const addUrl = '/updateNumberFailedLogins';
+  return axios({
+    method: 'POST',
+    url: addUrl,
+    data: {
+      username,
+      numberOfFailedLogins,
+    },
+  });
+};
+
+export const getDateUserLastLockedOut = (username) => {
+  const prm = axios({
+    method: 'GET',
+    url: `/dateUserLastLockedOut/${username}`,
+  });
+  return prm;
+};
+
+export const setLockOutTime = (username) => {
+  const addUrl = '/setLockOutTime';
+  return axios({
+    method: 'POST',
+    url: addUrl,
+    data: {
+      username,
+    },
+  });
+};

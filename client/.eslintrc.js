@@ -14,9 +14,7 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
   },
-  plugins: [
-    'react',
-  ],
+  plugins: ['react', 'prettier'],
   rules: {
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'react/prop-types': 'off',
@@ -24,5 +22,7 @@ module.exports = {
     'jsx-a11y/no-noninteractive-element-interactions': 'off',
     'jsx-a11y/anchor-is-valid': 'off',
     'jsx-a11y/click-events-have-key-events': 'off',
+    'import/extensions': 'off',
+    // 'prettier/prettier': 'error'
   },
 };

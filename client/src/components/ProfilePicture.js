@@ -1,15 +1,15 @@
 /* eslint-disable react/destructuring-assignment */
-import React, { useContext } from 'react';
+import React from 'react';
 import './Profile.css';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import DialogPassword from './DialogPassword';
 import DialogPasswordChange from './DialogPasswordChange';
 import ScrollDialog from './DisplayerDialog';
 import { getBlockedFollowers, unBlockUser } from './Module';
-import idContext from './Context';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function Profile(props) {
-  const user = useContext(idContext);
+  const user = getCurrentUsername();
   const handleUnblock = (username) => {
     unBlockUser(user, username).then((res) => {
       console.log(res.message);
@@ -42,8 +42,8 @@ export default function Profile(props) {
           handle={handleUnblock}
           iconText="Unblock User"
         />
-        <DialogPassword id={1220} />
-        <DialogPasswordChange id={1220} />
+        <DialogPassword />
+        <DialogPasswordChange />
       </div>
     </div>
   );

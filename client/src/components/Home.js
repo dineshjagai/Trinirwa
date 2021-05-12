@@ -1,20 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import './Home.css';
 import NavBar from './navBar';
-// import SideBar from './Sidebar';
-// import CommentBox from './CommentBox';
-import idContext from './Context';
-import DisplayerTweets from './CenterDisplay';
+import DisplayerTweets from './CenterDisplayerHome';
 import SideBar from './SidebarU';
 
-export default function Home({ uid }) {
-  const [id, setId] = useState('');
-  console.log(`uid home page${uid}`);
-  useEffect(() => {
-    setId(id);
-  }, [id]);
-  const user = useContext(idContext);
-  console.log(user);
+export default function Home() {
   return (
     <div>
       <NavBar />

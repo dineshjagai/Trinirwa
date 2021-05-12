@@ -7,8 +7,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { Redirect } from 'react-router-dom';
 import { deactivateProfile } from './Module';
 import './DialogPassword.css';
+import { getCurrentUsername } from '../auth/authServices';
 
-export default function DialogPassword({ id }) {
+export default function DialogPassword() {
+  const username = getCurrentUsername();
   const [open, setOpen] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const [clue, setClue] = useState('');
@@ -24,7 +26,7 @@ export default function DialogPassword({ id }) {
   const handleCloseDelete = () => {
     const input = document.getElementById('passwordInput').value;
     if (input !== '') {
-      deactivateProfile(id, input).then((response) => {
+      deactivateProfile(username, input).then((response) => {
         console.log(response);
         setOpen(false);
         setRedirect(true);

@@ -2,10 +2,10 @@
 const express = require('express');
 
 const webapp = express();
+const pino = require('express-pino-logger')();
 
 // impporting database
 const mysql = require('mysql');
-const path = require('path');
 
 const cors = require('cors');
 
@@ -69,6 +69,43 @@ webapp.use(
 );
 
 /* -------------------------------------------------------------------------- */
+/*                                TWILIO ENDPOINTS                            */
+/* -------------------------------------------------------------------------- */
+const configTwo = require('./config');
+const { videoToken } = require('./tokens');
+
+webapp.use(pino);
+
+const sendTokenResponse = (token, res) => {
+  res.set('Content-Type', 'application/json');
+  res.send(
+    JSON.stringify({
+      token: token.toJwt(),
+    }),
+  );
+};
+
+webapp.get('/api/greeting', (req, res) => {
+  const name = req.query.name || 'World';
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+});
+
+webapp.get('/video/token', (req, res) => {
+  const { identity } = req.query;
+  const { room } = req.query;
+  const token = videoToken(identity, room, configTwo);
+  sendTokenResponse(token, res);
+});
+webapp.post('/video/token', (req, res) => {
+  console.log(configTwo);
+  const { identity } = req.body;
+  const { room } = req.body;
+  const token = videoToken(identity, room, configTwo);
+  sendTokenResponse(token, res);
+});
+
+/* -------------------------------------------------------------------------- */
 /*                      LOGIN AND REGISTRATION ENDPOINTS                      */
 /* -------------------------------------------------------------------------- */
 
@@ -80,7 +117,7 @@ webapp.post('/register', (req, res) => {
   const { email } = req.body;
   // get the current date time in MYSQL format
   const datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
-  console.log(datetime);
+  // console.log(datetime);
   const followerCount = 0;
   const isLoggedIn = 0;
   const tweetsCount = 0;
@@ -116,7 +153,7 @@ webapp.get('/login', (req, res) => {
 });
 
 webapp.post('/userUid', (req, res) => {
-  console.log('Get the user id');
+  // console.log('Get the user id');
   const sql = 'select uid from USERS where username = ?';
   const { username } = req.body;
   const params = [username];
@@ -136,13 +173,13 @@ webapp.post('/userUid', (req, res) => {
 webapp.post('/login', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
-  console.log(`username:${username}`);
+  // console.log(`username:${username}`);
 
   connection.query(
     'SELECT * FROM USERS WHERE username = ?;',
     username,
     (err, result) => {
-      if (err) {
+      if ((err) || !(result)) {
         res.send({ err });
       }
 
@@ -165,6 +202,30 @@ webapp.post('/login', (req, res) => {
   );
 });
 
+webapp.put('/resetPassword', (req, res) => {
+  const { username } = req.body;
+  const { password } = req.body;
+
+  bcrypt.hash(password, saltRounds, (hasherr, hash) => {
+    if (hasherr) {
+      console.log(hasherr);
+    }
+    connection.query(
+      'UPDATE USERS SET password = ? WHERE (username = ?)',
+      [hash, username], (err) => {
+        if (err) {
+          const status = err.status || 500;
+          res.status(status).json({ error: err.message });
+          return;
+        }
+        res.send({
+          message: 'success',
+        });
+      },
+    );
+  });
+});
+
 webapp.post('/uploadProfilePicture', (req, res) => {
   const { username } = req.body;
   const { profilePicture } = req.body;
@@ -173,6 +234,100 @@ webapp.post('/uploadProfilePicture', (req, res) => {
   connection.query(
     'UPDATE USERS SET profile_picture = ? WHERE username = ?',
     params, (err) => {
+      if (err) {
+        const status = err.status || 500;
+        res.status(status).json({ error: err.message });
+        return;
+      }
+      res.send({
+        message: 'success',
+      });
+    },
+  );
+});
+
+// set the number of failed logins
+webapp.post('/updateNumberFailedLogins', (req, res) => {
+  const { username } = req.body;
+  const { numberOfFailedLogins } = req.body;
+  const params = [numberOfFailedLogins, username];
+  // console.log(`updateNumberFailedLogins called with numberOfFailedLogins as ${numberOfFailedLogins}`);
+  // console.log(params);
+
+  connection.query(
+    'UPDATE USERS SET number_failed_logins = ? WHERE username = ?',
+    params, (err) => {
+      if (err) {
+        const status = err.status || 500;
+        res.status(status).json({ error: err.message });
+        return;
+      }
+      res.send({
+        message: 'success',
+      });
+    },
+  );
+});
+// get the number of failed logins
+webapp.get('/numberFailedLogins/:username', (req, res) => {
+  const params = [req.params.username];
+  // console.log(req.params);
+
+  const sql_select = 'SELECT  number_failed_logins FROM USERS WHERE username = ?';
+  connection.query(sql_select, params, (err, row) => {
+    // console.log(`numberFailedLogins called with numberFailedLogins, result = }${Array.from(res)}`);
+    // console.log();
+    // TODO: FIXME
+    // if (!row[0]) {
+    //   const status = 500;
+    //   res.status(status).json({ error: 'invalid username' });
+    //   return;
+    // }
+
+    if (err) {
+      const status = err.status || 500;
+      res.status(status).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: '200',
+      data: row,
+    });
+  });
+});
+
+// get the number of failed logins
+webapp.get('/dateUserLastLockedOut/:username', (req, res) => {
+  const params = [req.params.username];
+  // console.log(req.params);
+  const sql_select = 'SELECT date_last_locked_out FROM USERS WHERE username = ?';
+  connection.query(sql_select, params, (err, row) => {
+    // console.log(`dateUserLastLockedOut called with dateUserLastLockedOut, result = }${Array.from(res)}`);
+    // console.log(req.params);
+
+    if (err) {
+      const status = err.status || 500;
+      res.status(status).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: '200',
+      data: row,
+    });
+  });
+});
+
+// set the number of failed logins
+webapp.post('/setLockOutTime', (req, res) => {
+  const dateTime = new Date().toISOString();
+  const { username } = req.body;
+  const params = [dateTime, username];
+  // console.log(`dateTime =${dateTime}`);
+  // console.log(`username =${username}`);
+  connection.query(
+    'UPDATE USERS SET date_last_locked_out = ? WHERE username = ?',
+    params, (err) => {
+      // console.log('setLockOutTime called with setLockOutTime');
       if (err) {
         const status = err.status || 500;
         res.status(status).json({ error: err.message });
@@ -197,7 +352,7 @@ const upload = multer({ storage: fileStorageEngine });
 
 // Single File Route Handler
 webapp.post('/uploadFile', upload.single('image'), (req, res) => {
-  console.log(req.file);
+  // console.log(req.file);
   uploadFile(req.file.filename);
   res.json({
     message: 'success',
@@ -211,7 +366,7 @@ webapp.get('/viewFile/:key', async (req, res) => {
     if (b) {
       // successful, print the message
       const readStream = readFile(req.params.key);
-      console.log(`ress${res[0]}`);
+      // console.log(`ress${res[0]}`);
       readStream.pipe(res);
     } else {
       res.send({
@@ -286,7 +441,7 @@ webapp.get('/profile/:username', (req, res) => {
    * * */
 
 webapp.get('/profile/tweet/:username', (req, res) => {
-  const sql_select = 'SELECT * FROM TWEETS_1 WHERE user=?';
+  const sql_select = 'SELECT * FROM TWEETS_1 WHERE user=? ORDER BY tweet_date DESC';
   const params = [req.params.username];
   connection.query(sql_select, params, (err, tweets) => {
     if (err) {
@@ -328,17 +483,17 @@ webapp.put('/profile/deactivate/:username', (req, res) => {
       res.status(401).json({ error: err.message });
       return;
     }
-    console.log(username);
+    // console.log(username);
     if (result.length > 0) {
       bcrypt.compare(password, result[0].password, (error, response) => {
-        console.log(response);
+        // console.log(response);
         if (error) {
           res.status(401).json({ error: err.message });
         } else if (response) {
           connection.query(sql_deact, user,
-            function (err) {
-              if (err) {
-                res.status(500).json({ error: err.message });
+            function (errr) {
+              if (errr) {
+                res.status(500).json({ error: errr.message });
                 return;
               }
               res.json({ message: 'Account deactivated', changes: this.changes });
@@ -350,6 +505,41 @@ webapp.put('/profile/deactivate/:username', (req, res) => {
     }
   });
 });
+
+// reactivating profile
+webapp.put('/profile/reactivate/:username', (req, res) => {
+  const sql_get = 'SELECT password FROM USERS WHERE username=?';
+  const sql_deact = 'UPDATE USERS SET isDeactivated = false WHERE username =?';
+  const user = req.params.username;
+  const { password } = req.body;
+  connection.query(sql_get, user, (err, result) => {
+    if (err) {
+      res.status(401).json({ error: err.message });
+      return;
+    }
+    // console.log(username);
+    if (result.length > 0) {
+      bcrypt.compare(password, result[0].password, (error, response) => {
+        // console.log(response);
+        if (error) {
+          res.status(401).json({ error: err.message });
+        } else if (response) {
+          connection.query(sql_deact, user,
+            function (errr) {
+              if (errr) {
+                res.status(500).json({ error: errr.message });
+                return;
+              }
+              res.json({ message: 'Account reactivated', changes: this.changes });
+            });
+        } else {
+          res.status(401).json({ message: 'Wrong password input! Try again.' });
+        }
+      });
+    }
+  });
+});
+
 // changing username
 webapp.put('/profile/username/:uid', (req, res) => {
   const sql_update = 'UPDATE USERS SET username = ? WHERE uid = ?';
@@ -374,7 +564,7 @@ webapp.put('/profile/password/:username', (req, res) => {
   const user = req.params.username;
   const newPass = req.body.newPassword;
   const oldPass = req.body.oldPassword;
-  connection.query(sql_get, id, (err, result) => {
+  connection.query(sql_get, user, (err, result) => {
     if (err) {
       res.status(404).json({ error: err.message });
       return;
@@ -394,7 +584,7 @@ webapp.put('/profile/password/:username', (req, res) => {
                 if (err) {
                   res.status(500).json({ error: err.message });
                 } else {
-                  res.json({ message: 'password successfully updated' });
+                  res.status(401).json({ message: 'password successfully updated' });
                 }
               });
             }
@@ -456,7 +646,7 @@ webapp.get('/profile/followers/:username', (req, res) => {
 // Getting the friends to display on profile
 webapp.get('/profile/friends/:username', (req, res) => {
   const { username } = req.params;
-  console.log(username);
+  // console.log(username);
   const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT user_one FROM FOLLOWERS_1 WHERE user_two= '${username}' AND user_one in (SELECT user_two FROM FOLLOWERS_1 WHERE user_one= '${username}') AND user_one NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one= '${username}')) AS T ON username = user_one`;
 
   connection.query(sql_get,
@@ -552,7 +742,6 @@ webapp.post('/follow/:username', (req, res) => {
 webapp.put('/unfollow/:username', (req, res) => {
   const sql_unfollow = 'DELETE FROM FOLLOWERS_1 WHERE user_one = ? AND user_two = ?';
   const params = [req.params.username, req.body.follower];
-  console.log(params);
   connection.query(sql_unfollow, params,
     function (err) {
       if (err) {
@@ -567,7 +756,6 @@ webapp.put('/unfollow/:username', (req, res) => {
 webapp.put('/unblock/:username', (req, res) => {
   const sql_unfollow = 'DELETE FROM BLOCKED_USERS_1 WHERE user_one = ? AND user_two = ?';
   const params = [req.params.username, req.body.follower];
-  console.log(params);
   connection.query(sql_unfollow, params,
     function (err) {
       if (err) {
@@ -592,6 +780,67 @@ webapp.get('/blocked/:username', (req, res) => {
         message: '200',
         friends,
       });
+    });
+});
+
+// updating tweet likes
+webapp.put('/tweet/likes/:tweetid', (req, res) => {
+  console.log(`Update: ${req.params.tweetid}.....${req.body.likes}`);
+  const sql_update = `UPDATE TWEETS_1 SET tweet_likes='${req.body.likes}' WHERE tweet_id='${req.params.tweetid}'`;
+  connection.query(sql_update,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'tweetLikes successfully updated', changes: this.changes });
+    });
+});
+
+// checking if a tweet has been already liked by user
+webapp.get('/tweet/isliked/:username/:tweetid/', (req, res) => {
+  const sql_update = `SELECT 1 FROM LIKED_TWEETS
+  WHERE user = '${req.params.username}' and tweet_id = ?`;
+  const params = [req.params.tweetid];
+  connection.query(sql_update, params,
+    function (err, bool) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'tweetLikes successfully updated',
+        changes: this.changes,
+        bool,
+      });
+    });
+});
+
+// like a tweet
+webapp.post('/tweet/like/:username', (req, res) => {
+  console.log(`${req.params.username}.....${req.body.tweetid}`);
+  const sql_like = `INSERT INTO LIKED_TWEETS (user, tweet_id) VALUES ('${req.params.username}','${req.body.tweetid}')`;
+  connection.query(sql_like,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'tweet successfully liked', changes: this.changes });
+    });
+});
+
+// unlike a user
+webapp.put('/tweet/unlike/:username', (req, res) => {
+  const sql_unlike = `DELETE FROM LIKED_TWEETS WHERE user='${req.params.username}' AND tweet_id='${req.body.tweetid}'`;
+  // const params = [req.params.username, req.body.follower];
+  connection.query(sql_unlike,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'tweet successfully unliked', changes: this.changes });
     });
 });
 
@@ -625,12 +874,10 @@ webapp.get('/home/:uid', (req, res) => {
 // Adding tweet
 webapp.post('/createTweet/:username', (req, res) => {
   const input = req.body;
-  console.log(input);
   // insert newTweet in table TWEETS
   const sql = 'INSERT INTO TWEETS_1 (user, tweet_id, type, content, tweet_date, tweet_likes) VALUES (?,?,?,?,?,?)';
   const params = [req.params.username, input.tweetId, input.type,
     input.content, input.tweet_date, 0];
-  console.log(params);
   connection.query(sql, params,
     function (err) {
       if (err) {
@@ -643,7 +890,6 @@ webapp.post('/createTweet/:username', (req, res) => {
 
 webapp.delete('/tweet/delete/:tweetid', (req, res) => {
   const input = req.params.tweetid;
-  console.log(`this is my tweetId: ${input}`);
   const sql = `DELETE FROM TWEETS_1 WHERE tweet_id = '${input}'`;
   connection.query(sql, (err, result) => {
     if (err) {
@@ -657,6 +903,42 @@ webapp.delete('/tweet/delete/:tweetid', (req, res) => {
   });
 });
 
+// gets alls the followers with no limit
+webapp.get('/all/followers/:username', (req, res) => {
+  // finish the outes correctly
+  const { username } = req.params;
+  const sql_get = `SELECT user_two FROM FOLLOWERS_1 WHERE user_one = '${username}' and user_two NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one= '${username}')`;
+
+  connection.query(sql_get,
+    (err, followers) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        followers,
+      });
+    });
+});
+
+// gets alls the followers with no limit
+webapp.get('/tweets/all/:username', (req, res) => {
+  // finish the outes correctly
+  const { username } = req.params;
+  const sql_get = `(SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
+    FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two) UNION ALL (select * from TWEETS_1 where user='${username}') ORDER BY tweet_date DESC`;
+
+  connection.query(sql_get,
+    (err, tweets) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        tweets,
+      });
+    });
+});
 webapp.use((_req, res) => {
   res.status(404);
 });

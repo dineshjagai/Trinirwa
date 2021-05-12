@@ -1,76 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
-import Axios from 'axios';
 import Registration from './components/Registration';
 import ProfilePage from './components/ProfilePage';
 import Login from './components/Login';
 import Home from './components/Home';
-import { IdProvider } from './components/Context';
 import Signup from './components/Signup';
 import Temp from './components/Temp';
-
-// import ProfilePage from './components/ProfilePage';
-import { userLogin, getUid } from './components/Module';
+import VideoChat from './live_stream/VideoChat';
+import ResetPassword from './components/ResetPassword';
 
 function App() {
-  const [uid, setUid] = useState('');
-  const [user, setUsername] = useState('');
-  const [count, setCount] = useState(0);
-  Axios.defaults.withCredentials = true;
-
-  // useEffect(() => setUid(uid), [uid, count]);
-  useEffect(() => console.log(`changed uid ${uid}`), [uid]);
-  // useEffect(() => {
-  //   if (true) {
-  //     window.history.replaceState({ uid }, 'new page', '/home');
-  //     window.location.reload();
-  //   }
-  // }, [uid]);
-
-  const handelLoginUid = (username, password) => {
-    setUsername(username);
-    userLogin(username, password).then((response) => {
-      if (response.data.message) {
-        alert(response.data.message);
-        window.history.replaceState(null, 'new page', '/login');
-        window.location.reload();
-        // setUsername('');
-        // setPassword('');
-        setUid('');
-        setCount(count + 1);
-        if (count >= 3) {
-          // disable user from logging into the browser
-          // TODO implement this
-        }
-        document.getElementById('new-password-form').value = '';
-        document.getElementById('new-username-form').value = '';
-      } else {
-        let fetchedUid = null;
-        getUid(username).then((res) => {
-          [fetchedUid] = [Array.from(res.data.data)[0].uid];
-          console.log('fetched UID = ');
-          console.log(fetchedUid);
-          setUid(fetchedUid);
-        }).catch((e) => {
-          console.log(e);
-        });
-      }
-    });
-  };
-
   return (
-    <IdProvider value={user}>
-      <Router>
+    <Router>
+      <Switch>
         <Route path="/" exact render={() => <Registration />} />
         <Route path="/registration" exact render={() => <Registration />} />
-        <Route path="/login" exact render={() => <Login handle={handelLoginUid} />} />
-        <Route path="/signup/:username" exact render={() => <Signup />} />
+        <Route path="/login" exact render={() => <Login />} />
+        <Route path="/signup/" exact render={() => <Signup />} />
         <Route path="/home" component={() => <Home />} />
         <Route path="/profile" exact render={() => <ProfilePage />} />
+        <Route path="/resetPassword" exact render={() => <ResetPassword />} />
         <Route path="/temp" exact render={() => <Temp />} />
-      </Router>
-    </IdProvider>
+        <Route path="/videochat" exact render={() => <VideoChat />} />
+
+      </Switch>
+    </Router>
   );
 }
 export default App;
