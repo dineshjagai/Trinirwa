@@ -6,7 +6,9 @@ import './tweet.css';
 import LikeIcon from '@material-ui/icons/FavoriteBorderRounded';
 import IconButton from '@material-ui/core/IconButton';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
+import CommentInput from './CommentInput';
 import {
   getAvatar,
   updateTweetLikes,
@@ -21,6 +23,7 @@ export default function Tweet({ data, handleDelete }) {
   const [isLikedBool, setIsLike] = useState(false);
   const [likes, setLikes] = useState(data.tweet_likes);
   const [id] = useState(data.tweet_id);
+  const [blocks, setBlocks] = useState(data.tweet_blocks);
   const [isOwner] = useState(data.user === user);
   const [avatar, setAvatar] = useState('');
   // eslint-disable-next-line eqeqeq
@@ -126,6 +129,9 @@ export default function Tweet({ data, handleDelete }) {
         <p style={{ textAlign: 'left' }}>
           {newMediaTweet}
         </p>
+      </div>
+      <div className="comment">
+        <CommentInput />
       </div>
       <div className="tweet_bottom">
         <div className="likes">

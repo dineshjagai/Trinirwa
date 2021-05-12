@@ -182,6 +182,7 @@ export function getAvatar(user) {
 }
 
 export function addTweet(data) {
+  console.log('picture:', data.user);
   return axios({
     method: 'POST',
     url: `/createTweet/${data.user}`,
@@ -311,7 +312,7 @@ export function deleteTweet(tweetId) {
 export function hideTweet(tweetId, username) {
   const postUrl = `/tweet/hide/${tweetId}`;
   return axios({
-    method: 'DELETE',
+    method: 'POST',
     url: postUrl,
     data: {
       username,
@@ -330,6 +331,17 @@ export function updateTweetLikes(tweetId, tweetLikes) {
   });
 }
 
+export function updateTweetBlocks(tweetId, tweetBlocks) {
+  const putUrl = `/tweet/likes/${tweetId}`;
+  return axios({
+    method: 'PUT',
+    url: putUrl,
+    data: {
+      blocks: tweetBlocks,
+    },
+  });
+}
+
 export function isLiked(user, tweetId) {
   const getUrl = `/tweet/isliked/${user}/${tweetId}/`;
   return axios({
@@ -339,7 +351,6 @@ export function isLiked(user, tweetId) {
 }
 
 export function likeTweet(user, tweetId) {
-  console.log(`${user} -----${tweetId}`);
   const insUrl = `/tweet/like/${user}/`;
   return axios({
     method: 'POST',

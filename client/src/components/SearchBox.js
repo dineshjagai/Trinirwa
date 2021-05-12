@@ -10,6 +10,7 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import Tooltip from '@material-ui/core/Tooltip';
 import { searchFriend, followUser, getFollowers } from './Module';
 import { getCurrentUsername } from '../auth/authServices';
+import './SearchBox.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,7 +83,7 @@ export default function SearchBox() {
             src={`/viewFile/${data.profile_picture}`}
           />
         </ListItemAvatar>
-        <ListItemText primary={data.username} secondary="hey" />
+        <ListItemText primary={data.username} secondary={data.followed ? 'following' : 'Follow me PLZ :)'} />
         <Tooltip title="follow" placement="top">
           <PersonAddIcon className="button" style={{ color: '#0C8367' }} onClick={() => handleF(data.username)} />
         </Tooltip>
@@ -110,7 +111,8 @@ export default function SearchBox() {
   }, [results]);
 
   return (
-    <div style={{ margin: 'auto' }}>
+
+    <div className="searchBack">
       <div>
         <div className={classes.search}>
           <div className={classes.searchIcon} />
@@ -127,10 +129,13 @@ export default function SearchBox() {
             />
           </div>
         </div>
+        <div>
+          <List className={classes.root}>
+            {items}
+          </List>
+        </div>
       </div>
-      <List className={classes.root}>
-        {items}
-      </List>
+
     </div>
   );
 }

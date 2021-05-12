@@ -46,6 +46,7 @@ export default function DisplayerTweets() {
   const handleHideOrDelete = (id, isOwner) => {
     if (isOwner) {
       deleteTweet(id).then((res) => {
+        window.location.reload();
         console.log('message: delete:', res.message);
         setUpdate(true);
         console.log('deleted:', toDisplay.delete(items.get(id)));
@@ -54,13 +55,19 @@ export default function DisplayerTweets() {
         console.log(err.message);
       });
     } else {
+      // eslint-disable-next-line no-unused-vars
       hideTweet(id, user).then((res) => {
-        console.log(res.status);
+        window.location.reload();
+        toDisplay.delete(items.get(id));
+        items.delete(id);
+        setUpdate(true);
+        // updating blocks
       }).catch((err) => console.log(err));
     }
   };
 
   useEffect(() => {
+    console.log('refreshed');
     setUpdate(false);
   }, [update]);
   const postTweet = () => {
@@ -131,14 +138,14 @@ export default function DisplayerTweets() {
       .then((response) => response.text())
       .then((result) => {
         const newTweet = {
-          username: user,
+          user,
           tweet_id: tweetId,
           type: 'media',
           content: JSON.parse(result).data,
           tweet_date: dateTime,
           tweet_likes: 0,
         };
-        console.log(newTweet);
+        console.log(`is this good? ${newTweet.user}`);
         const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
         const newItems = items;
         toDisplay.add(toAdd);

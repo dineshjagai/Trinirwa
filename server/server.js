@@ -906,6 +906,7 @@ webapp.delete('/tweet/delete/:tweetid', (req, res) => {
 webapp.post('/tweet/hide/:tweetid', (req, res) => {
   const input = req.params.tweetid;
   const { username } = req.body;
+
   console.log(`${input}----------${username}`);
   const sql = `INSERT INTO HIDDEN_TWEETS (user, tweet_id) VALUES ('${username}', '${input}')`;
   connection.query(sql, (err, result) => {
@@ -923,8 +924,8 @@ webapp.post('/tweet/hide/:tweetid', (req, res) => {
 // update number of tweet block
 webapp.post('/tweet/block/:tweetid', (req, res) => {
   const input = req.params.tweetid;
-  const { numberOfBlocks } = req.body;
-  const sql = `UPDATE TWEETS_1 SET tweet_blocks=${numberOfBlocks} WHERE tweet_id='${input}'`;
+  const { blocks } = req.body;
+  const sql = `UPDATE TWEETS_1 SET tweet_blocks=${blocks} WHERE tweet_id='${input}'`;
   connection.query(sql, (err, result) => {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -963,7 +964,7 @@ webapp.get('/tweets/all/:username', (req, res) => {
   //   FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two) UNION ALL (select * from TWEETS_1 where user='${username}') ORDER BY tweet_date DESC`;
   const sql_get = `SELECT* FROM ((SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
     FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two)
-     UNION ALL (select * from TWEETS_1 where user='${username}'))AS M where tweet_id not in (SELECT tweet_id FROM HIDDEN_TWEETS WHERE user = '${username}')`;
+     UNION ALL (select * from TWEETS_1 where user='${username}'))AS M where tweet_id not in (SELECT tweet_id FROM HIDDEN_TWEETS WHERE user = '${username}') ORDER BY tweet_date DESC`;
   connection.query(sql_get,
     (err, tweets) => {
       if (err) {

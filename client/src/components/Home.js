@@ -16,7 +16,7 @@ export default function Home() {
         <div>
           <DisplayerTweets />
         </div>
-        <div>
+        <div className="searchBack">
           <SearchBox />
         </div>
       </div>

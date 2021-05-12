@@ -1,0 +1,15 @@
+.comment_box {
+    display: flex;
+    flex-direction: row;
+    
+
+}
+
+.commentInput {
+    background-color: #eef5f3;
+    outline: 1px;
+}
+
+#commentButton:hover {
+    text-decoration: underline;
+}
