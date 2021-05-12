@@ -9,6 +9,7 @@ import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import TextField from '@material-ui/core/TextField';
 import Tweet from './Tweet';
 import { getCurrentUsername } from '../auth/authServices';
+import './CenterDisplayerHome.css';
 
 import {
   addTweet,
@@ -107,6 +108,57 @@ export default function DisplayerTweets() {
   const goLiveHandler = () => {
     history.push('/videochat');
   };
+
+  const postPicture = (e) => {
+    // upload picture
+    const formdata = new FormData();
+    // console.log(e.target.files);
+    const fakePath = document.getElementById('fileInput').value;
+    formdata.append('image', e.target.files[0], fakePath);
+
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow',
+    };
+    const input = document.getElementById('tweet').value;
+    const dateTime = new Date().toISOString();
+    const tweetId = hash(`${input}${user}${dateTime}`);
+
+    fetch('/uploadFile', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const newTweet = {
+          username: user,
+          tweet_id: tweetId,
+          type: 'media',
+          content: JSON.parse(result).data,
+          tweet_date: dateTime,
+          tweet_likes: 0,
+        };
+        console.log(newTweet);
+        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        const newItems = items;
+        toDisplay.add(toAdd);
+        console.log(toDisplay.length);
+        newItems.set(tweetId, toAdd);
+        setUpdate(true);
+        setItems(newItems);
+        console.log(items.length);
+        addTweet(newTweet).then((res) => {
+          console.log(res.message);
+        }).catch((err) => {
+          console.log(err.message);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const postPictureTrigger = () => {
+    document.getElementById('fileInput').click();
+  };
   return (
     <div className="container_center">
       <div
@@ -135,6 +187,7 @@ export default function DisplayerTweets() {
             fullWidth
           />
         </div>
+
         <div
           style={{
             backgroundColor: 'white',
@@ -151,12 +204,13 @@ export default function DisplayerTweets() {
           >
             Go live
           </Button>
-
           <Button
             variant="contained"
             color="secondary"
+            id="button-media"
             className={classes.button}
             startIcon={<AddAPhotoIcon />}
+            onClick={postPictureTrigger}
           >
             Photo/video
           </Button>
@@ -170,6 +224,13 @@ export default function DisplayerTweets() {
           >
             Create post
           </Button>
+          <input
+            className="FileUpload"
+            accept=".jpg,.png,.gif"
+            id="fileInput"
+            type="file"
+            onChange={postPicture}
+          />
         </div>
       </div>
       <div>

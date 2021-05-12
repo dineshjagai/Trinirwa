@@ -80,7 +80,7 @@ export default function Login() {
                 }
                 // console.log(`numIncorrectLogins =${fetchNumberFailedLogins}`);
                 const numberFailedLoginsPlusOne = parseInt(fetchNumberFailedLogins, 10) + 1;
-                alert(`Wrong Password! You have${3 - numberFailedLoginsPlusOne} attempts left before you get locked out`);
+                alert(`Wrong Password! You have ${3 - numberFailedLoginsPlusOne} attempts left before you get locked out`);
                 updateNumberFailedLogins(username, (numberFailedLoginsPlusOne))
                   .catch((e) => {
                     console.log(e);
@@ -164,7 +164,7 @@ export default function Login() {
           </p>
           <div className="form-group text-center">
             <button
-              type="button"
+              type="submit"
               className="btn btn-primary w-100"
               onClick={loginOnClick}
             >

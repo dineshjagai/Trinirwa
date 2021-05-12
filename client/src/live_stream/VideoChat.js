@@ -2,16 +2,15 @@ import React, { useState, useCallback, useEffect } from 'react';
 import Video from 'twilio-video';
 import Lobby from './Lobby';
 import Room from './Room';
+import {
+  getCurrentUsername,
+} from '../auth/authServices';
 
 const VideoChat = () => {
-  const [username, setUsername] = useState('');
   const [roomName, setRoomName] = useState('');
   const [room, setRoom] = useState(null);
   const [connecting, setConnecting] = useState(false);
-
-  const handleUsernameChange = useCallback((event) => {
-    setUsername(event.target.value);
-  }, []);
+  const username = getCurrentUsername();
 
   const handleRoomNameChange = useCallback((event) => {
     setRoomName(event.target.value);
@@ -88,7 +87,6 @@ const VideoChat = () => {
       <Lobby
         username={username}
         roomName={roomName}
-        handleUsernameChange={handleUsernameChange}
         handleRoomNameChange={handleRoomNameChange}
         handleSubmit={handleSubmit}
         connecting={connecting}
