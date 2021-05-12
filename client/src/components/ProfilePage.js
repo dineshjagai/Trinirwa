@@ -12,9 +12,7 @@ import './ProfilePage.css';
 import {
   addInterest, deleteInterest, getProfileData,
 } from './Module';
-import {
-  getCurrentUsername,
-} from '../auth/authServices';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function ProfilePage() {
   const username = getCurrentUsername();

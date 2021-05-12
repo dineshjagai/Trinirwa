@@ -53,3 +53,7 @@
    margin: auto;
 }
 
+.tweet_image {
+    height: 300px;
+    width: 400px;
+}

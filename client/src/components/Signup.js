@@ -98,7 +98,6 @@ export default function Signup() {
               type="file"
               className="form-control"
               id="fileUploadProfilePicture"
-              placeholder="Enter email"
               onChange={fileupload}
             />
 
@@ -112,7 +111,7 @@ export default function Signup() {
             />
             <div className="form-group">
               <button
-                type="button"
+                type="submit"
                 className="btn btn-primary w-100"
                 onClick={signup}
               >

@@ -22,29 +22,27 @@ export default function Registration() {
   const register = () => {
     if (!isSamePassword(passwordOneReg, passwordTwoReg)) {
       alert('Passwords do not match, please re-enter');
-      window.history.replaceState(null, 'new page', '/');
-      window.location.reload();
+      document.getElementById('new-password-form').value = '';
+      document.getElementById('new-password-two-form').value = '';
       return;
     }
 
     if (!isValidUsername(usernameReg)) {
       alert('Invalid User Name');
-      window.history.replaceState(null, 'new page', '/');
-      window.location.reload();
+      document.getElementById('new-username-form').value = '';
       return;
     }
 
     if (!isValidPassword(passwordOneReg)) {
       alert('Invalid password, password must have a minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character');
-      window.history.replaceState(null, 'new page', '/');
-      window.location.reload();
+      document.getElementById('new-password-form').value = '';
+      document.getElementById('new-password-two-form').value = '';
       return;
     }
 
     if (!isValidEmail(email)) {
       alert('Invalid email, please re-enter');
-      window.history.replaceState(null, 'new page', '/');
-      window.location.reload();
+      document.getElementById('exampleInputEmail1').value = '';
       return;
     }
 
@@ -87,6 +85,7 @@ export default function Registration() {
             <label>First Name:</label>
             <input
               type="name"
+              id="new-first-name-form"
               className="form-control"
               placeholder="Enter First Name"
               onChange={(e) => setFirstNameReg(e.target.value)}
@@ -96,6 +95,7 @@ export default function Registration() {
             <label>Last Name:</label>
             <input
               type="name"
+              id="new-last-name-form"
               placeholder="Enter Last Name"
               className="form-control"
               onChange={(e) => setLastNameReg(e.target.value)}
@@ -105,6 +105,7 @@ export default function Registration() {
             <label>Password:</label>
             <input
               type="password"
+              id="new-password-form"
               aria-describedby="passwordHelp"
               className="form-control"
               placeholder="Enter Password"
@@ -117,6 +118,7 @@ export default function Registration() {
             <label>Confirm Password:</label>
             <input
               type="password"
+              id="new-password-two-form"
               className="form-control"
               placeholder="Re-Enter Password"
               onChange={(e) => setPasswordTwoReg(e.target.value)}
@@ -124,7 +126,7 @@ export default function Registration() {
           </div>
           <div className="form-group">
             <button
-              type="button"
+              type="submit"
               className="btn btn-primary w-100"
               onClick={register}
             >

@@ -4,9 +4,14 @@ import './videoStreamComponents.css';
 
 export default function VideoStreamComponent() {
   return (
-    <main>
-      <VideoChat />
-    </main>
+    <div className="videochat">
+      <header>
+        <h1>Video Chat</h1>
+      </header>
+      <main>
+        <VideoChat />
+      </main>
+    </div>
 
   );
 }

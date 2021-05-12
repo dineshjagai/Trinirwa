@@ -96,6 +96,19 @@ export function deactivateProfile(id, inputPassword) {
     },
   });
 }
+
+// reactivate the account
+export function reactivateProfile(id, inputPassword) {
+  const delUrl = `/profile/reactivate/${id}`;
+  return axios({
+    method: 'PUT',
+    url: delUrl,
+    data: {
+      password: inputPassword,
+    },
+  });
+}
+
 // change the password in the profile page
 export function updatePassword(username, newPass, oldPass) {
   const upUrl = `/profile/password/${username}`;

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import Button from '@material-ui/core/Button';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Participant from './Participant';
+import NavBar from '../components/navBar';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Room = ({ roomName, room, handleLogout }) => {
   const [participants, setParticipants] = useState([]);
@@ -27,13 +31,28 @@ const Room = ({ roomName, room, handleLogout }) => {
   ));
 
   return (
+
     <div className="room">
+      <NavBar />
+      <div
+        style={{
+        }}
+      />
       <h2>
         Room:
         {' '}
         {roomName}
       </h2>
-      <button onClick={handleLogout}>Log out</button>
+      <Button
+        color="secondary"
+        startIcon={<ExitToAppIcon />}
+        type="submit"
+        className="btn btn-primary w-100"
+        onClick={handleLogout}
+      >
+        Leave Stream
+
+      </Button>
       <div className="local-participant">
         {room ? (
           <Participant
@@ -44,9 +63,11 @@ const Room = ({ roomName, room, handleLogout }) => {
           ''
         )}
       </div>
+
       <h3>Remote Participants</h3>
       <div className="remote-participants">{remoteParticipants}</div>
     </div>
+
   );
 };
 

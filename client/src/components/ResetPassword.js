@@ -1,12 +1,10 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import {
-  Link, useHistory, BrowserRouter as Route,
+  Link, useHistory,
 } from 'react-router-dom';
-// import idContext from './Context';
 import '../App.css';
 import {
-  isValidPassword, isSamePassword, isSameUsername,
+  isValidPassword, isSamePassword,
 } from '../auth/authentication';
 import { resetPassword } from './Module';
 
@@ -38,7 +36,7 @@ export default function ResetPassword() {
       return;
     }
 
-    resetPassword(usernameReg, passwordOneReg).then((response) => {
+    resetPassword(usernameReg, passwordOneReg).then(() => {
     //   console.log(response);
       alert('Success! Your Password Has Been Updated');
       // if valid signup proceed to the login page

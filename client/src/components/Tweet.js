@@ -23,6 +23,8 @@ export default function Tweet({ data, handleDelete }) {
   const [id] = useState(data.tweet_id);
   const [isOwner] = useState(data.user === user);
   const [avatar, setAvatar] = useState('');
+  // eslint-disable-next-line eqeqeq
+  const [isMedia] = useState(data.type == 'media');
 
   const getData = async () => {
     console.log('data.user:', data.user);
@@ -75,6 +77,14 @@ export default function Tweet({ data, handleDelete }) {
   }, []);
   const date = (data.tweet_date.split('T'))[0];
   const newAvatar = `/viewFile/${avatar}`;
+  const newPicture = `/viewFile/${data.content}`;
+  let newMediaTweet;
+  if (isMedia) {
+    newMediaTweet = <img className="tweet_image" id="tweet_media_picture" src={newPicture} alt="" />;
+  } else {
+    newMediaTweet = data.content;
+  }
+
   return (
     <div id="container_tweet">
       <div className="tweet_header">
@@ -89,6 +99,7 @@ export default function Tweet({ data, handleDelete }) {
             }}
             id="author_username"
           >
+
             {data.user}
           </span>
           <span style={{ fontSize: '10px' }} id="date">
@@ -113,7 +124,7 @@ export default function Tweet({ data, handleDelete }) {
       <Divider variant="middle" />
       <div className="tweet_content">
         <p style={{ textAlign: 'left' }}>
-          {data.content}
+          {newMediaTweet}
         </p>
       </div>
       <div className="tweet_bottom">

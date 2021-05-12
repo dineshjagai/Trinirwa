@@ -2,6 +2,7 @@
 const express = require('express');
 
 const webapp = express();
+const pino = require('express-pino-logger')();
 
 // impporting database
 const mysql = require('mysql');
@@ -66,6 +67,43 @@ webapp.use(
     },
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/*                                TWILIO ENDPOINTS                            */
+/* -------------------------------------------------------------------------- */
+const configTwo = require('./config');
+const { videoToken } = require('./tokens');
+
+webapp.use(pino);
+
+const sendTokenResponse = (token, res) => {
+  res.set('Content-Type', 'application/json');
+  res.send(
+    JSON.stringify({
+      token: token.toJwt(),
+    }),
+  );
+};
+
+webapp.get('/api/greeting', (req, res) => {
+  const name = req.query.name || 'World';
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+});
+
+webapp.get('/video/token', (req, res) => {
+  const { identity } = req.query;
+  const { room } = req.query;
+  const token = videoToken(identity, room, configTwo);
+  sendTokenResponse(token, res);
+});
+webapp.post('/video/token', (req, res) => {
+  console.log(configTwo);
+  const { identity } = req.body;
+  const { room } = req.body;
+  const token = videoToken(identity, room, configTwo);
+  sendTokenResponse(token, res);
+});
 
 /* -------------------------------------------------------------------------- */
 /*                      LOGIN AND REGISTRATION ENDPOINTS                      */
@@ -451,9 +489,9 @@ webapp.put('/profile/deactivate/:username', (req, res) => {
           res.status(401).json({ error: err.message });
         } else if (response) {
           connection.query(sql_deact, user,
-            function (err) {
-              if (err) {
-                res.status(500).json({ error: err.message });
+            function (errr) {
+              if (errr) {
+                res.status(500).json({ error: errr.message });
                 return;
               }
               res.json({ message: 'Account deactivated', changes: this.changes });
@@ -465,6 +503,41 @@ webapp.put('/profile/deactivate/:username', (req, res) => {
     }
   });
 });
+
+// reactivating profile
+webapp.put('/profile/reactivate/:username', (req, res) => {
+  const sql_get = 'SELECT password FROM USERS WHERE username=?';
+  const sql_deact = 'UPDATE USERS SET isDeactivated = false WHERE username =?';
+  const user = req.params.username;
+  const { password } = req.body;
+  connection.query(sql_get, user, (err, result) => {
+    if (err) {
+      res.status(401).json({ error: err.message });
+      return;
+    }
+    // console.log(username);
+    if (result.length > 0) {
+      bcrypt.compare(password, result[0].password, (error, response) => {
+        // console.log(response);
+        if (error) {
+          res.status(401).json({ error: err.message });
+        } else if (response) {
+          connection.query(sql_deact, user,
+            function (errr) {
+              if (errr) {
+                res.status(500).json({ error: errr.message });
+                return;
+              }
+              res.json({ message: 'Account reactivated', changes: this.changes });
+            });
+        } else {
+          res.status(401).json({ message: 'Wrong password input! Try again.' });
+        }
+      });
+    }
+  });
+});
+
 // changing username
 webapp.put('/profile/username/:uid', (req, res) => {
   const sql_update = 'UPDATE USERS SET username = ? WHERE uid = ?';
@@ -708,9 +781,9 @@ webapp.get('/blocked/:username', (req, res) => {
     });
 });
 
-//updating tweet likes
-webapp.put(`/tweet/likes/:tweetid`, (req, res) => {
-  console.log(`Update: ${req.params.tweetid}.....${req.body.likes}`)
+// updating tweet likes
+webapp.put('/tweet/likes/:tweetid', (req, res) => {
+  console.log(`Update: ${req.params.tweetid}.....${req.body.likes}`);
   const sql_update = `UPDATE TWEETS_1 SET tweet_likes='${req.body.likes}' WHERE tweet_id='${req.params.tweetid}'`;
   connection.query(sql_update,
     function (err) {
@@ -722,7 +795,7 @@ webapp.put(`/tweet/likes/:tweetid`, (req, res) => {
     });
 });
 
-//checking if a tweet has been already liked by user
+// checking if a tweet has been already liked by user
 webapp.get('/tweet/isliked/:username/:tweetid/', (req, res) => {
   const sql_update = `SELECT 1 FROM LIKED_TWEETS
   WHERE user = '${req.params.username}' and tweet_id = ?`;
@@ -733,16 +806,17 @@ webapp.get('/tweet/isliked/:username/:tweetid/', (req, res) => {
         res.status(405).json({ error: err.message });
         return;
       }
-      res.json({ message: 'tweetLikes successfully updated',
+      res.json({
+        message: 'tweetLikes successfully updated',
         changes: this.changes,
-        bool: bool,
+        bool,
       });
     });
 });
 
 // like a tweet
 webapp.post('/tweet/like/:username', (req, res) => {
-  console.log(`${req.params.username}.....${req.body.tweetid}`)
+  console.log(`${req.params.username}.....${req.body.tweetid}`);
   const sql_like = `INSERT INTO LIKED_TWEETS (user, tweet_id) VALUES ('${req.params.username}','${req.body.tweetid}')`;
   connection.query(sql_like,
     function (err) {
@@ -900,10 +974,9 @@ webapp.get('/tweets/all/:username', (req, res) => {
         tweets,
       });
     });
-})
+});
 webapp.use((_req, res) => {
   res.status(404);
 });
-
 
 module.exports = webapp;

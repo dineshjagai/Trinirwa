@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Home from './components/Home';
 import Signup from './components/Signup';
 import Temp from './components/Temp';
+import VideoChat from './live_stream/VideoChat';
 import ResetPassword from './components/ResetPassword';
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
         <Route path="/profile" exact render={() => <ProfilePage />} />
         <Route path="/resetPassword" exact render={() => <ResetPassword />} />
         <Route path="/temp" exact render={() => <Temp />} />
+        <Route path="/videochat" exact render={() => <VideoChat />} />
+
       </Switch>
     </Router>
   );

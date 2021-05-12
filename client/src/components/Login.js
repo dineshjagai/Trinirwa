@@ -6,7 +6,7 @@ import {
 import '../App.css';
 import {
   userLogin, getNumberFailedLogins, updateNumberFailedLogins,
-  getDateUserLastLockedOut, setLockOutTime,
+  getDateUserLastLockedOut, setLockOutTime, reactivateProfile,
 } from './Module';
 
 export default function Login() {
@@ -30,10 +30,15 @@ export default function Login() {
     setUsername(username);
     userLogin(username, password).then((response) => {
       localStorage.setItem('username', JSON.stringify(username));
+      // reactivate just in case
+      reactivateProfile(username, password).then(() => {
+      }).catch((er) => {
+        console.log(er);
+      });
       getNumberFailedLogins(username).then((resOne) => {
         console.log('resOne.data.message', resOne.data.message);
-        // TODO: to fix
-        if (resOne.data.message) {
+        // eslint-disable-next-line eqeqeq
+        if (resOne.data.message == '200') {
           let fetchNumberFailedLogins = 0;
           [fetchNumberFailedLogins] = [Array.from(resOne.data.data)[0].number_failed_logins];
           setnumIncorrectLogins(fetchNumberFailedLogins);
@@ -54,8 +59,8 @@ export default function Login() {
               const timeDiffMs = new Date() - dateTimeTwo;
               const lockOutTime = 3600 * 1000; // one hour lockOut
               const isTimeOver = timeDiffMs > lockOutTime;
-              console.log(`timeDiffMs : ${timeDiffMs}`);
-              console.log(`isTimeOver : ${isTimeOver}`);
+              // console.log(`timeDiffMs : ${timeDiffMs}`);
+              // console.log(`isTimeOver : ${isTimeOver}`);
               if (isTimeOver) {
                 isLockedOut = false;
                 // reset
@@ -75,7 +80,7 @@ export default function Login() {
                 }
                 // console.log(`numIncorrectLogins =${fetchNumberFailedLogins}`);
                 const numberFailedLoginsPlusOne = parseInt(fetchNumberFailedLogins, 10) + 1;
-                alert(`You have${3 - numberFailedLoginsPlusOne} attempts left before you get locked out`);
+                alert(`Wrong Password! You have ${3 - numberFailedLoginsPlusOne} attempts left before you get locked out`);
                 updateNumberFailedLogins(username, (numberFailedLoginsPlusOne))
                   .catch((e) => {
                     console.log(e);
@@ -83,7 +88,9 @@ export default function Login() {
                 // document.getElementById('new-password-form').value = '';
                 // document.getElementById('new-username-form').value = '';
                 alert(response.data.message);
-                history.push('/login/');
+                history.push('/login');
+                document.getElementById('new-username-form').value = '';
+                document.getElementById('new-password-form').value = '';
               } else {
                 updateNumberFailedLogins(username, 0).catch((e) => {
                   console.log(e);
@@ -97,25 +104,31 @@ export default function Login() {
                 // }).catch((e) => {
                 //   console.log(e);
                 // });
-                history.push('/home/');
+                history.push('/home');
 
                 // window.location.reload();
               }
             } else {
               alert('your account has been locked because to too many incorrect attempts, please try back in an hour');
-              history.push('/login/');
+              history.push('/login');
+              document.getElementById('new-username-form').value = '';
+              document.getElementById('new-password-form').value = '';
             }
           }).catch((e) => {
             console.log(e);
           });
         } else {
           // user enters an erroneous username
-          alert(resOne.data.message);
-          window.history.pushState(null, '', '/login');
-          window.location.reload();
+          alert('Username Not Found');
+          history.push('/login');
+          document.getElementById('new-username-form').value = '';
+          document.getElementById('new-password-form').value = '';
         }
       }).catch((e) => {
         console.log(e);
+        alert('Username Not Found');
+        document.getElementById('new-username-form').value = '';
+        document.getElementById('new-password-form').value = '';
       });
       // console.log(`Number Of Incorrect Logins${numIncorrectLogins}`);
     });
@@ -150,20 +163,17 @@ export default function Login() {
             <Link to="/resetPassword">Click here to reset!</Link>
           </p>
           <div className="form-group text-center">
-            <Link to="/home">
-              <button
-                type="button"
-                className="btn btn-primary w-100"
-                onClick={loginOnClick}
-              >
-                Log In
-              </button>
-            </Link>
+            <button
+              type="submit"
+              className="btn btn-primary w-100"
+              onClick={loginOnClick}
+            >
+              Log In
+            </button>
           </div>
           <p>
             Don&apos;t have an account?&nbsp;
             <Link to="/registration">Sign Up!</Link>
-            {/* <Route path="/home" component={() => <Home uid={uid} />} /> */}
           </p>
         </div>
       </div>

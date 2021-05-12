@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 /* eslint-disable no-shadow */
 import React, { useState, useEffect, useRef } from 'react';
 
@@ -42,6 +43,7 @@ const Participant = ({ participant }) => {
     };
   }, [participant]);
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     const videoTrack = videoTracks[0];
     if (videoTrack) {
@@ -52,6 +54,7 @@ const Participant = ({ participant }) => {
     }
   }, [videoTracks]);
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     const audioTrack = audioTracks[0];
     if (audioTrack) {
