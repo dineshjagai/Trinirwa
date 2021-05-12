@@ -97,8 +97,8 @@ export function deactivateProfile(id, inputPassword) {
   });
 }
 // change the password in the profile page
-export function updatePassword(id, newPass, oldPass) {
-  const upUrl = `/profile/password/${id}`;
+export function updatePassword(username, newPass, oldPass) {
+  const upUrl = `/profile/password/${username}`;
   return axios({
     method: 'PUT',
     url: upUrl,

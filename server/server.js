@@ -489,7 +489,7 @@ webapp.put('/profile/password/:username', (req, res) => {
   const user = req.params.username;
   const newPass = req.body.newPassword;
   const oldPass = req.body.oldPassword;
-  connection.query(sql_get, id, (err, result) => {
+  connection.query(sql_get, user, (err, result) => {
     if (err) {
       res.status(404).json({ error: err.message });
       return;
@@ -509,7 +509,7 @@ webapp.put('/profile/password/:username', (req, res) => {
                 if (err) {
                   res.status(500).json({ error: err.message });
                 } else {
-                  res.json({ message: 'password successfully updated' });
+                  res.status(401).json({ message: 'password successfully updated' });
                 }
               });
             }

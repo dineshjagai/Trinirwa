@@ -42,8 +42,8 @@ export default function Profile(props) {
           handle={handleUnblock}
           iconText="Unblock User"
         />
-        <DialogPassword id={1220} />
-        <DialogPasswordChange id={1220} />
+        <DialogPassword />
+        <DialogPasswordChange />
       </div>
     </div>
   );
