@@ -563,3 +563,262 @@ describe('/createTweet/:username test', () => {
     expect(JSON.parse(response.text).message).toBe('Tweet successfully added');
   });
 });
+
+describe('/resetPassword test', () => {
+  test('Error resetting password', () => request(webapp).put('/resetPassword')
+    .expect(200));
+
+  test('successful creation of tweet', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+    });
+
+    const response = await request(webapp).put('/resetPassword').send({
+      username: 'isimbib',
+      password: '1235',
+    });
+    expect(JSON.parse(response.text).message).toBe('success');
+  });
+});
+
+describe('/resetPassword test', () => {
+  test('Error resetting password', () => request(webapp).put('/resetPassword')
+    .expect(200));
+
+  test('successful restting of password', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+    });
+
+    const response = await request(webapp).put('/resetPassword').send({
+      username: 'isimbib',
+      password: '1235',
+    });
+    expect(JSON.parse(response.text).message).toBe('success');
+  });
+});
+
+describe('/uploadProfilePicture test', () => {
+  test('Error uploading Picture', () => request(webapp).post('/uploadProfilePicture')
+    .expect(200));
+
+  test('successful uploading Profile Picture', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+    });
+
+    const response = await request(webapp).post('/uploadProfilePicture').send({
+      username: 'isimbib',
+      profile_picture: 'hello.png',
+    });
+    expect(JSON.parse(response.text).message).toBe('success');
+  });
+});
+
+describe('/updateNumberFailedLogins test', () => {
+  test('Error updating failed logins', () => request(webapp).post('/updateNumberFailedLogins')
+    .expect(200));
+
+  test('successful updating failed logins', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+    });
+
+    const response = await request(webapp).post('/updateNumberFailedLogins').send({
+      username: 'isimbib',
+      number_failed_logins: 2,
+    });
+    expect(JSON.parse(response.text).message).toBe('success');
+  });
+});
+
+describe('/numberFailedLogins/:username test', () => {
+  test('Error getting number of failed logins', () => request(webapp).get('/numberFailedLogins/isimbib')
+    .expect(200));
+
+  test('successful getting failed logins', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+      number_failed_logins: 1,
+    });
+
+    const response = await request(webapp).get('/numberFailedLogins/isimbib').send();
+    expect(JSON.parse(response.text).message).toBe('200');
+  });
+});
+
+describe('/dateUserLastLockedOut/:username test', () => {
+  test('Error getting date user last locked out', () => request(webapp).get('/dateUserLastLockedOut/isimbib')
+    .expect(200));
+
+  test('successful getting date lockout', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+      number_failed_logins: 1,
+    });
+
+    const response = await request(webapp).get('/dateUserLastLockedOut/isimbib').send();
+    expect(JSON.parse(response.text).message).toBe('200');
+  });
+});
+
+describe('/setLockOutTime test', () => {
+  test('Error setting lock out time', () => request(webapp).post('/setLockOutTime')
+    .expect(200));
+
+  test('successful setting lock out time', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+      number_failed_logins: 1,
+    });
+
+    const response = await request(webapp).post('/setLockOutTime').send();
+    expect(JSON.parse(response.text).message).toBe('success');
+  });
+});
+
+describe('/setLockOutTime test', () => {
+  test('Error setting lock out time', () => request(webapp).post('/setLockOutTime')
+    .expect(200));
+
+  test('successful setting lock out time', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+      number_failed_logins: 1,
+    });
+
+    const response = await request(webapp).post('/setLockOutTime').send();
+    expect(JSON.parse(response.text).message).toBe('success');
+  });
+});
+
+describe('/tweets/all/:username test', () => {
+  test('Error getting tweets/followers', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+    });
+    request(webapp).get('/tweets/all/isimbib').send().expect(405);
+  });
+
+  test('successful retrieving of tweets/followers', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+    });
+
+    await knex('USERS').insert({
+      username: 'berwa',
+      password: '1234',
+      first_name: 'Berwa',
+      last_name: 'Bizimana',
+      email: 'ber@gmail.com',
+    });
+
+    await knex('FOLLOWERS_1').insert({
+      user_one: 'isimbib',
+      user_two: 'berwa',
+    });
+
+    await knex('FOLLOWERS_1').insert({
+      user_one: 'berwa',
+      user_two: 'isimbib',
+    });
+    const response = await request(webapp).get('/tweets/all/isimbib').send();
+    expect(JSON.parse(response.text).message).toBe('200');
+  });
+});
+
+describe('/all/followers/:username test', () => {
+  test('Error getting followers', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+    });
+    request(webapp).get('/all/Followers/isimbib').send().expect(405);
+  });
+
+  test('successful retrieving of followers', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+    });
+
+    await knex('USERS').insert({
+      username: 'berwa',
+      password: '1234',
+      first_name: 'Berwa',
+      last_name: 'Bizimana',
+      email: 'ber@gmail.com',
+    });
+
+    await knex('FOLLOWERS_1').insert({
+      user_one: 'isimbib',
+      user_two: 'berwa',
+    });
+
+    await knex('FOLLOWERS_1').insert({
+      user_one: 'berwa',
+      user_two: 'isimbib',
+    });
+    const response = await request(webapp).get('/all/followers/isimbib').send();
+    expect(JSON.parse(response.text).message).toBe('200');
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
