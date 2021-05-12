@@ -809,16 +809,3 @@ describe('/all/followers/:username test', () => {
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
