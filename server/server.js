@@ -812,6 +812,7 @@ webapp.post('/createTweet/:username', (req, res) => {
     });
 });
 
+// deleting a tweet
 webapp.delete('/tweet/delete/:tweetid', (req, res) => {
   const input = req.params.tweetid;
   const sql = `DELETE FROM TWEETS_1 WHERE tweet_id = '${input}'`;
@@ -822,6 +823,41 @@ webapp.delete('/tweet/delete/:tweetid', (req, res) => {
     }
     res.json({
       message: 'sucessful deletion of tweet',
+      data: result,
+    });
+  });
+});
+
+// hiding a tweet
+webapp.post('/tweet/hide/:tweetid', (req, res) => {
+  const input = req.params.tweetid;
+  const { username } = req.body;
+  console.log(`${input}----------${username}`);
+  const sql = `INSERT INTO HIDDEN_TWEETS (user, tweet_id) VALUES ('${username}', '${input}')`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'sucessfully hid the tweet',
+      data: result,
+    });
+  });
+});
+
+// update number of tweet block
+webapp.post('/tweet/block/:tweetid', (req, res) => {
+  const input = req.params.tweetid;
+  const { numberOfBlocks } = req.body;
+  const sql = `UPDATE TWEETS_1 SET tweet_blocks=${numberOfBlocks} WHERE tweet_id='${input}'`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'tweet_blocks updated',
       data: result,
     });
   });
@@ -849,9 +885,11 @@ webapp.get('/all/followers/:username', (req, res) => {
 webapp.get('/tweets/all/:username', (req, res) => {
   // finish the outes correctly
   const { username } = req.params;
-  const sql_get = `(SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
-    FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two) UNION ALL (select * from TWEETS_1 where user='${username}') ORDER BY tweet_date DESC`;
-
+  // const sql_get = `(SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
+  //   FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two) UNION ALL (select * from TWEETS_1 where user='${username}') ORDER BY tweet_date DESC`;
+  const sql_get = `SELECT* FROM ((SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
+    FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two)
+     UNION ALL (select * from TWEETS_1 where user='${username}'))AS M where tweet_id not in (SELECT tweet_id FROM HIDDEN_TWEETS WHERE user = '${username}')`;
   connection.query(sql_get,
     (err, tweets) => {
       if (err) {

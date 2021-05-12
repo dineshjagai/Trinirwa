@@ -169,10 +169,9 @@ export function getAvatar(user) {
 }
 
 export function addTweet(data) {
-  console.log(data);
   return axios({
     method: 'POST',
-    url: `/createTweet/${data.username}`,
+    url: `/createTweet/${data.user}`,
     data: {
       content: data.content,
       tweet_date: data.tweet_date,
@@ -293,6 +292,17 @@ export function deleteTweet(tweetId) {
   return axios({
     method: 'DELETE',
     url: delUrl,
+  });
+}
+
+export function hideTweet(tweetId, username) {
+  const postUrl = `/tweet/hide/${tweetId}`;
+  return axios({
+    method: 'DELETE',
+    url: postUrl,
+    data: {
+      username,
+    },
   });
 }
 

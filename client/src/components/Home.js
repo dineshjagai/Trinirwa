@@ -3,23 +3,21 @@ import './Home.css';
 import NavBar from './navBar';
 import DisplayerTweets from './CenterDisplayerHome';
 import SideBar from './SidebarU';
+import SearchBox from './SearchBox';
 
 export default function Home() {
   return (
     <div>
       <NavBar />
       <div className="home">
-        <div
-          style={{
-          }}
-        >
+        <div>
           <SideBar />
         </div>
-        <div
-          style={{
-          }}
-        >
+        <div>
           <DisplayerTweets />
+        </div>
+        <div>
+          <SearchBox />
         </div>
       </div>
     </div>

@@ -1,11 +1,23 @@
 import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
 import { fade, makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
 import React, { useEffect, useState } from 'react';
-import { searchFriend } from './Module';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import Tooltip from '@material-ui/core/Tooltip';
+import { searchFriend, followUser, getFollowers } from './Module';
 import { getCurrentUsername } from '../auth/authServices';
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    left: '25px',
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+  },
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -15,10 +27,10 @@ const useStyles = makeStyles((theme) => ({
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    width: '30%',
+    width: '100%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      width: '200px',
+      width: '100%',
     },
   },
 
@@ -39,49 +51,42 @@ const useStyles = makeStyles((theme) => ({
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
-    width: '20px',
+    width: '30%',
     [theme.breakpoints.up('md')]: {
       width: '20ch',
     },
   },
 }));
 export default function SearchBox() {
+  const user = getCurrentUsername();
   const classes = useStyles();
   const [items, setItems] = useState([]);
   const [results, setResults] = useState([]);
-  const user = getCurrentUsername();
+  // handling following
+  const handleF = (username) => {
+    followUser(user, username).then((res) => {
+      console.log(res.message);
+      getFollowers(user).then((result) => {
+        console.log(result.data.followers);
+      });
+    });
+  };
+
   const createItem = (data) => {
     console.log(data.profile_picture);
     const toRet = (
-
-      <div
-        className="item"
-        style={{
-          width: '90%',
-          borderRadius: '8px',
-          backgroundColor: '#D0EAE4',
-          height: '60px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <div
-          style={{
-            paddingLeft: '10px',
-          }}
-        >
-          <img
-            style={{
-              width: '45px',
-              height: '45px',
-              borderRadius: '40px',
-            }}
-            src={data.profile_picture}
+      <ListItem>
+        <ListItemAvatar>
+          <Avatar
             alt=""
+            src={`/viewFile/${data.profile_picture}`}
           />
-          <span>{data.username}</span>
-        </div>
-      </div>
+        </ListItemAvatar>
+        <ListItemText primary={data.username} secondary="hey" />
+        <Tooltip title="follow" placement="top">
+          <PersonAddIcon className="button" style={{ color: '#0C8367' }} onClick={() => handleF(data.username)} />
+        </Tooltip>
+      </ListItem>
     );
     return toRet;
   };
@@ -89,6 +94,7 @@ export default function SearchBox() {
     searchFriend(user, e.target.value).then((result) => {
       console.log(`input: ${e.target.value} , ${user}`);
       setResults(result.data.friends);
+      console.log(results.data.friens);
     }).catch((error) => {
       console.log(error.message);
     });
@@ -107,9 +113,7 @@ export default function SearchBox() {
     <div style={{ margin: 'auto' }}>
       <div>
         <div className={classes.search}>
-          <div className={classes.searchIcon}>
-            <SearchIcon />
-          </div>
+          <div className={classes.searchIcon} />
           <div>
             <InputBase
               id="search"
@@ -124,10 +128,9 @@ export default function SearchBox() {
           </div>
         </div>
       </div>
-      <div style={{ margin: 'auto' }}>
+      <List className={classes.root}>
         {items}
-      </div>
-
+      </List>
     </div>
   );
 }

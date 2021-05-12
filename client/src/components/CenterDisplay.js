@@ -25,7 +25,7 @@ export default function DisplayerTweets() {
   const [items, setItems] = useState(new Map());
   const [update, setUpdate] = useState(false);
   const [count, setCount] = useState(255);
-  const [toDisplay] = useState(new Set());
+  const [toDisplay, setToDisplay] = useState(new Set());
   const classes = useStyles();
   const handleChange = (e) => {
     if ((e.target.value).length >= 0) {
@@ -52,10 +52,11 @@ export default function DisplayerTweets() {
   const postTweet = () => {
     setCount(255);
     const input = document.getElementById('tweet').value;
+    if (input.length === 0) return;
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
     const newTweet = {
-      username: user,
+      user,
       tweet_id: tweetId,
       type: 'text',
       content: input,
@@ -64,7 +65,8 @@ export default function DisplayerTweets() {
     };
     const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
     const newItems = items;
-    toDisplay.add(toAdd);
+    const newToDisplay = new Set([toAdd, ...toDisplay]);
+    setToDisplay(newToDisplay);
     newItems.set(tweetId, toAdd);
     setUpdate(true);
     setItems(newItems);

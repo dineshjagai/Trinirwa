@@ -12,6 +12,7 @@ import {
   addTweet,
   deleteTweet,
   fetchAllTweets,
+  hideTweet,
 } from './Module';
 import './CenterDisplay.css';
 // import Divider from '@material-ui/core/Divider';
@@ -28,8 +29,9 @@ export default function DisplayerTweets() {
   const [items, setItems] = useState(new Map());
   const [update, setUpdate] = useState(false);
   const [count, setCount] = useState(255);
-  const [toDisplay] = useState(new Set());
+  const [toDisplay, setToDisplay] = useState(new Set());
   const classes = useStyles();
+  const user = getCurrentUsername();
   const handleChange = (e) => {
     if ((e.target.value).length >= 0) {
       const u = 255 - (e.target.value).length;
@@ -40,40 +42,40 @@ export default function DisplayerTweets() {
     if (isOwner) {
       deleteTweet(id).then((res) => {
         console.log('message: delete:', res.message);
-        setUpdate(false);
-        toDisplay.delete(items.get(id));
+        setUpdate(true);
+        console.log('deleted:', toDisplay.delete(items.get(id)));
         items.delete(id);
       }).catch((err) => {
         console.log(err.message);
       });
     } else {
-      console.log('not owner');
+      hideTweet(id, user).then((res) => {
+        console.log(res.status);
+      }).catch((err) => console.log(err));
     }
   };
 
   useEffect(() => {
     setUpdate(false);
   }, [update]);
-
-  const user = getCurrentUsername();
   const postTweet = () => {
     setCount(255);
     const input = document.getElementById('tweet').value;
+    if (input.length === 0) return;
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
     const newTweet = {
-      username: user,
+      user,
       tweet_id: tweetId,
       type: 'text',
       content: input,
       tweet_date: dateTime,
       tweet_likes: 0,
     };
-    console.log(newTweet);
     const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
     const newItems = items;
-    toDisplay.add(toAdd);
-    console.log(toDisplay.length);
+    const newToDisplay = new Set([toAdd, ...toDisplay]);
+    setToDisplay(newToDisplay);
     newItems.set(tweetId, toAdd);
     setUpdate(true);
     setItems(newItems);

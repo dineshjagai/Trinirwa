@@ -25,6 +25,7 @@ export default function Tweet({ data, handleDelete }) {
   const [avatar, setAvatar] = useState('');
 
   const getData = async () => {
+    console.log('data.user:', data.user);
     await getAvatar(data.user).then((res) => {
       setAvatar(res.data.avatar[0].profile_picture);
     }).catch((err) => {
