@@ -1,11 +1,10 @@
-/* eslint-disable no-undef */
 import React from 'react';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom';
-import App from './App';
+import Temp from '../components/Temp';
 
-test('Test App.js', () => {
-  const component = renderer.create(<App />);
+test('Test Temp snapshot', () => {
+  const component = renderer.create(<Temp />);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });

@@ -1,11 +1,10 @@
-/* eslint-disable no-undef */
 import React from 'react';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom';
-import App from './App';
+import DisplayerDialog from '../components/DisplayerDialog';
 
-test('Test App.js', () => {
-  const component = renderer.create(<App />);
+test('Test DisplayerDialog snapshot', () => {
+  const component = renderer.create(<DisplayerDialog />);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });

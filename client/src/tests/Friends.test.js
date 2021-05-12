@@ -1,11 +1,10 @@
-/* eslint-disable no-undef */
 import React from 'react';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom';
-import App from './App';
+import Friends from '../components/Friends';
 
-test('Test App.js', () => {
-  const component = renderer.create(<App />);
+test('Test Friends snapshot', () => {
+  const component = renderer.create(<Friends />);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });

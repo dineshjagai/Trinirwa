@@ -93,7 +93,7 @@ webapp.post('/register', (req, res) => {
     connection.query(
       'INSERT INTO USERS (username, password, first_name, last_name,email, followers_count, is_logged_in, tweets_count, is_live, date) VALUES (?,?,?,?,?,?,?,?,?,?)',
       [username, hash, first_name, last_name, email, followerCount,
-        isLoggedIn, tweetsCount, isLive, datetime], (err, result) => {
+        isLoggedIn, tweetsCount, isLive, datetime], (err) => {
         if (err) {
           const status = err.status || 500;
           res.status(status).json({ error: err.message });
@@ -101,7 +101,6 @@ webapp.post('/register', (req, res) => {
         }
         res.send({
           message: 'success',
-          user: result,
         });
       },
     );
@@ -149,11 +148,13 @@ webapp.post('/login', (req, res) => {
 
       if (result.length > 0) {
         bcrypt.compare(password, result[0].password, (error, response) => {
+          console.log(response);
           if (response) {
             req.session.user = result;
             console.log(req.session.user);
-            res.send(result);
+            res.send({ message: 'success', result });
           } else {
+            console.log(`here ${result}`);
             res.send({ message: 'Wrong username/password combination!' });
           }
         });
@@ -543,7 +544,7 @@ webapp.post('/follow/:username', (req, res) => {
         res.status(405).json({ error: err.message });
         return;
       }
-      res.json({ message: 'user successfully blocked', changes: this.changes });
+      res.json({ message: 'user successfully followed', changes: this.changes });
     });
 });
 
