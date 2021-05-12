@@ -189,7 +189,7 @@ webapp.post('/login', (req, res) => {
           if (response) {
             req.session.user = result;
             console.log(req.session.user);
-            res.send({ message: 'success', result });
+            res.send(result);
           } else {
             console.log(`here ${result}`);
             res.send({ message: 'Wrong username/password combination!' });
@@ -522,7 +522,7 @@ webapp.put('/profile/reactivate/:username', (req, res) => {
       bcrypt.compare(password, result[0].password, (error, response) => {
         // console.log(response);
         if (error) {
-          res.status(401).json({ error: error });
+          res.status(401).json({ error });
         } else if (response) {
           connection.query(sql_deact, user,
             function (errr) {
