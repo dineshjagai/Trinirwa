@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import 'bootstrap/dist/css/bootstrap.css';
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
 import './tweet.css';
 import LikeIcon from '@material-ui/icons/FavoriteBorderRounded';
@@ -14,10 +14,10 @@ import {
   unLikeTweet,
   likeTweet,
 } from './Module';
-import idContext from './Context';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function Tweet({ data, handleDelete }) {
-  const user = useContext(idContext);
+  const user = getCurrentUsername();
   const [isLikedBool, setIsLike] = useState(false);
   const [likes, setLikes] = useState(data.tweet_likes);
   const [id] = useState(data.tweet_id);

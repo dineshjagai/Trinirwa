@@ -1,9 +1,9 @@
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import { fade, makeStyles } from '@material-ui/core/styles';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { searchFriend } from './Module';
-import idContext from './Context';
+import { getCurrentUsername } from '../auth/authServices';
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -49,7 +49,7 @@ export default function SearchBox() {
   const classes = useStyles();
   const [items, setItems] = useState([]);
   const [results, setResults] = useState([]);
-  const user = useContext(idContext);
+  const user = getCurrentUsername();
   const createItem = (data) => {
     console.log(data.profile_picture);
     const toRet = (

@@ -15,8 +15,6 @@ export default function ResetPassword() {
   const [passwordOneReg, setPasswordOneReg] = useState('');
   const [passwordTwoReg, setPasswordTwoReg] = useState('');
   const history = useHistory();
-  //   const user = useContext(idContext);
-
   const resetPasswrd = () => {
     // console.log('the actual username of this user is ', user);
     // if (!isSameUsername(usernameReg, user)) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import PostAddIcon from '@material-ui/icons/PostAdd';
@@ -6,7 +6,8 @@ import LiveTvIcon from '@material-ui/icons/LiveTv';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import TextField from '@material-ui/core/TextField';
 import Tweet from './Tweet';
-import idContext from './Context';
+import { getCurrentUsername } from '../auth/authServices';
+
 import {
   addTweet,
   deleteTweet,
@@ -36,23 +37,25 @@ export default function DisplayerTweets() {
     }
   };
   const handleHideOrDelete = (id, isOwner) => {
-    console.log(id);
     if (isOwner) {
       deleteTweet(id).then((res) => {
-        console.log(res.message);
-        setUpdate(true);
+        console.log('message: delete:', res.message);
+        setUpdate(false);
         toDisplay.delete(items.get(id));
         items.delete(id);
       }).catch((err) => {
         console.log(err.message);
       });
+    } else {
+      console.log('not owner');
     }
   };
 
   useEffect(() => {
+    setUpdate(false);
   }, [update]);
 
-  const user = useContext(idContext);
+  const user = getCurrentUsername();
   const postTweet = () => {
     setCount(255);
     const input = document.getElementById('tweet').value;

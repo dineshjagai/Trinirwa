@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -10,7 +10,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Tooltip from '@material-ui/core/Tooltip';
-import idContext from './Context';
+import { getCurrentUsername } from '../auth/authServices';
 // import { getFriends } from './Module';
 
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +28,7 @@ export default function ScrollDialog({
   const [open, setOpen] = useState(false);
   const [scroll, setScroll] = useState('paper');
   const [items, setItems] = useState([]);
-  const user = useContext(idContext);
+  const user = getCurrentUsername();
   const createItem = (data) => {
     console.log(data.profile_picture);
     const toRet = (
