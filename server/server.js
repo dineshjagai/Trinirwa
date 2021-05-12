@@ -173,10 +173,10 @@ webapp.post('/userUid', (req, res) => {
 webapp.post('/login', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
-  // console.log(`username:${username}`);
+  console.log(`username:${username}`);
 
   connection.query(
-    'SELECT * FROM USERS WHERE username = ?;',
+    'SELECT * FROM USERS WHERE username = ?',
     username,
     (err, result) => {
       if ((err) || !(result)) {
@@ -520,7 +520,6 @@ webapp.put('/profile/reactivate/:username', (req, res) => {
     // console.log(username);
     if (result.length > 0) {
       bcrypt.compare(password, result[0].password, (error, response) => {
-        // console.log(response);
         if (error) {
           res.status(401).json({ error });
         } else if (response) {
