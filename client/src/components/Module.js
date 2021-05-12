@@ -219,6 +219,8 @@ export function fetchAllFollowers(username) {
 }
 
 export const addUser = (usernameReg, passwordOneReg, firstName, lastName, email) => {
+  // const user
+  localStorage.setItem('username', JSON.stringify(usernameReg));
   const prm = axios({
     method: 'POST',
     url: '/register',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import PostAddIcon from '@material-ui/icons/PostAdd';
@@ -6,9 +6,11 @@ import LiveTvIcon from '@material-ui/icons/LiveTv';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import TextField from '@material-ui/core/TextField';
 import Tweet from './Tweet';
-import idContext from './Context';
 import { addTweet, deleteTweet, getTweets } from './Module';
 import './CenterDisplay.css';
+import {
+  getCurrentUsername,
+} from '../auth/authServices';
 // import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +48,7 @@ export default function DisplayerTweets() {
   useEffect(() => {
     setUpdate(false);
   }, [update]);
-  const user = useContext(idContext);
+  const user = getCurrentUsername();
   const postTweet = () => {
     setCount(255);
     const input = document.getElementById('tweet').value;
