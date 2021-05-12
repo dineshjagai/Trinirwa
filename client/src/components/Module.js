@@ -38,6 +38,14 @@ export function fetchTweets(username) {
   });
 }
 
+export function fetchAllTweets(username) {
+  const getUrl = `/tweets/all/${username}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}
+
 export function getProfileData(username) {
   const getUrl = `/profile/${username}`;
   return axios({
@@ -306,6 +314,7 @@ export function isLiked(user, tweetId) {
 }
 
 export function likeTweet(user, tweetId) {
+  console.log(`${user} -----${tweetId}`);
   const insUrl = `/tweet/like/${user}/`;
   return axios({
     method: 'POST',

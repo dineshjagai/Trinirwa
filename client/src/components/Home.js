@@ -1,7 +1,7 @@
 import React from 'react';
 import './Home.css';
 import NavBar from './navBar';
-import DisplayerTweets from './CenterDisplay';
+import DisplayerTweets from './CenterDisplayerHome';
 import SideBar from './SidebarU';
 
 export default function Home() {
