@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Friends snapshot 1`] = `
+<div
+  className="box-container"
+>
+  <div
+    className="buttonFollowers"
+  >
+    <div>
+      <button
+        className="btn"
+        id="delete"
+        onClick={[Function]}
+        style={
+          Object {
+            "backgroundColor": "inherit",
+            "border": "none",
+            "color": "#00695c",
+          }
+        }
+        type="button"
+      >
+        All friends
+      </button>
+    </div>
+  </div>
+  <div
+    className="title"
+  >
+    Friends
+  </div>
+  <br />
+  <div
+    className="box"
+  >
+    <div
+      className="containers"
+    />
+  </div>
+</div>
+`;

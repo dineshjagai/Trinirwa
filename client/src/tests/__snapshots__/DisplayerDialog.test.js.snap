@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test DisplayerDialog snapshot 1`] = `
+<div>
+  <button
+    className="btn"
+    id="delete"
+    onClick={[Function]}
+    style={
+      Object {
+        "backgroundColor": "inherit",
+        "border": "none",
+        "color": "#00695c",
+      }
+    }
+    type="button"
+  />
+</div>
+`;

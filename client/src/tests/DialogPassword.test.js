@@ -1,11 +1,10 @@
-/* eslint-disable no-undef */
 import React from 'react';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom';
-import App from './App';
+import DialogPassword from '../components/DialogPassword';
 
-test('Test App.js', () => {
-  const component = renderer.create(<App />);
+test('Test DialogPassword snapshot', () => {
+  const component = renderer.create(<DialogPassword />);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });

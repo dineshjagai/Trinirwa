@@ -1,11 +1,10 @@
-/* eslint-disable no-undef */
 import React from 'react';
 import renderer from 'react-test-renderer';
 import '@testing-library/jest-dom';
-import App from './App';
+import Tweet from '../components/Tweet';
 
-test('Test App.js', () => {
-  const component = renderer.create(<App />);
+test('Test Tweet snapshot', () => {
+  const component = renderer.create(<Tweet />);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });
