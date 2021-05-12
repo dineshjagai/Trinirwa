@@ -710,9 +710,9 @@ webapp.get('/blocked/:username', (req, res) => {
 
 //updating tweet likes
 webapp.put(`/tweet/likes/:tweetid`, (req, res) => {
-  const sql_update = `UPDATE TWEETS_1 SET tweet_likes='${ req.body.likes}' WHERE tweet_id=? AND user NOT IN (SELECT user FROM LIKED_TWEETS where tweet_id= ?)`;
-  const params = [req.body.likes, req.params.tweetid];
-  connection.query(sql_update, params,
+  console.log(`Update: ${req.params.tweetid}.....${req.body.likes}`)
+  const sql_update = `UPDATE TWEETS_1 SET tweet_likes='${req.body.likes}' WHERE tweet_id='${req.params.tweetid}'`;
+  connection.query(sql_update,
     function (err) {
       if (err) {
         res.status(405).json({ error: err.message });
@@ -741,8 +741,9 @@ webapp.get('/tweet/isliked/:username/:tweetid/', (req, res) => {
 });
 
 // like a tweet
-webapp.put('/tweet/like/:username', (req, res) => {
-  const sql_like = `INSERT INTO LIKED_TWEETS (user, tweet_id) VALUES ('${req.params.username}', '${req.body.tweetid}'`;
+webapp.post('/tweet/like/:username', (req, res) => {
+  console.log(`${req.params.username}.....${req.body.tweetid}`)
+  const sql_like = `INSERT INTO LIKED_TWEETS (user, tweet_id) VALUES ('${req.params.username}','${req.body.tweetid}')`;
   connection.query(sql_like,
     function (err) {
       if (err) {
@@ -844,8 +845,27 @@ webapp.get('/all/followers/:username', (req, res) => {
     });
 });
 
+// gets alls the followers with no limit
+webapp.get('/tweets/all/:username', (req, res) => {
+  // finish the outes correctly
+  const { username } = req.params;
+  const sql_get = `(SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
+    FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two) UNION ALL (select * from TWEETS_1 where user='${username}') ORDER BY tweet_date DESC`;
+
+  connection.query(sql_get,
+    (err, tweets) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        tweets,
+      });
+    });
+})
 webapp.use((_req, res) => {
   res.status(404);
 });
+
 
 module.exports = webapp;

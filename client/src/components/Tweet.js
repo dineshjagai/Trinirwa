@@ -7,7 +7,13 @@ import LikeIcon from '@material-ui/icons/FavoriteBorderRounded';
 import IconButton from '@material-ui/core/IconButton';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import Tooltip from '@material-ui/core/Tooltip';
-import { getAvatar, updateTweetLikes, isLiked } from './Module';
+import {
+  getAvatar,
+  updateTweetLikes,
+  isLiked,
+  unLikeTweet,
+  likeTweet,
+} from './Module';
 import idContext from './Context';
 
 export default function Tweet({ data, handleDelete }) {
@@ -15,29 +21,16 @@ export default function Tweet({ data, handleDelete }) {
   const [isLikedBool, setIsLike] = useState(false);
   const [likes, setLikes] = useState(data.tweet_likes);
   const [id] = useState(data.tweet_id);
-  const [isOwner] = useState(data.username === user);
+  const [isOwner] = useState(data.user === user);
   const [avatar, setAvatar] = useState('');
-  const handleLike = () => {
-    if (isLikedBool) {
-      updateTweetLikes(id, likes - 1).then((res) => {
-        console.log(res.message);
-      }).catch((err) => {
-        console.log(err.message);
-      });
-      setLikes(likes - 1);
-    } else {
-      updateTweetLikes(id, likes + 1).then((res) => {
-        console.log(res.message);
-      }).catch((err) => {
-        console.log(err.message);
-      });
-      setLikes(likes + 1);
-    }
-    setIsLike(!isLikedBool);
-  };
 
-  useEffect(() => {
-    isLiked(user, data.tweet_id).then((res) => {
+  const getData = async () => {
+    await getAvatar(data.user).then((res) => {
+      setAvatar(res.data.avatar[0].profile_picture);
+    }).catch((err) => {
+      console.log(err.message);
+    });
+    await isLiked(user, data.tweet_id).then((res) => {
       if (res.data.bool.length) {
         setIsLike(true);
       } else {
@@ -46,12 +39,39 @@ export default function Tweet({ data, handleDelete }) {
     }).catch((err) => {
       console.log(err.message);
     });
-    getAvatar(data.username).then((res) => {
-      setAvatar(res.data.avatar[0].profile_picture);
-    }).catch((err) => {
-      console.log(err.message);
-    });
-  });
+  };
+  const handleLike = () => {
+    if (isLikedBool) {
+      unLikeTweet(user, id).then((res) => {
+        if (res.status === 200) {
+          updateTweetLikes(id, likes - 1).then((result) => {
+            console.log(result.message);
+            setLikes(likes - 1);
+          }).catch((err) => {
+            console.log(err.message);
+          });
+        }
+      }).catch((err) => {
+        console.log(err.message);
+      });
+    } else {
+      likeTweet(user, id).then((res) => {
+        updateTweetLikes(id, likes + 1).then((result) => {
+          console.log(result);
+          setLikes(likes + 1);
+        }).catch((err) => {
+          console.log(err.message);
+        });
+      }).catch((err) => {
+        console.log(err.message);
+      });
+    }
+    setIsLike(!isLikedBool);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
   const date = (data.tweet_date.split('T'))[0];
   const newAvatar = `/viewFile/${avatar}`;
   return (
@@ -68,7 +88,7 @@ export default function Tweet({ data, handleDelete }) {
             }}
             id="author_username"
           >
-            {data.username}
+            {data.user}
           </span>
           <span style={{ fontSize: '10px' }} id="date">
             {date}
