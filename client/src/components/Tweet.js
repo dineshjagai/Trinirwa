@@ -18,6 +18,8 @@ import {
 } from './Module';
 import { getCurrentUsername } from '../auth/authServices';
 
+const hash = require('object-hash');
+
 export default function Tweet({ data, handleDelete }) {
   const user = getCurrentUsername();
   const [isLikedBool, setIsLike] = useState(false);
@@ -28,7 +30,18 @@ export default function Tweet({ data, handleDelete }) {
   const [avatar, setAvatar] = useState('');
   // eslint-disable-next-line eqeqeq
   const [isMedia] = useState(data.type == 'media');
-
+  const postComment = (content, tweetId) => {
+    const timestamp = new Date().toISOString();
+    const commentId = hash(`${content}${user}${timestamp}`);
+    const newComment = {
+      comm_id: commentId,
+      tweet_id: tweetId,
+      user,
+      content,
+      timestamp,
+    };
+    console.log(newComment);
+  };
   const getData = async () => {
     console.log('data.user:', data.user);
     await getAvatar(data.user).then((res) => {
@@ -46,6 +59,14 @@ export default function Tweet({ data, handleDelete }) {
       console.log(err.message);
     });
   };
+  const handleComment = () => {
+    const obj = document.getElementById('commentInput');
+    const input = obj.value;
+    if (input === '') return;
+    postComment(input, id);
+    obj.value = '';
+  };
+
   const handleLike = () => {
     if (isLikedBool) {
       unLikeTweet(user, id).then((res) => {
@@ -131,7 +152,7 @@ export default function Tweet({ data, handleDelete }) {
         </p>
       </div>
       <div className="comment">
-        <CommentInput />
+        <CommentInput handleComment={handleComment} />
       </div>
       <div className="tweet_bottom">
         <div className="likes">

@@ -522,12 +522,12 @@ webapp.put('/profile/reactivate/:username', (req, res) => {
       bcrypt.compare(password, result[0].password, (error, response) => {
         // console.log(response);
         if (error) {
-          res.status(401).json({ error: err.message });
+          res.status(401).json({ error: error });
         } else if (response) {
           connection.query(sql_deact, user,
             function (errr) {
               if (errr) {
-                res.status(500).json({ error: errr.message });
+                res.status(500).json({ error: errr });
                 return;
               }
               res.json({ message: 'Account reactivated', changes: this.changes });

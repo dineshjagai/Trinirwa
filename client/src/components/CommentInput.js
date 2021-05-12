@@ -1,15 +1,17 @@
 import React from 'react';
 import './CommentInput.css';
 
-export default function CommentInput() {
+export default function CommentInput({ handleComment }) {
   return (
     <div className="comment_box">
       <div className="commentInpCtn">
         <input
+          id="commentInput"
           style={{
-            border: 'none',
+            border: '1px',
             borderRadius: '8px',
             height: '45px',
+            width: '200px',
           }}
           className="commentInput"
           placeHolder="Comment on post"
@@ -17,7 +19,7 @@ export default function CommentInput() {
         />
       </div>
       <div className="commentBtnCtn">
-        <button id="commentButton" type="button"> Comment</button>
+        <button onClick={handleComment} id="commentButton" type="button"> Comment</button>
       </div>
     </div>
   );
