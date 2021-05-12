@@ -10,5 +10,5 @@ script:
   - cd server 
   - npm install
   - npm test
-  - cd ../tests 
+  - cd ../client 
   - npm test
