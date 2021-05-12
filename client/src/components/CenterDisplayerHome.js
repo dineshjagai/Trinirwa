@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import PostAddIcon from '@material-ui/icons/PostAdd';
@@ -25,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
 const hash = require('object-hash');
 
 export default function DisplayerTweets() {
+  const history = useHistory();
+
   const [items, setItems] = useState(new Map());
   const [update, setUpdate] = useState(false);
   const [count, setCount] = useState(255);
@@ -99,6 +103,10 @@ export default function DisplayerTweets() {
   useEffect(() => {
     getData();
   }, []);
+
+  const goLiveHandler = () => {
+    history.push('/videochat');
+  };
   return (
     <div className="container_center">
       <div
@@ -138,6 +146,7 @@ export default function DisplayerTweets() {
             variant="contained"
             color="secondary"
             className={classes.button}
+            onClick={goLiveHandler}
             startIcon={<LiveTvIcon />}
           >
             Go live

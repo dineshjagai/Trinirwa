@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useEffect } from "react";
-import Video from "twilio-video";
-import Lobby from "./Lobby";
-import Room from "./Room";
+import React, { useState, useCallback, useEffect } from 'react';
+import Video from 'twilio-video';
+import Lobby from './Lobby';
+import Room from './Room';
 
 const VideoChat = () => {
-  const [username, setUsername] = useState("");
-  const [roomName, setRoomName] = useState("");
+  const [username, setUsername] = useState('');
+  const [roomName, setRoomName] = useState('');
   const [room, setRoom] = useState(null);
   const [connecting, setConnecting] = useState(false);
 
@@ -21,29 +21,29 @@ const VideoChat = () => {
     async (event) => {
       event.preventDefault();
       setConnecting(true);
-      const data = await fetch("/video/token", {
-        method: "POST",
+      const data = await fetch('/video/token', {
+        method: 'POST',
         body: JSON.stringify({
           identity: username,
           room: roomName,
         }),
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }).then((res) => res.json());
       Video.connect(data.token, {
         name: roomName,
       })
-        .then((room) => {
+        .then((rm) => {
           setConnecting(false);
-          setRoom(room);
+          setRoom(rm);
         })
         .catch((err) => {
           console.error(err);
           setConnecting(false);
         });
     },
-    [roomName, username]
+    [roomName, username],
   );
 
   const handleLogout = useCallback(() => {
@@ -58,6 +58,7 @@ const VideoChat = () => {
     });
   }, []);
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (room) {
       const tidyUp = (event) => {
@@ -68,11 +69,11 @@ const VideoChat = () => {
           handleLogout();
         }
       };
-      window.addEventListener("pagehide", tidyUp);
-      window.addEventListener("beforeunload", tidyUp);
+      window.addEventListener('pagehide', tidyUp);
+      window.addEventListener('beforeunload', tidyUp);
       return () => {
-        window.removeEventListener("pagehide", tidyUp);
-        window.removeEventListener("beforeunload", tidyUp);
+        window.removeEventListener('pagehide', tidyUp);
+        window.removeEventListener('beforeunload', tidyUp);
       };
     }
   }, [room, handleLogout]);

@@ -33,7 +33,14 @@ const Room = ({ roomName, room, handleLogout }) => {
         {' '}
         {roomName}
       </h2>
-      <button onClick={handleLogout}>Log out</button>
+      <button
+        type="button"
+        className="btn btn-primary w-100"
+        onClick={handleLogout}
+      >
+        Log out
+
+      </button>
       <div className="local-participant">
         {room ? (
           <Participant

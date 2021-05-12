@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import PostAddIcon from '@material-ui/icons/PostAdd';
@@ -27,6 +28,7 @@ export default function DisplayerTweets() {
   const [count, setCount] = useState(255);
   const [toDisplay] = useState(new Set());
   const classes = useStyles();
+  const history = useHistory();
   const handleChange = (e) => {
     if ((e.target.value).length >= 0) {
       const u = 255 - (e.target.value).length;
@@ -90,6 +92,7 @@ export default function DisplayerTweets() {
   }, []);
   const goLiveHandler = () => {
     alert('I clicked live');
+    history.push('/videochat');
   };
 
   return (

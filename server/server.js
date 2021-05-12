@@ -2,6 +2,7 @@
 const express = require('express');
 
 const webapp = express();
+const pino = require('express-pino-logger')();
 
 // impporting database
 const mysql = require('mysql');
@@ -66,6 +67,43 @@ webapp.use(
     },
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/*                                TWILIO ENDPOINTS                            */
+/* -------------------------------------------------------------------------- */
+const configTwo = require('./config');
+const { videoToken } = require('./tokens');
+
+webapp.use(pino);
+
+const sendTokenResponse = (token, res) => {
+  res.set('Content-Type', 'application/json');
+  res.send(
+    JSON.stringify({
+      token: token.toJwt(),
+    }),
+  );
+};
+
+webapp.get('/api/greeting', (req, res) => {
+  const name = req.query.name || 'World';
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+});
+
+webapp.get('/video/token', (req, res) => {
+  const { identity } = req.query;
+  const { room } = req.query;
+  const token = videoToken(identity, room, configTwo);
+  sendTokenResponse(token, res);
+});
+webapp.post('/video/token', (req, res) => {
+  console.log(configTwo);
+  const { identity } = req.body;
+  const { room } = req.body;
+  const token = videoToken(identity, room, configTwo);
+  sendTokenResponse(token, res);
+});
 
 /* -------------------------------------------------------------------------- */
 /*                      LOGIN AND REGISTRATION ENDPOINTS                      */
