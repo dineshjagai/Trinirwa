@@ -8,21 +8,33 @@ test('validating username: no username entered', () => {
 });
 
 test('validating password: no password entered', () => {
-  expect(log.isValidPassWord('')).toBe(false);
+  expect(log.isValidPassword('')).toBe(false);
 });
 
-test('validating password: wrong pass', () => {
-  expect(log.isValidPassWord('Rasabe')).toBe(false);
+test('validating password: wrong password', () => {
+  expect(log.isValidPassword('Rasabe')).toBe(false);
 });
 
 test('validating username: wrong username', () => {
-  expect(log.isValidUsername('ana')).toBe(false);
+  expect(log.isValidUsername('ana@')).toBe(false);
+});
+
+test('validating username: wrong username', () => {
+  expect(log.isValidUsername('ana')).toBe(true);
 });
 
 test('validating password: correct pass', () => {
-  expect(log.isValidPassWord('!Dragon@907')).toBe(true);
+  expect(log.isValidPassword('!Dragon@907')).toBe(true);
 });
 
 test('validating username: correct username', () => {
   expect(log.isValidUsername('anaick')).toBe(true);
+});
+
+test('validating password: correct passwords', () => {
+  expect(log.isValidUsername('StrongPasswordJk@1999', 'StrongPasswordJk@1999')).toBe(true);
+});
+
+test('validating password: Incorrect passwords', () => {
+  expect(log.isValidUsername('StrongJk@1999', 'StrongPasswordJk@1999')).toBe(true);
 });
