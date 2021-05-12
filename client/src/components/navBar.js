@@ -13,6 +13,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import { useHistory } from 'react-router-dom';
+import { logout } from '../auth/authServices';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -108,6 +109,11 @@ export default function PrimarySearchAppBar() {
     history.push(path);
   };
 
+  const handleLogOut = () => {
+    logout();
+    const path = '/login';
+    history.push(path);
+  };
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -121,6 +127,8 @@ export default function PrimarySearchAppBar() {
     >
       <MenuItem onClick={handleClick}>Home</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+
     </Menu>
   );
 

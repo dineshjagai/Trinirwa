@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Sidebar.css';
 import {
   useHistory, BrowserRouter as Router,
 } from 'react-router-dom';
-import idContext from './Context';
 import { getAvatar } from './Module';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function Sidebar() {
   const history = useHistory();
@@ -13,7 +13,9 @@ export default function Sidebar() {
     const path = '/profile';
     history.push(path);
   };
-  const user = useContext(idContext);
+  // const user = useContext(idContext);
+  const user = getCurrentUsername();
+
   useEffect(() => {
     getAvatar(user).then((res) => {
       setAvatar(res.data.avatar[0].profile_picture);

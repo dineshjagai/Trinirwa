@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   addProfilePicture, addInterest, deleteInterest, getProfileData,
 } from './Module';
 import '../App.css';
 import Displayer from './Displayer';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function Signup() {
   const history = useHistory();
-  const { username } = useParams();
+  const username = getCurrentUsername();
   console.log(`username = ${username}`);
 
   /* -------------------------------------------------------------------------- */
