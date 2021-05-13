@@ -39,8 +39,10 @@
     background-color: antiquewhite;
 }
 .tweet_bottom {
+    display: flex;
+    justify-content: center;
     height: 50px;
-    margin: auto;
+    width: auto;
 }
 
 #menu {
@@ -57,4 +59,12 @@
 .tweet_image {
     height: 300px;
     width: 400px;
+}
+
+#viewCommentsBtn {
+    color: #0C8367;
+}
+
+.comments {
+    margin: auto;
 }
