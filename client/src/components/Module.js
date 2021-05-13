@@ -225,10 +225,10 @@ export function updateTweetComments(tweetId, newNumComments) {
   });
 }
 
-export function updateComment(tweetId, newContent) {
+export function updateComment(commId, newContent) {
   return axios({
     method: 'PUT',
-    url: `/tweet/comment/update/${tweetId}`,
+    url: `/tweet/comment/update/${commId}`,
     data: {
       content: newContent,
     },

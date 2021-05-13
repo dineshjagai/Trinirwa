@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './CommentDisplayer.css';
 import DialogComment from './DialogComment';
 import { getCurrentUsername } from '../auth/authServices';
-import { getAvatar } from './Module';
+import { getAvatar, updateComment } from './Module';
 
 export default function CommentDisplayer({ data, handleDeleteComment }) {
   const [avatar, setAvatar] = useState('');
@@ -22,6 +22,9 @@ export default function CommentDisplayer({ data, handleDeleteComment }) {
       return;
     }
     setContent(newContent);
+    updateComment(data.comm_id, newContent).then((res) => {
+      console.log(res.message);
+    }).catch((err) => console.log(err.message));
   };
 
   useEffect(() => {
