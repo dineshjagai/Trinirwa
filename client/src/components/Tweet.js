@@ -19,9 +19,11 @@ import {
   getAllCommentsForTweet,
   updateTweetComments,
   deleteComment,
+  getHiders,
 } from './Module';
 import { getCurrentUsername } from '../auth/authServices';
 import CommentDisplayer from './CommentDisplayer';
+import DialogAnalytics from './AnalyticsTweet';
 
 const hash = require('object-hash');
 
@@ -42,7 +44,6 @@ export default function Tweet({ data, handleDelete }) {
   const [items, setItems] = useState([]);
   const [isMediaUndefined] = useState(typeof (data.content) !== 'undefined');
   const [allComments, setComments] = useState([]);
-
   const postComment = (content, tweetId) => {
     const timestamp = new Date().toISOString();
     const commentId = hash(`${content}${user}${timestamp}`);
@@ -54,7 +55,6 @@ export default function Tweet({ data, handleDelete }) {
       timestamp,
     };
     allComments.unshift(newComment);
-    console.log('comments', allComments);
     addComment(newComment).then((res) => {
       console.log(res.message);
       updateTweetComments(id, numComments + 1).then((result) => {
@@ -80,8 +80,10 @@ export default function Tweet({ data, handleDelete }) {
     });
     await getAllCommentsForTweet(data.tweet_id).then((res) => {
       const { comments } = res.data;
-      // setItems(newItems);
       setComments(comments);
+    }).catch((err) => console.log(err.message));
+    await getHiders(id).then((res) => {
+      console.log(res.data);
     }).catch((err) => console.log(err.message));
   };
 
@@ -154,7 +156,6 @@ export default function Tweet({ data, handleDelete }) {
       </video>
     );
   } else if (isSong) {
-    console.log('song');
     newMediaTweet = (
       // eslint-disable-next-line jsx-a11y/media-has-caption
       <audio controls>
@@ -256,7 +257,12 @@ export default function Tweet({ data, handleDelete }) {
               >
                 <LikeIcon />
               </IconButton>
-              <span>{`${likes} likes`}</span>
+              <span style={{ color: '#0C8367' }}>{`${likes} likes`}</span>
+            </div>
+            <div style={{ display: isOwner ? 'block' : 'none' }} className="analytics">
+              <DialogAnalytics
+                tweetId={data.tweet_id}
+              />
             </div>
             <div className="comments">
               <button onClick={() => handleClick()} id="viewCommentsBtn" type="button">{!isOpen ? 'View more' : 'View less'}</button>

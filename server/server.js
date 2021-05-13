@@ -882,6 +882,18 @@ webapp.put('/tweet/comment/update/:commid', (req, res) => {
     });
 });
 
+// get hiders
+webapp.get('/tweet/hiders/all/:tweetid', (req, res) => {
+  const sql_get = `SELECT user from HIDDEN_TWEETS WHERE tweet_id='${req.params.tweetid}'`;
+  connection.query(sql_get,
+    function (err, hiders) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'hiders successfully retrieved', hiders});
+    });
+});
 // updating picture
 
 // deleting picture

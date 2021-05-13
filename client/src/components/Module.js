@@ -182,7 +182,6 @@ export function getAvatar(user) {
 }
 
 export function addTweet(data) {
-  console.log('picture:', data.user);
   return axios({
     method: 'POST',
     url: `/createTweet/${data.user}`,
@@ -236,7 +235,6 @@ export function updateComment(commId, newContent) {
 }
 
 export function deleteComment(commId) {
-  console.log(commId);
   return axios({
     method: 'DELETE',
     url: `/tweet/comment/delete/${commId}`,
@@ -341,7 +339,6 @@ export const addProfilePicture = (username, profilePicture) => {
 //   return prm;
 // };
 export const searchFriend = (username, input) => {
-  console.log(`search friend ${username}, typeof ${typeof (input)}@@@@@@@@@@@@`);
   const promise = axios({
     method: 'GET',
     url: `/search/${username}/${input}`,
@@ -408,6 +405,14 @@ export function likeTweet(user, tweetId) {
     },
   });
 }
+
+export const getHiders = (tweetId) => {
+  const prm = axios({
+    method: 'GET',
+    url: `/tweet/hiders/all/${tweetId}`,
+  });
+  return prm;
+};
 
 export function unLikeTweet(user, tweetId) {
   const putUrl = `/tweet/unlike/${user}/`;

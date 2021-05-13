@@ -33,7 +33,6 @@ const hash = require('object-hash');
 
 export default function DisplayerTweets() {
   const history = useHistory();
-
   const [items] = useState(new Map());
   const [update, setUpdate] = useState(false);
   const [count, setCount] = useState(255);
@@ -52,7 +51,6 @@ export default function DisplayerTweets() {
         window.location.reload();
         console.log('message: delete:', res.message);
         setUpdate(true);
-        console.log('deleted:', toDisplay.delete(items.get(id)));
         items.delete(id);
       }).catch((err) => {
         console.log(err.message);
