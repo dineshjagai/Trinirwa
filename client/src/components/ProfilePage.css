@@ -15,7 +15,7 @@
 .left-boxes {
     display: flex;
     flex-direction: column;
-    min-width: 500px;
+    min-width: 400px;
     height: 500px;
 }
 
