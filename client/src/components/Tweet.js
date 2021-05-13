@@ -18,7 +18,6 @@ import {
   addComment,
 } from './Module';
 import { getCurrentUsername } from '../auth/authServices';
-import CommentDisplayer from './CommentDisplayer';
 
 const hash = require('object-hash');
 
@@ -113,73 +112,69 @@ export default function Tweet({ data, handleDelete }) {
   }
 
   return (
-    <div>
-      <div id="container_tweet">
-        <div className="tweet_header">
-          <div className="tweet_img">
-            <img className="tweet_header" id="tweet_author_picture" src={newAvatar} alt="" />
-          </div>
-          <div className="tweet_text">
-            <span
-              style={{
-                fontSize: '13px',
-                fontWeight: 'bold',
-              }}
-              id="author_username"
-            >
+    <div id="container_tweet">
+      <div className="tweet_header">
+        <div className="tweet_img">
+          <img className="tweet_header" id="tweet_author_picture" src={newAvatar} alt="" />
+        </div>
+        <div className="tweet_text">
+          <span
+            style={{
+              fontSize: '13px',
+              fontWeight: 'bold',
+            }}
+            id="author_username"
+          >
 
-              {data.user}
-            </span>
-            <span style={{ fontSize: '10px' }} id="date">
-              {date}
-            </span>
-          </div>
-        </div>
-        <div id="menu">
-          <Tooltip title={isOwner ? 'Delete post' : 'Hide post'} placement="top">
-            <IconButton
-              style={{
-                borderRadius: '50%',
-                padding: '3',
-                color: '#0C8367',
-              }}
-              onClick={() => handleDelete(id, isOwner)}
-            >
-              <CloseRoundedIcon id={data.tweet_id} handleComment={handleComment} />
-            </IconButton>
-          </Tooltip>
-        </div>
-        <Divider variant="middle" />
-        <div className="tweet_content">
-          <p style={{ textAlign: 'left' }}>
-            {newMediaTweet}
-          </p>
-        </div>
-        <Divider variant="middle" />
-        <div className="comment">
-          <CommentInput handleComment={handleComment} />
-        </div>
-        <div className="tweet_bottom">
-          <div className="likes">
-            <IconButton
-              onClick={handleLike}
-              style={{
-                borderRadius: '50%',
-                padding: '3',
-                color: isLikedBool ? 'red' : 'black',
-              }}
-            >
-              <LikeIcon />
-            </IconButton>
-            <span>{`${likes} likes`}</span>
-          </div>
-          <div className="comments">
-            <button id="viewCommentsBtn" type="button"> View comments</button>
-          </div>
-          <CommentDisplayer />
+            {data.user}
+          </span>
+          <span style={{ fontSize: '10px' }} id="date">
+            {date}
+          </span>
         </div>
       </div>
-
+      <div id="menu">
+        <Tooltip title={isOwner ? 'Delete post' : 'Hide post'} placement="top">
+          <IconButton
+            style={{
+              borderRadius: '50%',
+              padding: '3',
+              color: '#0C8367',
+            }}
+            onClick={() => handleDelete(id, isOwner)}
+          >
+            <CloseRoundedIcon id={data.tweet_id} handleComment={handleComment} />
+          </IconButton>
+        </Tooltip>
+      </div>
+      <Divider variant="middle" />
+      <div className="tweet_content">
+        <p style={{ textAlign: 'left' }}>
+          {newMediaTweet}
+        </p>
+      </div>
+      <Divider variant="middle" />
+      <div className="comment">
+        <CommentInput handleComment={handleComment} />
+      </div>
+      <div className="tweet_bottom">
+        <div className="likes">
+          <IconButton
+            onClick={handleLike}
+            style={{
+              borderRadius: '50%',
+              padding: '3',
+              color: isLikedBool ? 'red' : 'black',
+            }}
+          >
+            <LikeIcon />
+          </IconButton>
+          <span>{`${likes} likes`}</span>
+        </div>
+        <div className="comments">
+          <button id="viewCommentsBtn" type="button"> View comments</button>
+        </div>
+      </div>
     </div>
   );
 }
