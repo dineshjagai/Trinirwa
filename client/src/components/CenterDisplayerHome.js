@@ -6,6 +6,8 @@ import Button from '@material-ui/core/Button';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import LiveTvIcon from '@material-ui/icons/LiveTv';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
+import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
+import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
 import TextField from '@material-ui/core/TextField';
 import Tweet from './Tweet';
 import { getCurrentUsername } from '../auth/authServices';
@@ -122,7 +124,7 @@ export default function DisplayerTweets() {
     // upload picture
     const formdata = new FormData();
     // console.log(e.target.files);
-    const fakePath = document.getElementById('fileInput').value;
+    const fakePath = document.getElementById('fileInputPicture').value;
     formdata.append('image', e.target.files[0], fakePath);
 
     const requestOptions = {
@@ -140,7 +142,101 @@ export default function DisplayerTweets() {
         const newTweet = {
           user,
           tweet_id: tweetId,
-          type: 'media',
+          type: 'picture',
+          content: JSON.parse(result).data,
+          tweet_date: dateTime,
+          tweet_likes: 0,
+        };
+        console.log(`is this good? ${newTweet.user}`);
+        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        const newItems = items;
+        toDisplay.add(toAdd);
+        console.log(toDisplay.length);
+        newItems.set(tweetId, toAdd);
+        setUpdate(true);
+        setItems(newItems);
+        console.log(items.length);
+        addTweet(newTweet).then((res) => {
+          console.log(res.message);
+        }).catch((err) => {
+          console.log(err.message);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const postVideo = (e) => {
+    // upload video
+    const formdata = new FormData();
+    // console.log(e.target.files);
+    const fakePath = document.getElementById('fileInputVideo').value;
+    formdata.append('image', e.target.files[0], fakePath);
+
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow',
+    };
+    const input = document.getElementById('tweet').value;
+    const dateTime = new Date().toISOString();
+    const tweetId = hash(`${input}${user}${dateTime}`);
+
+    fetch('/uploadFile', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const newTweet = {
+          user,
+          tweet_id: tweetId,
+          type: 'video',
+          content: JSON.parse(result).data,
+          tweet_date: dateTime,
+          tweet_likes: 0,
+        };
+        console.log(`is this good? ${newTweet.user}`);
+        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        const newItems = items;
+        toDisplay.add(toAdd);
+        console.log(toDisplay.length);
+        newItems.set(tweetId, toAdd);
+        setUpdate(true);
+        setItems(newItems);
+        console.log(items.length);
+        addTweet(newTweet).then((res) => {
+          console.log(res.message);
+        }).catch((err) => {
+          console.log(err.message);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const postSong = (e) => {
+    // upload song
+    const formdata = new FormData();
+    // console.log(e.target.files);
+    const fakePath = document.getElementById('fileInputSong').value;
+    formdata.append('image', e.target.files[0], fakePath);
+
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow',
+    };
+    const input = document.getElementById('tweet').value;
+    const dateTime = new Date().toISOString();
+    const tweetId = hash(`${input}${user}${dateTime}`);
+
+    fetch('/uploadFile', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const newTweet = {
+          user,
+          tweet_id: tweetId,
+          type: 'song',
           content: JSON.parse(result).data,
           tweet_date: dateTime,
           tweet_likes: 0,
@@ -166,7 +262,15 @@ export default function DisplayerTweets() {
   };
 
   const postPictureTrigger = () => {
-    document.getElementById('fileInput').click();
+    document.getElementById('fileInputPicture').click();
+  };
+
+  const postVideoTrigger = () => {
+    document.getElementById('fileInputVideo').click();
+  };
+
+  const postSongTrigger = () => {
+    document.getElementById('fileInputSong').click();
   };
   return (
     <div className="container_center">
@@ -221,7 +325,27 @@ export default function DisplayerTweets() {
             startIcon={<AddAPhotoIcon />}
             onClick={postPictureTrigger}
           >
-            Photo/video
+            Photo
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            id="button-media"
+            className={classes.button}
+            startIcon={<VideoLibraryIcon />}
+            onClick={postVideoTrigger}
+          >
+            Video
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            id="button-media"
+            className={classes.button}
+            startIcon={<LibraryMusicIcon />}
+            onClick={postSongTrigger}
+          >
+            Song
           </Button>
 
           <Button
@@ -236,9 +360,24 @@ export default function DisplayerTweets() {
           <input
             className="FileUpload"
             accept=".jpg,.png,.gif"
-            id="fileInput"
+            id="fileInputPicture"
             type="file"
             onChange={postPicture}
+            hidden
+          />
+          <input
+            className="FileUpload"
+            id="fileInputVideo"
+            type="file"
+            onChange={postVideo}
+            hidden
+          />
+          <input
+            className="FileUpload"
+            id="fileInputSong"
+            type="file"
+            onChange={postSong}
+            hidden
           />
         </div>
       </div>
