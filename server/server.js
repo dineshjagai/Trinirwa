@@ -795,7 +795,6 @@ webapp.put('/tweet/likes/:tweetid', (req, res) => {
     });
 });
 
-
 // updating tweet comments
 webapp.put('/tweet/comments/:tweetid', (req, res) => {
   const sql_update = `UPDATE TWEETS_1 SET tweet_comments='${req.body.comments}' WHERE tweet_id='${req.params.tweetid}'`;
@@ -858,7 +857,7 @@ webapp.put('/tweet/unlike/:username', (req, res) => {
 
 // delete comment
 webapp.delete('/tweet/comment/delete/:commid', (req, res) => {
-  console.log(`-----------------`+req.params.commid);
+  console.log(`-----------------${req.params.commid}`);
   const sql_delete = `DELETE FROM COMMENTS_1 WHERE comm_id= '${req.params.commid}'`;
   connection.query(sql_delete,
     function (err) {
@@ -869,7 +868,6 @@ webapp.delete('/tweet/comment/delete/:commid', (req, res) => {
       res.json({ message: 'comment successfully deleted', changes: this.changes });
     });
 });
-
 
 // updating picture
 
@@ -1037,6 +1035,48 @@ webapp.get('/tweet/comments/all/:tweetid', (req, res) => {
         message: '200',
         comments,
       });
+    });
+});
+
+/* -------------------------------------------------------------------------- */
+/* ----------------------------MESSAGING------------------------------------------ */
+/* -------------------------------------------------------------------------- */
+
+/**
+   * Retrieving all messages of sender/user
+   * * */
+
+webapp.get('/profile/messages/:username/:receiver', (req, res) => {
+  const sql_select = 'SELECT * FROM MESSAGES_1 WHERE (user=? AND receiver =?) OR (user=? AND receiver =?) ORDER BY message_date DESC';
+  const params = [req.params.username, req.params.receiver, req.params.receiver, req.params.username];
+  connection.query(sql_select, params, (err, messages) => {
+    if (err) {
+      res.status(404).json({
+        message: 'no followers',
+        error: err.message,
+      });
+      return;
+    }
+    res.json({
+      message: '200',
+      data: messages,
+    });
+  });
+});
+
+// sending messages
+webapp.post('/createMessage/:username/:receiver', (req, res) => {
+  const input = req.body;
+  const sql = 'INSERT INTO MESSAGES_1 (user, message_id, type, content, message_date, receiver) VALUES (?,?,?,?,?,?)';
+  const params = [req.params.username, input.messageId, input.type,
+    input.content, input.message_date, req.params.receiver];
+  connection.query(sql, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Message successfully added', changes: this.changes });
     });
 });
 

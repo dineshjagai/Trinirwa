@@ -457,3 +457,28 @@ export const setLockOutTime = (username) => {
     },
   });
 };
+
+/* -------------------------------------------------------------------------- */
+/* ------------------------------MESSAGING----------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+export function addMessage(data) {
+  return axios({
+    method: 'POST',
+    url: `/createMessage/${data.user}/${data.receiver}`,
+    data: {
+      content: data.content,
+      message_date: data.message_date,
+      type: data.type,
+      messageId: data.message_id,
+    },
+  });
+}
+
+export function fetchMessages(username, receiver) {
+  const getUrl = `/profile/messages/:${username}/:${receiver}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}

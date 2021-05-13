@@ -14,6 +14,10 @@ function logout() {
   localStorage.removeItem('username');
 }
 
+function getCurrentReceiver() {
+  return JSON.parse(localStorage.getItem('receiver'));
+}
+
 module.exports = {
-  getCurrentUsername, isLogged, logout,
+  getCurrentUsername, isLogged, logout, getCurrentReceiver,
 };

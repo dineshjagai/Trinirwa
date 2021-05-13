@@ -6,7 +6,7 @@ export default function VideoStreamComponent() {
   return (
     <div className="videochat">
       <header>
-        <h1>Video Chat</h1>
+        <h1>Live Stream Chat</h1>
       </header>
       <main>
         <VideoChat />
