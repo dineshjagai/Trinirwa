@@ -11,7 +11,7 @@ test('Test Tweet snapshot', () => {
     'tweet_likes': 0,
     'tweet_id' :  1,
     'type' : 'text',
-
+    'tweet_blocks': 0,
   };
   const component = renderer.create(<Tweet data={d}/>);
   const tree = component.toJSON();
