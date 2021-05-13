@@ -30,7 +30,9 @@ export default function Tweet({ data, handleDelete }) {
   const [isOwner] = useState(data.user === user);
   const [avatar, setAvatar] = useState('');
   // eslint-disable-next-line eqeqeq
-  const [isMedia] = useState(data.type == 'media');
+  const [isPicture] = useState(data.type === 'picture');
+  const [isVideo] = useState(data.type === 'video');
+  const [isSong] = useState(data.type === 'song');
   const postComment = (content, tweetId) => {
     const timestamp = new Date().toISOString();
     const commentId = hash(`${content}${user}${timestamp}`);
@@ -103,10 +105,25 @@ export default function Tweet({ data, handleDelete }) {
   }, []);
   const date = (data.tweet_date.split('T'))[0];
   const newAvatar = `/viewFile/${avatar}`;
-  const newPicture = `/viewFile/${data.content}`;
+  const newMedia = `/viewFile/${data.content}`;
   let newMediaTweet;
-  if (isMedia) {
-    newMediaTweet = <img className="tweet_image" id="tweet_media_picture" src={newPicture} alt="" />;
+  if (isPicture) {
+    newMediaTweet = <img className="tweet_image" id="tweet_media_picture" src={newMedia} alt="" />;
+  } else if (isVideo) {
+    newMediaTweet = (
+      // eslint-disable-next-line jsx-a11y/media-has-caption
+      <video className="tweet_video" controls>
+        {' '}
+        <source src={newMedia} />
+      </video>
+    );
+  } else if (isSong) {
+    newMediaTweet = (
+      // eslint-disable-next-line jsx-a11y/media-has-caption
+      <audio controls>
+        <source src={newMedia} />
+      </audio>
+    );
   } else {
     newMediaTweet = data.content;
   }
