@@ -980,8 +980,6 @@ webapp.get('/all/followers/:username', (req, res) => {
 webapp.get('/tweets/all/:username', (req, res) => {
   // finish the outes correctly
   const { username } = req.params;
-  // const sql_get = `(SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
-  //   FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two) UNION ALL (select * from TWEETS_1 where user='${username}') ORDER BY tweet_date DESC`;
   const sql_get = `SELECT* FROM ((SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
     FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two)
      UNION ALL (select * from TWEETS_1 where user='${username}'))AS M where tweet_id not in (SELECT tweet_id FROM HIDDEN_TWEETS WHERE user = '${username}') ORDER BY tweet_date DESC`;
