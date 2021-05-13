@@ -36,7 +36,7 @@
 .tweet_content {
     margin: auto;
     width: 90%;
-    background-color: antiquewhite;
+    background-color: #eaf1ef;
 }
 .tweet_bottom {
     display: flex;

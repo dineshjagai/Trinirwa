@@ -784,7 +784,6 @@ webapp.get('/blocked/:username', (req, res) => {
 
 // updating tweet likes
 webapp.put('/tweet/likes/:tweetid', (req, res) => {
-  console.log(`Update: ${req.params.tweetid}.....${req.body.likes}`);
   const sql_update = `UPDATE TWEETS_1 SET tweet_likes='${req.body.likes}' WHERE tweet_id='${req.params.tweetid}'`;
   connection.query(sql_update,
     function (err) {
@@ -793,6 +792,20 @@ webapp.put('/tweet/likes/:tweetid', (req, res) => {
         return;
       }
       res.json({ message: 'tweetLikes successfully updated', changes: this.changes });
+    });
+});
+
+
+// updating tweet likes
+webapp.put('/tweet/comments/:tweetid', (req, res) => {
+  const sql_update = `UPDATE TWEETS_1 SET tweet_comments='${req.body.comments}' WHERE tweet_id='${req.params.tweetid}'`;
+  connection.query(sql_update,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'num of comments successfully updated', changes: this.changes });
     });
 });
 
@@ -993,6 +1006,24 @@ webapp.get('/tweets/all/:username', (req, res) => {
       });
     });
 });
+
+// gets alls the comments of tweet
+webapp.get('/tweet/comments/all/:tweetid', (req, res) => {
+  // finish the outes correctly
+  const { tweetid } = req.params;
+  const sql_get = `SELECT * FROM COMMENTS_1 WHERE tweet_id='${tweetid}' ORDER BY timestamp DESC LIMIT 7`;
+  connection.query(sql_get,
+    (err, comments) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        comments,
+      });
+    });
+});
+
 webapp.use((_req, res) => {
   res.status(404);
 });
