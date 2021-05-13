@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -33,10 +34,10 @@ const hash = require('object-hash');
 export default function DisplayerTweets() {
   const history = useHistory();
 
-  const [items, setItems] = useState(new Map());
+  const [items] = useState(new Map());
   const [update, setUpdate] = useState(false);
   const [count, setCount] = useState(255);
-  const [toDisplay, setToDisplay] = useState(new Set());
+  const [toDisplay] = useState(new Set());
   const classes = useStyles();
   const user = getCurrentUsername();
   const handleChange = (e) => {
@@ -75,6 +76,9 @@ export default function DisplayerTweets() {
   const postTweet = () => {
     setCount(255);
     const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
     if (input.length === 0) return;
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
@@ -86,16 +90,20 @@ export default function DisplayerTweets() {
       tweet_date: dateTime,
       tweet_likes: 0,
     };
-    const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
-    const newItems = items;
-    const newToDisplay = new Set([toAdd, ...toDisplay]);
-    setToDisplay(newToDisplay);
-    newItems.set(tweetId, toAdd);
-    setUpdate(true);
-    setItems(newItems);
-    console.log(items.length);
+    // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+    // // const newItems = items;
+    // const newToDisplay = new Set([toAdd, ...toDisplay]);
+    // const newItems = items;
+
+    // setToDisplay(newToDisplay);
+    // items.set(tweetId, toAdd);
+    // newItems.set(tweetId, toAdd);
+    // setUpdate(true);
+    // setItems(newItems);
+    // console.log('items length', items.length);
     addTweet(newTweet).then((res) => {
       console.log(res.message);
+      window.location.reload();
     }).catch((err) => {
       console.log(err.message);
     });
@@ -133,12 +141,16 @@ export default function DisplayerTweets() {
       redirect: 'follow',
     };
     const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
 
     fetch('/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => {
+        // console.log(`---uploading a pic ---:${result}`);
         const newTweet = {
           user,
           tweet_id: tweetId,
@@ -147,17 +159,18 @@ export default function DisplayerTweets() {
           tweet_date: dateTime,
           tweet_likes: 0,
         };
-        console.log(`is this good? ${newTweet.user}`);
-        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
-        const newItems = items;
-        toDisplay.add(toAdd);
-        console.log(toDisplay.length);
-        newItems.set(tweetId, toAdd);
-        setUpdate(true);
-        setItems(newItems);
-        console.log(items.length);
+        // console.log(`is this good? ${newTweet.user}`);
+        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        // const newItems = items;
+        // const newToDisplay = new Set([toAdd, ...toDisplay]);
+        // setToDisplay(newToDisplay);
+        // newItems.set(tweetId, toAdd);
+        // setUpdate(true);
+        // setItems(newItems);
+        // console.log(items.length);
         addTweet(newTweet).then((res) => {
           console.log(res.message);
+          window.location.reload();
         }).catch((err) => {
           console.log(err.message);
         });
@@ -180,6 +193,9 @@ export default function DisplayerTweets() {
       redirect: 'follow',
     };
     const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
 
@@ -194,17 +210,18 @@ export default function DisplayerTweets() {
           tweet_date: dateTime,
           tweet_likes: 0,
         };
-        console.log(`is this good? ${newTweet.user}`);
-        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
-        const newItems = items;
-        toDisplay.add(toAdd);
-        console.log(toDisplay.length);
-        newItems.set(tweetId, toAdd);
-        setUpdate(true);
-        setItems(newItems);
-        console.log(items.length);
+        // console.log(`is this good? ${newTweet.user}`);
+        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        // const newItems = items;
+        // const newToDisplay = new Set([toAdd, ...toDisplay]);
+        // setToDisplay(newToDisplay);
+        // newItems.set(tweetId, toAdd);
+        // setUpdate(true);
+        // setItems(newItems);
+        // console.log(items.length);
         addTweet(newTweet).then((res) => {
           console.log(res.message);
+          window.location.reload();
         }).catch((err) => {
           console.log(err.message);
         });
@@ -227,6 +244,9 @@ export default function DisplayerTweets() {
       redirect: 'follow',
     };
     const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
 
@@ -241,16 +261,17 @@ export default function DisplayerTweets() {
           tweet_date: dateTime,
           tweet_likes: 0,
         };
-        console.log(`is this good? ${newTweet.user}`);
-        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
-        const newItems = items;
-        toDisplay.add(toAdd);
-        console.log(toDisplay.length);
-        newItems.set(tweetId, toAdd);
-        setUpdate(true);
-        setItems(newItems);
-        console.log(items.length);
+        // console.log(`is this good? ${newTweet.user}`);
+        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        // const newItems = items;
+        // const newToDisplay = new Set([toAdd, ...toDisplay]);
+        // setToDisplay(newToDisplay);
+        // newItems.set(tweetId, toAdd);
+        // setUpdate(true);
+        // setItems(newItems);
+        // console.log(items.length);
         addTweet(newTweet).then((res) => {
+          window.location.reload();
           console.log(res.message);
         }).catch((err) => {
           console.log(err.message);
@@ -272,6 +293,7 @@ export default function DisplayerTweets() {
   const postSongTrigger = () => {
     document.getElementById('fileInputSong').click();
   };
+  // console.log('td', toDisplay);
   return (
     <div className="container_center">
       <div
