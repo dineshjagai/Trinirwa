@@ -18,6 +18,7 @@ import {
   addComment,
   getAllCommentsForTweet,
   updateTweetComments,
+  deleteComment,
 } from './Module';
 import { getCurrentUsername } from '../auth/authServices';
 import CommentDisplayer from './CommentDisplayer';
@@ -79,19 +80,7 @@ export default function Tweet({ data, handleDelete }) {
     });
     await getAllCommentsForTweet(data.tweet_id).then((res) => {
       const { comments } = res.data;
-      const newItems = comments.map((comment) => (
-
-        <li
-          style={{
-            marginBottom: '35px',
-          }}
-          key={comment.comm_id}
-        >
-          <CommentDisplayer data={comment} />
-        </li>
-      ));
-      console.log('newItems:', newItems);
-      setItems(newItems);
+      // setItems(newItems);
       setComments(comments);
     }).catch((err) => console.log(err.message));
   };
@@ -99,6 +88,15 @@ export default function Tweet({ data, handleDelete }) {
   const handleComment = (input, countComments) => {
     if (input === '') return;
     postComment(input, id);
+  };
+
+  const handleDeleteComment = (toDel) => {
+    const newList = allComments.filter((comment) => comment.comm_id !== toDel);
+    setComments(newList);
+    deleteComment(toDel).then((res) => {
+      console.log(res);
+      setNumComments(numComments - 1);
+    }).catch((err) => console.log(err.message));
   };
 
   const handleClick = () => {
@@ -216,7 +214,7 @@ export default function Tweet({ data, handleDelete }) {
             <CommentInput handleComment={handleComment} />
           </div>
           <div style={{
-            borderRadius: '8px', minHeight: '150px', maxWidth: '90%', backgroundColor: '#eaf1ef', margin: 'auto', width: '90%', marginTop: '2%', height: isOpen ? '300px' : '150px',
+            borderRadius: '8px', minHeight: '200px', backgroundColor: '#eaf1ef', overflow: 'auto', margin: 'auto', width: '90%', marginTop: '2%', height: isOpen ? '300px' : '200px',
           }}
           >
             <div style={{
@@ -229,14 +227,20 @@ export default function Tweet({ data, handleDelete }) {
               <span>{ (numComments !== 0) ? `${numComments} comments` : 'Comments'}</span>
             </div>
             <div style={{
-              margin: 'auto', width: '90%', maxHeight: '90%', overflow: 'auto',
+              margin: 'auto', width: '90%', height: '100%',
             }}
             >
-              <ul style={{
-                overflow: 'auto', whiteSpace: 'nowrap', listStyleType: 'none', listStylePosition: 'inside',
-              }}
+              <ul
+                id={`list${id}`}
+                style={{
+                  whiteSpace: 'nowrap', listStyleType: 'none',
+                }}
               >
-                {items}
+                {allComments.map((comment) => (
+                  <li style={{ marginBottom: '35px' }} key={comment.comm_id}>
+                    <CommentDisplayer data={comment} handleDeleteComment={handleDeleteComment} />
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

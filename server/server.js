@@ -796,7 +796,7 @@ webapp.put('/tweet/likes/:tweetid', (req, res) => {
 });
 
 
-// updating tweet likes
+// updating tweet comments
 webapp.put('/tweet/comments/:tweetid', (req, res) => {
   const sql_update = `UPDATE TWEETS_1 SET tweet_comments='${req.body.comments}' WHERE tweet_id='${req.params.tweetid}'`;
   connection.query(sql_update,
@@ -855,6 +855,21 @@ webapp.put('/tweet/unlike/:username', (req, res) => {
       res.json({ message: 'tweet successfully unliked', changes: this.changes });
     });
 });
+
+// delete comment
+webapp.delete('/tweet/comment/delete/:commid', (req, res) => {
+  console.log(`-----------------`+req.params.commid);
+  const sql_delete = `DELETE FROM COMMENTS_1 WHERE comm_id= '${req.params.commid}'`;
+  connection.query(sql_delete,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'comment successfully deleted', changes: this.changes });
+    });
+});
+
 
 // updating picture
 

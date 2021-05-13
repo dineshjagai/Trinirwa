@@ -4,7 +4,7 @@ import DialogComment from './DialogComment';
 import { getCurrentUsername } from '../auth/authServices';
 import { getAvatar } from './Module';
 
-export default function CommentDisplayer({ data, handleDelete }) {
+export default function CommentDisplayer({ data, handleDeleteComment }) {
   const [avatar, setAvatar] = useState('');
   const [content, setContent] = useState(data.content);
   const user = getCurrentUsername();
@@ -19,8 +19,6 @@ export default function CommentDisplayer({ data, handleDelete }) {
 
   const updatePost = (newContent) => {
     if (newContent === '') {
-      // DELETE NEW COMMENT
-      console.log(newContent);
       return;
     }
     setContent(newContent);
@@ -49,7 +47,7 @@ export default function CommentDisplayer({ data, handleDelete }) {
             <DialogComment id={data.comm_id} updatePost={updatePost} content={content} />
           </div>
           <div style={{ display: isOwner ? 'block' : 'none' }} className="cmnt_EditBtn_box">
-            <button onClick={handleDelete} id="deleteBtn" type="button">Delete</button>
+            <button onClick={() => handleDeleteComment(data.comm_id)} id="deleteBtn" type="button">Delete</button>
           </div>
         </div>
       </div>

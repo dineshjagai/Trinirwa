@@ -224,6 +224,25 @@ export function updateTweetComments(tweetId, newNumComments) {
     },
   });
 }
+
+export function updateComment(tweetId, newContent) {
+  return axios({
+    method: 'PUT',
+    url: `/tweet/comment/update/${tweetId}`,
+    data: {
+      content: newContent,
+    },
+  });
+}
+
+export function deleteComment(commId) {
+  console.log(commId);
+  return axios({
+    method: 'DELETE',
+    url: `/tweet/comment/delete/${commId}`,
+  });
+}
+
 export function followUser(id, username) {
   const insUrl = `/follow/${id}`;
   return axios({
