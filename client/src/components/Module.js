@@ -195,6 +195,19 @@ export function addTweet(data) {
   });
 }
 
+export function addComment(data) {
+  console.log(data);
+  return axios({
+    method: 'POST',
+    url: `/comment/add/${data.user}`,
+    data: {
+      commentId: data.commentId,
+      tweetId: data.tweetId,
+      content: data.content,
+      timestamp: data.timestamp,
+    },
+  });
+}
 export function followUser(id, username) {
   const insUrl = `/follow/${id}`;
   return axios({

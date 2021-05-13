@@ -15,6 +15,7 @@ import {
   isLiked,
   unLikeTweet,
   likeTweet,
+  addComment,
 } from './Module';
 import { getCurrentUsername } from '../auth/authServices';
 
@@ -36,16 +37,17 @@ export default function Tweet({ data, handleDelete }) {
     const timestamp = new Date().toISOString();
     const commentId = hash(`${content}${user}${timestamp}`);
     const newComment = {
-      comm_id: commentId,
-      tweet_id: tweetId,
+      commentId,
+      tweetId,
       user,
       content,
       timestamp,
     };
-    console.log(newComment);
+    addComment(newComment).then((res) => {
+      console.log(res);
+    }).catch((err) => console.log(err.message));
   };
   const getData = async () => {
-    console.log('data.user:', data.user);
     await getAvatar(data.user).then((res) => {
       setAvatar(res.data.avatar[0].profile_picture);
     }).catch((err) => {
@@ -61,12 +63,12 @@ export default function Tweet({ data, handleDelete }) {
       console.log(err.message);
     });
   };
-  const handleComment = () => {
-    const obj = document.getElementById('commentInput');
-    const input = obj.value;
+  const handleComment = (input) => {
+    // const obj = document.getElementById(`${id}`);
+    // const input = obj.value;
+    console.log(input);
     if (input === '') return;
     postComment(input, id);
-    obj.value = '';
   };
 
   const handleLike = () => {
@@ -158,7 +160,7 @@ export default function Tweet({ data, handleDelete }) {
             }}
             onClick={() => handleDelete(id, isOwner)}
           >
-            <CloseRoundedIcon />
+            <CloseRoundedIcon id={data.tweet_id} handleComment={handleComment} />
           </IconButton>
         </Tooltip>
       </div>
@@ -168,6 +170,7 @@ export default function Tweet({ data, handleDelete }) {
           {newMediaTweet}
         </p>
       </div>
+      <Divider variant="middle" />
       <div className="comment">
         <CommentInput handleComment={handleComment} />
       </div>

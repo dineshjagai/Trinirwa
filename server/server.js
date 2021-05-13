@@ -887,6 +887,24 @@ webapp.post('/createTweet/:username', (req, res) => {
     });
 });
 
+// Adding tweet
+webapp.post('/comment/add/:username', (req, res) => {
+  const { commentId, tweetId, content, timestamp }= req.body;
+  const user = req.params.username;
+  // insert newTweet in table TWEETS
+  const sql = 'INSERT INTO COMMENTS_1 (comm_id, tweet_id, user, content, timestamp) VALUES (?,?,?,?,?)';
+  const params = [commentId, tweetId, user, content, timestamp];
+  connection.query(sql, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Comment successfully added', changes: this.changes });
+    });
+});
+
+
 // deleting a tweet
 webapp.delete('/tweet/delete/:tweetid', (req, res) => {
   const input = req.params.tweetid;
