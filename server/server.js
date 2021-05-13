@@ -857,7 +857,6 @@ webapp.put('/tweet/unlike/:username', (req, res) => {
 
 // delete comment
 webapp.delete('/tweet/comment/delete/:commid', (req, res) => {
-  console.log(`-----------------${req.params.commid}`);
   const sql_delete = `DELETE FROM COMMENTS_1 WHERE comm_id= '${req.params.commid}'`;
   connection.query(sql_delete,
     function (err) {
@@ -869,6 +868,31 @@ webapp.delete('/tweet/comment/delete/:commid', (req, res) => {
     });
 });
 
+// update comment
+webapp.put('/tweet/comment/update/:commid', (req, res) => {
+  const sql_update = `UPDATE COMMENTS_1 SET content='${req.body.content}' WHERE comm_id='${req.params.commid}'`;
+  connection.query(sql_update,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'comment successfully updated', changes: this.changes });
+    });
+});
+
+// get hiders
+webapp.get('/tweet/hiders/all/:tweetid', (req, res) => {
+  const sql_get = `SELECT user from HIDDEN_TWEETS WHERE tweet_id='${req.params.tweetid}'`;
+  connection.query(sql_get,
+    (err, hiders) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'hiders successfully retrieved', hiders });
+    });
+});
 // updating picture
 
 // deleting picture

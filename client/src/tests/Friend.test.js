@@ -4,7 +4,11 @@ import '@testing-library/jest-dom';
 import Friend from '../components/Friend';
 
 test('Test Friend snapshot', () => {
-  const component = renderer.create(<Friend />);
+  const f = {
+    'username' : 'isimbib',
+    'profile_picture' :  'logo512.png',
+  };
+  const component = renderer.create(<Friend info={f}/>);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });

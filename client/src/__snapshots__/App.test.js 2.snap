@@ -1,0 +1,147 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test App.js 1`] = `
+<div
+  className="card shadow mx-auto mt-5"
+  style={
+    Object {
+      "width": "30rem",
+    }
+  }
+>
+  <div
+    className="container mx-1"
+  >
+    <div
+      className="card-body p-xs"
+    >
+      <h2
+        className="card-title text-center font-weight-bold"
+      >
+        Sign Up
+      </h2>
+      <div
+        className="form-group"
+      >
+        <label
+          htmlFor="new-username-form"
+        >
+          Username:
+        </label>
+        <input
+          className="form-control"
+          id="new-username-form"
+          onChange={[Function]}
+          placeholder="Enter Username"
+        />
+      </div>
+      <div
+        className="form-group"
+      >
+        <label
+          htmlFor="exampleInputEmail1"
+        >
+          Email address
+        </label>
+        <input
+          aria-describedby="emailHelp"
+          className="form-control"
+          id="exampleInputEmail1"
+          onChange={[Function]}
+          placeholder="Enter email"
+          type="email"
+        />
+        <small
+          className="form-text text-muted"
+          id="emailHelp"
+        >
+          We will never share your email with anyone else.
+        </small>
+      </div>
+      <div
+        className="form-group"
+      >
+        <label>
+          First Name:
+        </label>
+        <input
+          className="form-control"
+          id="new-first-name-form"
+          onChange={[Function]}
+          placeholder="Enter First Name"
+          type="name"
+        />
+      </div>
+      <div
+        className="form-group"
+      >
+        <label>
+          Last Name:
+        </label>
+        <input
+          className="form-control"
+          id="new-last-name-form"
+          onChange={[Function]}
+          placeholder="Enter Last Name"
+          type="name"
+        />
+      </div>
+      <div
+        className="form-group"
+      >
+        <label>
+          Password:
+        </label>
+        <input
+          aria-describedby="passwordHelp"
+          className="form-control"
+          id="new-password-form"
+          onChange={[Function]}
+          placeholder="Enter Password"
+          type="password"
+        />
+        <small
+          className="form-text text-muted"
+          id="passwordHelp"
+        >
+          Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
+        </small>
+      </div>
+      <div
+        className="form-group"
+      >
+        <label>
+          Confirm Password:
+        </label>
+        <input
+          className="form-control"
+          id="new-password-two-form"
+          onChange={[Function]}
+          placeholder="Re-Enter Password"
+          type="password"
+        />
+      </div>
+      <div
+        className="form-group"
+      >
+        <button
+          className="btn btn-primary w-100"
+          onClick={[Function]}
+          type="submit"
+        >
+          Sign Up
+        </button>
+      </div>
+      <p>
+        Already have an account? 
+        <a
+          href="/login"
+          onClick={[Function]}
+        >
+          Log in here!
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+`;

@@ -4,7 +4,11 @@ import '@testing-library/jest-dom';
 import ProfilePicture from '../components/ProfilePicture';
 
 test('Test ProfilePicture snapshot', () => {
-  const component = renderer.create(<ProfilePicture />);
+  const d =  {
+    'profile_picture' : 'logo512.png',
+    'username' : 'isimbib',
+  };
+  const component = renderer.create(<ProfilePicture data={d} />);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });
