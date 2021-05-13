@@ -115,3 +115,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 src/components/login.js
+
+# no media in our github! 
+server/uploads/*

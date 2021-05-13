@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -6,6 +7,8 @@ import Button from '@material-ui/core/Button';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import LiveTvIcon from '@material-ui/icons/LiveTv';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
+import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
+import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
 import TextField from '@material-ui/core/TextField';
 import Tweet from './Tweet';
 import { getCurrentUsername } from '../auth/authServices';
@@ -15,6 +18,7 @@ import {
   addTweet,
   deleteTweet,
   fetchAllTweets,
+  hideTweet,
 } from './Module';
 import './CenterDisplay.css';
 // import Divider from '@material-ui/core/Divider';
@@ -30,11 +34,12 @@ const hash = require('object-hash');
 export default function DisplayerTweets() {
   const history = useHistory();
 
-  const [items, setItems] = useState(new Map());
+  const [items] = useState(new Map());
   const [update, setUpdate] = useState(false);
   const [count, setCount] = useState(255);
   const [toDisplay] = useState(new Set());
   const classes = useStyles();
+  const user = getCurrentUsername();
   const handleChange = (e) => {
     if ((e.target.value).length >= 0) {
       const u = 255 - (e.target.value).length;
@@ -44,47 +49,61 @@ export default function DisplayerTweets() {
   const handleHideOrDelete = (id, isOwner) => {
     if (isOwner) {
       deleteTweet(id).then((res) => {
+        window.location.reload();
         console.log('message: delete:', res.message);
-        setUpdate(false);
-        toDisplay.delete(items.get(id));
+        setUpdate(true);
+        console.log('deleted:', toDisplay.delete(items.get(id)));
         items.delete(id);
       }).catch((err) => {
         console.log(err.message);
       });
     } else {
-      console.log('not owner');
+      // eslint-disable-next-line no-unused-vars
+      hideTweet(id, user).then((res) => {
+        window.location.reload();
+        toDisplay.delete(items.get(id));
+        items.delete(id);
+        setUpdate(true);
+        // updating blocks
+      }).catch((err) => console.log(err));
     }
   };
 
   useEffect(() => {
+    console.log('refreshed');
     setUpdate(false);
   }, [update]);
-
-  const user = getCurrentUsername();
   const postTweet = () => {
     setCount(255);
     const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
+    if (input.length === 0) return;
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
     const newTweet = {
-      username: user,
+      user,
       tweet_id: tweetId,
       type: 'text',
       content: input,
       tweet_date: dateTime,
       tweet_likes: 0,
     };
-    console.log(newTweet);
-    const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
-    const newItems = items;
-    toDisplay.add(toAdd);
-    console.log(toDisplay.length);
-    newItems.set(tweetId, toAdd);
-    setUpdate(true);
-    setItems(newItems);
-    console.log(items.length);
+    // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+    // // const newItems = items;
+    // const newToDisplay = new Set([toAdd, ...toDisplay]);
+    // const newItems = items;
+
+    // setToDisplay(newToDisplay);
+    // items.set(tweetId, toAdd);
+    // newItems.set(tweetId, toAdd);
+    // setUpdate(true);
+    // setItems(newItems);
+    // console.log('items length', items.length);
     addTweet(newTweet).then((res) => {
       console.log(res.message);
+      window.location.reload();
     }).catch((err) => {
       console.log(err.message);
     });
@@ -113,7 +132,7 @@ export default function DisplayerTweets() {
     // upload picture
     const formdata = new FormData();
     // console.log(e.target.files);
-    const fakePath = document.getElementById('fileInput').value;
+    const fakePath = document.getElementById('fileInputPicture').value;
     formdata.append('image', e.target.files[0], fakePath);
 
     const requestOptions = {
@@ -122,6 +141,61 @@ export default function DisplayerTweets() {
       redirect: 'follow',
     };
     const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
+    const dateTime = new Date().toISOString();
+    const tweetId = hash(`${input}${user}${dateTime}`);
+
+    fetch('/uploadFile', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        // console.log(`---uploading a pic ---:${result}`);
+        const newTweet = {
+          user,
+          tweet_id: tweetId,
+          type: 'picture',
+          content: JSON.parse(result).data,
+          tweet_date: dateTime,
+          tweet_likes: 0,
+        };
+        // console.log(`is this good? ${newTweet.user}`);
+        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        // const newItems = items;
+        // const newToDisplay = new Set([toAdd, ...toDisplay]);
+        // setToDisplay(newToDisplay);
+        // newItems.set(tweetId, toAdd);
+        // setUpdate(true);
+        // setItems(newItems);
+        // console.log(items.length);
+        addTweet(newTweet).then((res) => {
+          console.log(res.message);
+          window.location.reload();
+        }).catch((err) => {
+          console.log(err.message);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const postVideo = (e) => {
+    // upload video
+    const formdata = new FormData();
+    // console.log(e.target.files);
+    const fakePath = document.getElementById('fileInputVideo').value;
+    formdata.append('image', e.target.files[0], fakePath);
+
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow',
+    };
+    const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
 
@@ -129,23 +203,75 @@ export default function DisplayerTweets() {
       .then((response) => response.text())
       .then((result) => {
         const newTweet = {
-          username: user,
+          user,
           tweet_id: tweetId,
-          type: 'media',
+          type: 'video',
           content: JSON.parse(result).data,
           tweet_date: dateTime,
           tweet_likes: 0,
         };
-        console.log(newTweet);
-        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
-        const newItems = items;
-        toDisplay.add(toAdd);
-        console.log(toDisplay.length);
-        newItems.set(tweetId, toAdd);
-        setUpdate(true);
-        setItems(newItems);
-        console.log(items.length);
+        // console.log(`is this good? ${newTweet.user}`);
+        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        // const newItems = items;
+        // const newToDisplay = new Set([toAdd, ...toDisplay]);
+        // setToDisplay(newToDisplay);
+        // newItems.set(tweetId, toAdd);
+        // setUpdate(true);
+        // setItems(newItems);
+        // console.log(items.length);
         addTweet(newTweet).then((res) => {
+          console.log(res.message);
+          window.location.reload();
+        }).catch((err) => {
+          console.log(err.message);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const postSong = (e) => {
+    // upload song
+    const formdata = new FormData();
+    // console.log(e.target.files);
+    const fakePath = document.getElementById('fileInputSong').value;
+    formdata.append('image', e.target.files[0], fakePath);
+
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow',
+    };
+    const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
+    const dateTime = new Date().toISOString();
+    const tweetId = hash(`${input}${user}${dateTime}`);
+
+    fetch('/uploadFile', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const newTweet = {
+          user,
+          tweet_id: tweetId,
+          type: 'song',
+          content: JSON.parse(result).data,
+          tweet_date: dateTime,
+          tweet_likes: 0,
+        };
+        // console.log(`is this good? ${newTweet.user}`);
+        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        // const newItems = items;
+        // const newToDisplay = new Set([toAdd, ...toDisplay]);
+        // setToDisplay(newToDisplay);
+        // newItems.set(tweetId, toAdd);
+        // setUpdate(true);
+        // setItems(newItems);
+        // console.log(items.length);
+        addTweet(newTweet).then((res) => {
+          window.location.reload();
           console.log(res.message);
         }).catch((err) => {
           console.log(err.message);
@@ -157,8 +283,17 @@ export default function DisplayerTweets() {
   };
 
   const postPictureTrigger = () => {
-    document.getElementById('fileInput').click();
+    document.getElementById('fileInputPicture').click();
   };
+
+  const postVideoTrigger = () => {
+    document.getElementById('fileInputVideo').click();
+  };
+
+  const postSongTrigger = () => {
+    document.getElementById('fileInputSong').click();
+  };
+  // console.log('td', toDisplay);
   return (
     <div className="container_center">
       <div
@@ -212,7 +347,27 @@ export default function DisplayerTweets() {
             startIcon={<AddAPhotoIcon />}
             onClick={postPictureTrigger}
           >
-            Photo/video
+            Photo
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            id="button-media"
+            className={classes.button}
+            startIcon={<VideoLibraryIcon />}
+            onClick={postVideoTrigger}
+          >
+            Video
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            id="button-media"
+            className={classes.button}
+            startIcon={<LibraryMusicIcon />}
+            onClick={postSongTrigger}
+          >
+            Song
           </Button>
 
           <Button
@@ -227,9 +382,24 @@ export default function DisplayerTweets() {
           <input
             className="FileUpload"
             accept=".jpg,.png,.gif"
-            id="fileInput"
+            id="fileInputPicture"
             type="file"
             onChange={postPicture}
+            hidden
+          />
+          <input
+            className="FileUpload"
+            id="fileInputVideo"
+            type="file"
+            onChange={postVideo}
+            hidden
+          />
+          <input
+            className="FileUpload"
+            id="fileInputSong"
+            type="file"
+            onChange={postSong}
+            hidden
           />
         </div>
       </div>

@@ -1,0 +1,9 @@
+.home {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.home>div {
+    margin: 6px;
+}

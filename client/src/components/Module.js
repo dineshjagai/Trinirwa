@@ -182,10 +182,10 @@ export function getAvatar(user) {
 }
 
 export function addTweet(data) {
-  console.log(data);
+  console.log('picture:', data.user);
   return axios({
     method: 'POST',
-    url: `/createTweet/${data.username}`,
+    url: `/createTweet/${data.user}`,
     data: {
       content: data.content,
       tweet_date: data.tweet_date,
@@ -195,6 +195,19 @@ export function addTweet(data) {
   });
 }
 
+export function addComment(data) {
+  console.log(data);
+  return axios({
+    method: 'POST',
+    url: `/comment/add/${data.user}`,
+    data: {
+      commentId: data.commentId,
+      tweetId: data.tweetId,
+      content: data.content,
+      timestamp: data.timestamp,
+    },
+  });
+}
 export function followUser(id, username) {
   const insUrl = `/follow/${id}`;
   return axios({
@@ -309,6 +322,17 @@ export function deleteTweet(tweetId) {
   });
 }
 
+export function hideTweet(tweetId, username) {
+  const postUrl = `/tweet/hide/${tweetId}`;
+  return axios({
+    method: 'POST',
+    url: postUrl,
+    data: {
+      username,
+    },
+  });
+}
+
 export function updateTweetLikes(tweetId, tweetLikes) {
   const putUrl = `/tweet/likes/${tweetId}`;
   return axios({
@@ -316,6 +340,17 @@ export function updateTweetLikes(tweetId, tweetLikes) {
     url: putUrl,
     data: {
       likes: tweetLikes,
+    },
+  });
+}
+
+export function updateTweetBlocks(tweetId, tweetBlocks) {
+  const putUrl = `/tweet/likes/${tweetId}`;
+  return axios({
+    method: 'PUT',
+    url: putUrl,
+    data: {
+      blocks: tweetBlocks,
     },
   });
 }
@@ -329,7 +364,6 @@ export function isLiked(user, tweetId) {
 }
 
 export function likeTweet(user, tweetId) {
-  console.log(`${user} -----${tweetId}`);
   const insUrl = `/tweet/like/${user}/`;
   return axios({
     method: 'POST',

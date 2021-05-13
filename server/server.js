@@ -173,10 +173,10 @@ webapp.post('/userUid', (req, res) => {
 webapp.post('/login', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
-  // console.log(`username:${username}`);
+  console.log(`username:${username}`);
 
   connection.query(
-    'SELECT * FROM USERS WHERE username = ?;',
+    'SELECT * FROM USERS WHERE username = ?',
     username,
     (err, result) => {
       if ((err) || !(result)) {
@@ -189,7 +189,7 @@ webapp.post('/login', (req, res) => {
           if (response) {
             req.session.user = result;
             console.log(req.session.user);
-            res.send({ message: 'success', result });
+            res.send(result);
           } else {
             console.log(`here ${result}`);
             res.send({ message: 'Wrong username/password combination!' });
@@ -520,14 +520,13 @@ webapp.put('/profile/reactivate/:username', (req, res) => {
     // console.log(username);
     if (result.length > 0) {
       bcrypt.compare(password, result[0].password, (error, response) => {
-        // console.log(response);
         if (error) {
-          res.status(401).json({ error: err.message });
+          res.status(401).json({ error });
         } else if (response) {
           connection.query(sql_deact, user,
             function (errr) {
               if (errr) {
-                res.status(500).json({ error: errr.message });
+                res.status(500).json({ error: errr });
                 return;
               }
               res.json({ message: 'Account reactivated', changes: this.changes });
@@ -888,6 +887,26 @@ webapp.post('/createTweet/:username', (req, res) => {
     });
 });
 
+// Adding tweet
+webapp.post('/comment/add/:username', (req, res) => {
+  const {
+    commentId, tweetId, content, timestamp,
+  } = req.body;
+  const user = req.params.username;
+  // insert newTweet in table TWEETS
+  const sql = 'INSERT INTO COMMENTS_1 (comm_id, tweet_id, user, content, timestamp) VALUES (?,?,?,?,?)';
+  const params = [commentId, tweetId, user, content, timestamp];
+  connection.query(sql, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Comment successfully added', changes: this.changes });
+    });
+});
+
+// deleting a tweet
 webapp.delete('/tweet/delete/:tweetid', (req, res) => {
   const input = req.params.tweetid;
   const sql = `DELETE FROM TWEETS_1 WHERE tweet_id = '${input}'`;
@@ -898,6 +917,42 @@ webapp.delete('/tweet/delete/:tweetid', (req, res) => {
     }
     res.json({
       message: 'sucessful deletion of tweet',
+      data: result,
+    });
+  });
+});
+
+// hiding a tweet
+webapp.post('/tweet/hide/:tweetid', (req, res) => {
+  const input = req.params.tweetid;
+  const { username } = req.body;
+
+  console.log(`${input}----------${username}`);
+  const sql = `INSERT INTO HIDDEN_TWEETS (user, tweet_id) VALUES ('${username}', '${input}')`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'sucessfully hid the tweet',
+      data: result,
+    });
+  });
+});
+
+// update number of tweet block
+webapp.post('/tweet/block/:tweetid', (req, res) => {
+  const input = req.params.tweetid;
+  const { blocks } = req.body;
+  const sql = `UPDATE TWEETS_1 SET tweet_blocks=${blocks} WHERE tweet_id='${input}'`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'tweet_blocks updated',
       data: result,
     });
   });
@@ -925,9 +980,9 @@ webapp.get('/all/followers/:username', (req, res) => {
 webapp.get('/tweets/all/:username', (req, res) => {
   // finish the outes correctly
   const { username } = req.params;
-  const sql_get = `(SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
-    FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two) UNION ALL (select * from TWEETS_1 where user='${username}') ORDER BY tweet_date DESC`;
-
+  const sql_get = `SELECT* FROM ((SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
+    FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two)
+     UNION ALL (select * from TWEETS_1 where user='${username}'))AS M where tweet_id not in (SELECT tweet_id FROM HIDDEN_TWEETS WHERE user = '${username}') ORDER BY tweet_date DESC`;
   connection.query(sql_get,
     (err, tweets) => {
       if (err) {

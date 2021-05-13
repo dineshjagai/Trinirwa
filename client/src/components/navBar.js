@@ -7,9 +7,10 @@ import Typography from '@material-ui/core/Typography';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
+// import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
+import HomeIcon from '@material-ui/icons/Home';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import { useHistory } from 'react-router-dom';
@@ -90,6 +91,7 @@ export default function PrimarySearchAppBar() {
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const history = useHistory();
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -97,13 +99,14 @@ export default function PrimarySearchAppBar() {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    const path = '/profile';
+    history.push(path);
     handleMobileMenuClose();
   };
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-  const history = useHistory();
   const handleClick = () => {
     const path = '/home';
     history.push(path);
@@ -126,7 +129,7 @@ export default function PrimarySearchAppBar() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleClick}>Home</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>My Account</MenuItem>
       <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
 
     </Menu>
@@ -143,6 +146,14 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
+      <MenuItem onClick={handleClick}>
+        <IconButton color="inherit">
+          <Badge>
+            <HomeIcon />
+          </Badge>
+        </IconButton>
+        <p>Home</p>
+      </MenuItem>
       <MenuItem>
         <IconButton aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="secondary">
@@ -180,19 +191,27 @@ export default function PrimarySearchAppBar() {
         <div className={classes.grow}>
           <AppBar style={{ backgroundColor: '#0C8367' }} position="static">
             <Toolbar>
-              <IconButton
+              {/* <IconButton
                 edge="start"
                 className={classes.menuButton}
                 color="inherit"
                 aria-label="open drawer"
               >
                 <MenuIcon />
-              </IconButton>
+              </IconButton> */}
               <Typography className={classes.title} variant="h6" noWrap>
-                Material-UI
+                Trinirwa Microblog
               </Typography>
               <div className={classes.grow} />
               <div className={classes.sectionDesktop}>
+                <IconButton
+                  onClick={handleClick}
+                  color="inherit"
+                >
+                  <Badge>
+                    <HomeIcon />
+                  </Badge>
+                </IconButton>
                 <IconButton aria-label="show 4 new mails" color="inherit">
                   <Badge badgeContent={4} color="secondary">
                     <MailIcon />

@@ -38,7 +38,7 @@ export default function Friend({
         <div className="myimgContainer">
           <img
             className="myimg"
-            src={info.profile_picture}
+            src={`/viewFile/${info.profile_picture}`}
             alt=""
           />
         </div>

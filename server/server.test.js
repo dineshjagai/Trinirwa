@@ -24,6 +24,7 @@ const cleanDatabase = async () => {
 afterEach(async () => {
   await cleanDatabase();
 });
+
 // come back later
 describe('User registration', () => {
   test('successful registration', () => request(webapp).post('/register').send({
@@ -809,16 +810,3 @@ describe('/all/followers/:username test', () => {
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-

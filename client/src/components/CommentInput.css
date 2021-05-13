@@ -1,0 +1,26 @@
+.comment_box {
+    position: relative;
+}
+
+.commentInput {
+    background-color: #eef5f3;
+    outline: 1px;
+}
+.commentBtnCtn {
+    position: absolute;
+    bottom: -5;
+    right: 22;
+}
+.commentInpCtn {
+    width: 90%;
+    margin: auto;
+    margin-top: 2%;
+}
+
+#commentButton {
+    color:#0C8367;
+}
+
+#commentButton:hover {
+    text-decoration: underline;
+}
