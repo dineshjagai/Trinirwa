@@ -16,6 +16,9 @@ import {
   unLikeTweet,
   likeTweet,
   addComment,
+  getAllCommentsForTweet,
+  updateTweetComments,
+  deleteComment,
 } from './Module';
 import { getCurrentUsername } from '../auth/authServices';
 import CommentDisplayer from './CommentDisplayer';
@@ -26,6 +29,7 @@ export default function Tweet({ data, handleDelete }) {
   const user = getCurrentUsername();
   const [isLikedBool, setIsLike] = useState(false);
   const [likes, setLikes] = useState(data.tweet_likes);
+  const [numComments, setNumComments] = useState(data.tweet_comments);
   const [id] = useState(data.tweet_id);
   const [blocks, setBlocks] = useState(data.tweet_blocks);
   const [isOwner] = useState(data.user === user);
@@ -35,20 +39,28 @@ export default function Tweet({ data, handleDelete }) {
   const [isVideo] = useState(data.type === 'video');
   const [isSong] = useState(data.type === 'song');
   const [isOpen, setIsOpen] = useState(false);
+  const [items, setItems] = useState([]);
   const [isMediaUndefined] = useState(typeof (data.content) !== 'undefined');
+  const [allComments, setComments] = useState([]);
 
   const postComment = (content, tweetId) => {
     const timestamp = new Date().toISOString();
     const commentId = hash(`${content}${user}${timestamp}`);
     const newComment = {
-      commentId,
-      tweetId,
+      comment_id: commentId,
+      tweet_id: tweetId,
       user,
       content,
       timestamp,
     };
+    allComments.unshift(newComment);
+    console.log('comments', allComments);
     addComment(newComment).then((res) => {
-      console.log(res);
+      console.log(res.message);
+      updateTweetComments(id, numComments + 1).then((result) => {
+        console.log(result.message);
+        setNumComments(numComments + 1);
+      }).catch((err) => console.log(err.message));
     }).catch((err) => console.log(err.message));
   };
   const getData = async () => {
@@ -66,10 +78,25 @@ export default function Tweet({ data, handleDelete }) {
     }).catch((err) => {
       console.log(err.message);
     });
+    await getAllCommentsForTweet(data.tweet_id).then((res) => {
+      const { comments } = res.data;
+      // setItems(newItems);
+      setComments(comments);
+    }).catch((err) => console.log(err.message));
   };
-  const handleComment = (input) => {
+
+  const handleComment = (input, countComments) => {
     if (input === '') return;
     postComment(input, id);
+  };
+
+  const handleDeleteComment = (toDel) => {
+    const newList = allComments.filter((comment) => comment.comm_id !== toDel);
+    setComments(newList);
+    deleteComment(toDel).then((res) => {
+      console.log(res);
+      setNumComments(numComments - 1);
+    }).catch((err) => console.log(err.message));
   };
 
   const handleClick = () => {
@@ -105,8 +132,12 @@ export default function Tweet({ data, handleDelete }) {
   };
 
   useEffect(() => {
+  }, [items]);
+
+  useEffect(() => {
     getData();
   }, []);
+
   const date = (data.tweet_date.split('T'))[0];
   const newAvatar = `/viewFile/${avatar}`;
   const newMedia = `/viewFile/${data.content}`;
@@ -114,9 +145,7 @@ export default function Tweet({ data, handleDelete }) {
   let newMediaTweet;
   if (isPicture) {
     newMediaTweet = <img className="tweet_image" id="tweet_media_picture" src={newMedia} alt="" />;
-    console.log('picture');
   } else if (isVideo) {
-    console.log('video');
     newMediaTweet = (
       // eslint-disable-next-line jsx-a11y/media-has-caption
       <video className="tweet_video" controls>
@@ -133,7 +162,6 @@ export default function Tweet({ data, handleDelete }) {
       </audio>
     );
   } else {
-    console.log('text');
     newMediaTweet = data.content;
   }
 
@@ -171,7 +199,7 @@ export default function Tweet({ data, handleDelete }) {
                 }}
                 onClick={() => handleDelete(id, isOwner)}
               >
-                <CloseRoundedIcon id={data.tweet_id} handleComment={handleComment} />
+                <CloseRoundedIcon id={data.tweet_id} />
               </IconButton>
             </Tooltip>
           </div>
@@ -186,19 +214,34 @@ export default function Tweet({ data, handleDelete }) {
             <CommentInput handleComment={handleComment} />
           </div>
           <div style={{
-            borderRadius: '8px', maxWidth: '90%', backgroundColor: '#D0EAE4', margin: 'auto', width: '90%', marginTop: '2%',
+            borderRadius: '8px', minHeight: '200px', backgroundColor: '#eaf1ef', overflow: 'auto', margin: 'auto', width: '90%', marginTop: '2%', height: isOpen ? '300px' : '200px',
           }}
           >
             <div style={{
-              minHeight: '100px', textAlign: 'center', fontWeight: 'bold', color: '#0C8367',
+              margin: 'auto',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              color: '#0C8367',
             }}
             >
-              Comments
+              <span>{ (numComments !== 0) ? `${numComments} comments` : 'Comments'}</span>
             </div>
-            <div style={{ width: '100%', display: isOpen ? 'block' : 'none' }}>
-              <div>
-                <CommentDisplayer />
-              </div>
+            <div style={{
+              margin: 'auto', width: '90%', height: '100%',
+            }}
+            >
+              <ul
+                id={`list${id}`}
+                style={{
+                  whiteSpace: 'nowrap', listStyleType: 'none',
+                }}
+              >
+                {allComments.map((comment) => (
+                  <li style={{ marginBottom: '35px' }} key={comment.comm_id}>
+                    <CommentDisplayer data={comment} handleDeleteComment={handleDeleteComment} />
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
           <div className="tweet_bottom">
@@ -216,7 +259,7 @@ export default function Tweet({ data, handleDelete }) {
               <span>{`${likes} likes`}</span>
             </div>
             <div className="comments">
-              <button onClick={() => handleClick()} id="viewCommentsBtn" type="button">{!isOpen ? 'View comments' : 'Hide comments'}</button>
+              <button onClick={() => handleClick()} id="viewCommentsBtn" type="button">{!isOpen ? 'View more' : 'View less'}</button>
             </div>
           </div>
         </div>

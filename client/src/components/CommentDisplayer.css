@@ -19,6 +19,12 @@
     font-size: small;
 }
 
+#deleteBtn {
+    color: #0C8367;
+    background: transparent;
+    font-size: small;
+}
+
 .header_profile {
     margin: 4px 2px 4px 4px ;
 }
@@ -34,9 +40,6 @@
 .cmnt_cnt_box {
     background-color: white;
     border-radius: 8px;
-    position: absolute;
-    left: 12%;
-    top: 40%;
 }
 
 #cmnt_cnt {
@@ -46,4 +49,23 @@
 #editBtn:hover {
     text-decoration: underline;
     font-weight: bold ;
+}
+
+#deleteBtn:hover {
+    text-decoration: underline;
+    font-weight: bold ;
+}
+.cmnt_EditBtn_box {
+    right: 0;
+    bottom: 0;
+}
+.cmnt_cntBtn_box {
+ position: absolute;
+ left: 13%;
+ top: 59%;
+}
+
+.cmnt_btns_box {
+    display: flex;
+    flex-direction: row;
 }

@@ -25,6 +25,7 @@ afterEach(async () => {
   await cleanDatabase();
 });
 
+
 // come back later
 describe('User registration', () => {
   test('successful registration', () => request(webapp).post('/register').send({

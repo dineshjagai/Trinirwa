@@ -196,18 +196,53 @@ export function addTweet(data) {
 }
 
 export function addComment(data) {
-  console.log(data);
   return axios({
     method: 'POST',
     url: `/comment/add/${data.user}`,
     data: {
-      commentId: data.commentId,
-      tweetId: data.tweetId,
+      commentId: data.comment_id,
+      tweetId: data.tweet_id,
       content: data.content,
       timestamp: data.timestamp,
     },
   });
 }
+
+export function getAllCommentsForTweet(tweetId) {
+  return axios({
+    method: 'GET',
+    url: `/tweet/comments/all/${tweetId}`,
+  });
+}
+
+export function updateTweetComments(tweetId, newNumComments) {
+  return axios({
+    method: 'PUT',
+    url: `/tweet/comments/${tweetId}`,
+    data: {
+      comments: newNumComments,
+    },
+  });
+}
+
+export function updateComment(commId, newContent) {
+  return axios({
+    method: 'PUT',
+    url: `/tweet/comment/update/${commId}`,
+    data: {
+      content: newContent,
+    },
+  });
+}
+
+export function deleteComment(commId) {
+  console.log(commId);
+  return axios({
+    method: 'DELETE',
+    url: `/tweet/comment/delete/${commId}`,
+  });
+}
+
 export function followUser(id, username) {
   const insUrl = `/follow/${id}`;
   return axios({
