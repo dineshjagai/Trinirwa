@@ -18,6 +18,7 @@ import {
   addComment,
 } from './Module';
 import { getCurrentUsername } from '../auth/authServices';
+import CommentDisplayer from './CommentDisplayer';
 
 const hash = require('object-hash');
 
@@ -33,6 +34,7 @@ export default function Tweet({ data, handleDelete }) {
   const [isPicture] = useState(data.type === 'picture');
   const [isVideo] = useState(data.type === 'video');
   const [isSong] = useState(data.type === 'song');
+  const [isOpen, setIsOpen] = useState(false);
   const postComment = (content, tweetId) => {
     const timestamp = new Date().toISOString();
     const commentId = hash(`${content}${user}${timestamp}`);
@@ -64,13 +66,13 @@ export default function Tweet({ data, handleDelete }) {
     });
   };
   const handleComment = (input) => {
-    // const obj = document.getElementById(`${id}`);
-    // const input = obj.value;
-    console.log(input);
     if (input === '') return;
     postComment(input, id);
   };
 
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
   const handleLike = () => {
     if (isLikedBool) {
       unLikeTweet(user, id).then((res) => {
@@ -174,6 +176,22 @@ export default function Tweet({ data, handleDelete }) {
       <div className="comment">
         <CommentInput handleComment={handleComment} />
       </div>
+      <div style={{
+        borderRadius: '8px', maxWidth: '90%', backgroundColor: '#D0EAE4', margin: 'auto', width: '90%', marginTop: '2%',
+      }}
+      >
+        <div style={{
+          minHeight: '100px', textAlign: 'center', fontWeight: 'bold', color: '#0C8367',
+        }}
+        >
+          Comments
+        </div>
+        <div style={{ width: '100%', display: isOpen ? 'block' : 'none' }}>
+          <div>
+            <CommentDisplayer />
+          </div>
+        </div>
+      </div>
       <div className="tweet_bottom">
         <div className="likes">
           <IconButton
@@ -189,7 +207,7 @@ export default function Tweet({ data, handleDelete }) {
           <span>{`${likes} likes`}</span>
         </div>
         <div className="comments">
-          <button id="viewCommentsBtn" type="button"> View comments</button>
+          <button onClick={() => handleClick()} id="viewCommentsBtn" type="button">{!isOpen ? 'View comments' : 'Hide comments'}</button>
         </div>
       </div>
     </div>
