@@ -889,7 +889,9 @@ webapp.post('/createTweet/:username', (req, res) => {
 
 // Adding tweet
 webapp.post('/comment/add/:username', (req, res) => {
-  const { commentId, tweetId, content, timestamp }= req.body;
+  const {
+    commentId, tweetId, content, timestamp,
+  } = req.body;
   const user = req.params.username;
   // insert newTweet in table TWEETS
   const sql = 'INSERT INTO COMMENTS_1 (comm_id, tweet_id, user, content, timestamp) VALUES (?,?,?,?,?)';
@@ -903,7 +905,6 @@ webapp.post('/comment/add/:username', (req, res) => {
       res.json({ message: 'Comment successfully added', changes: this.changes });
     });
 });
-
 
 // deleting a tweet
 webapp.delete('/tweet/delete/:tweetid', (req, res) => {
