@@ -5,10 +5,11 @@
   "main": "authentication.js",
   "scripts": {
     "test": "jest --coverage --forceExit --testTimeout=10000",
-    "build": "npm install && cd ../client && npm install && npm run build",
+    "build": "cd server && npm install && cd ../client && npm install && npm run build",
     "lint": "eslint --fix --ext .js,.jsx .",
-    "server": "node-env-run server.js --exec nodemon | pino-colada",
-    "dev": "run-p server"
+    "server": "node-env-run server/server.js --exec nodemon | pino-colada",
+    "dev": "run-p server",
+    "start": "node server/server.js"
   },
   "repository": {
     "type": "git",
