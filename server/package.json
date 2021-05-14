@@ -13,9 +13,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cis557/project-microblogging-and-streaming-social-network-team12.git"
-
   },
-
   "author": "Trinirwa",
   "license": "ISC",
   "bugs": {

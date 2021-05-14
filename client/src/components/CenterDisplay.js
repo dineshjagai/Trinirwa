@@ -147,7 +147,7 @@ export default function DisplayerTweets() {
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
 
-    fetch('/uploadFile', requestOptions)
+    fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => {
         // console.log(`---uploading a pic ---:${result}`);
@@ -199,7 +199,7 @@ export default function DisplayerTweets() {
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
 
-    fetch('/uploadFile', requestOptions)
+    fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const newTweet = {
@@ -250,7 +250,7 @@ export default function DisplayerTweets() {
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
 
-    fetch('/uploadFile', requestOptions)
+    fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const newTweet = {

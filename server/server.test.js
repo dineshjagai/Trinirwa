@@ -28,7 +28,7 @@ afterEach(async () => {
 
 // come back later
 describe('User registration', () => {
-  test('successful registration', () => request(webapp).post('/register').send({
+  test('successful registration', () => request(webapp).post('/api/register').send({
     username: 'isimbib',
     password: '1234',
     first_name: 'Anaick',
@@ -39,7 +39,7 @@ describe('User registration', () => {
       expect(JSON.parse(response.text).message).toBe('success');
     }));
 
-  test('Error during registration', () => request(webapp).post('/register').send()
+  test('Error during registration', () => request(webapp).post('/api/register').send()
     .expect(500));
 });
 
@@ -52,13 +52,13 @@ describe('/userUid testing', () => {
       last_name: 'Bizimana',
       email: 'anaick@gmail.com',
     });
-    const response = await request(webapp).post('/userUid').send({
+    const response = await request(webapp).post('/api/userUid').send({
       username: 'isimbib',
     });
     expect(JSON.parse(response.text).message).toBe('success');
   });
 
-  test('Error /userUid', () => request(webapp).post('/userUid').send({ username: 'b' })
+  test('Error /userUid', () => request(webapp).post('/api/userUid').send({ username: 'b' })
     .expect(200));
 });
 
@@ -71,14 +71,14 @@ describe('/login testing', () => {
       last_name: 'Bizimana',
       email: 'anaick@gmail.com',
     });
-    const response = await request(webapp).post('/login').send({
+    const response = await request(webapp).post('/api/login').send({
       username: 'isimbib', password: '1235',
     });
     expect(JSON.parse(response.text).message).toBe('Wrong username/password combination!');
   });
 
   test('User does not exist', async () => {
-    const response = await request(webapp).post('/login').send({
+    const response = await request(webapp).post('/api/login').send({
       username: 'b',
       password: 'c',
     });
@@ -95,7 +95,7 @@ describe('/profile/:username test', () => {
       last_name: 'Bizimana',
       email: 'anaick@gmail.com',
     });
-    request(webapp).get('/profile/isimbib').send().expect(404);
+    request(webapp).get('/api/profile/isimbib').send().expect(404);
   });
 
   test('successful profile info', async () => {
@@ -124,7 +124,7 @@ describe('/profile/:username test', () => {
       user_one: 'isimbib',
       user_two: 'berwa',
     });
-    const response = await request(webapp).get('/profile/isimbib').send();
+    const response = await request(webapp).get('/api/profile/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
@@ -138,7 +138,7 @@ describe('/profile/tweet/:username test', () => {
       last_name: 'Bizimana',
       email: 'anaick@gmail.com',
     });
-    request(webapp).get('/profile/tweet/isimbib').send().expect(404);
+    request(webapp).get('/api/profile/tweet/isimbib').send().expect(404);
   });
 
   test('successful retrieving of tweets', async () => {
@@ -156,7 +156,7 @@ describe('/profile/tweet/:username test', () => {
       type: 'text',
       content: 'Hello',
     });
-    const response = await request(webapp).get('/profile/tweet/isimbib').send();
+    const response = await request(webapp).get('/api/profile/tweet/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
@@ -170,7 +170,7 @@ describe('/profile/tweets/:username test', () => {
       last_name: 'Bizimana',
       email: 'anaick@gmail.com',
     });
-    request(webapp).get('/profile/tweets/isimbib').send().expect(405);
+    request(webapp).get('/api/profile/tweets/isimbib').send().expect(405);
   });
 
   test('successful retrieving of tweets', async () => {
@@ -188,7 +188,7 @@ describe('/profile/tweets/:username test', () => {
       type: 'text',
       content: 'Hello',
     });
-    const response = await request(webapp).get('/profile/tweets/isimbib').send();
+    const response = await request(webapp).get('/api/profile/tweets/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
@@ -203,13 +203,13 @@ describe('/profile/interest/:username testing', () => {
       email: 'anaick@gmail.com',
     });
 
-    const response = await request(webapp).post('/profile/interest/isimbib').send({
+    const response = await request(webapp).post('/api/profile/interest/isimbib').send({
       interest: 'me',
     });
     expect(JSON.parse(response.text).message).toBe('Interest successfully added');
   });
 
-  test('Error creating interest', () => request(webapp).post('/profile/interest/isimbib').send().expect(405));
+  test('Error creating interest', () => request(webapp).post('/api/profile/interest/isimbib').send().expect(405));
 });
 
 describe('/profile/delete/interest/:username testing', () => {
@@ -227,13 +227,13 @@ describe('/profile/delete/interest/:username testing', () => {
       interest: 'me',
     });
 
-    const response = await request(webapp).delete('/profile/delete/interest/isimbib').send({
+    const response = await request(webapp).delete('/api/profile/delete/interest/isimbib').send({
       interest: 'me',
     });
     expect(JSON.parse(response.text).message).toBe('Interest successfully deleted');
   });
 
-  // test('Error delete interest', () => request(webapp).delete('/profile/delete/interest/b').send().expect(405));
+  // test('Error delete interest', () => request(webapp).delete('/api/profile/delete/interest/b').send().expect(405));
 });
 
 describe('/profile/followers/:username test', () => {
@@ -245,7 +245,7 @@ describe('/profile/followers/:username test', () => {
       last_name: 'Bizimana',
       email: 'anaick@gmail.com',
     });
-    request(webapp).get('/profile/followers/isimbib').send().expect(405);
+    request(webapp).get('/api/profile/followers/isimbib').send().expect(405);
   });
 
   test('successful retrieving of followers', async () => {
@@ -269,7 +269,7 @@ describe('/profile/followers/:username test', () => {
       user_one: 'isimbib',
       user_two: 'berwa',
     });
-    const response = await request(webapp).get('/profile/followers/isimbib').send();
+    const response = await request(webapp).get('/api/profile/followers/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
@@ -283,7 +283,7 @@ describe('/profile/friends/:username test', () => {
       last_name: 'Bizimana',
       email: 'anaick@gmail.com',
     });
-    request(webapp).get('/profile/friends/isimbib').send().expect(405);
+    request(webapp).get('/api/profile/friends/isimbib').send().expect(405);
   });
 
   test('successful retrieving of friends', async () => {
@@ -312,7 +312,7 @@ describe('/profile/friends/:username test', () => {
       user_one: 'berwa',
       user_two: 'isimbib',
     });
-    const response = await request(webapp).get('/profile/friends/isimbib').send();
+    const response = await request(webapp).get('/api/profile/friends/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
@@ -326,7 +326,7 @@ describe('/profile/avatar/:username test', () => {
       last_name: 'Bizimana',
       email: 'anaick@gmail.com',
     });
-    request(webapp).get('/profile/avatar/isimbib').send().expect(405);
+    request(webapp).get('/api/profile/avatar/isimbib').send().expect(405);
   });
 
   test('successful retrieving avatar', async () => {
@@ -339,7 +339,7 @@ describe('/profile/avatar/:username test', () => {
       profile_picture: 'woman.png',
     });
 
-    const response = await request(webapp).get('/profile/avatar/isimbib').send();
+    const response = await request(webapp).get('/api/profile/avatar/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('Profile retrieved successfully!');
   });
 });
@@ -354,7 +354,7 @@ describe('/block/:username test', () => {
       email: 'anaick@gmail.com',
     });
 
-    request(webapp).post('/block/isimbib').send().expect(405);
+    request(webapp).post('/api/block/isimbib').send().expect(405);
   });
 
   test('successful blocking user', async () => {
@@ -374,7 +374,7 @@ describe('/block/:username test', () => {
       email: 'ber@gmail.com',
     });
 
-    const response = await request(webapp).post('/block/isimbib').send({
+    const response = await request(webapp).post('/api/block/isimbib').send({
       follower: 'berwa',
     });
     expect(JSON.parse(response.text).message).toBe('user successfully blocked');
@@ -391,7 +391,7 @@ describe('/follow/:username test', () => {
       email: 'anaick@gmail.com',
     });
 
-    request(webapp).post('/follow/isimbib').send().expect(405);
+    request(webapp).post('/api/follow/isimbib').send().expect(405);
   });
 
   test('successful following user', async () => {
@@ -411,7 +411,7 @@ describe('/follow/:username test', () => {
       email: 'ber@gmail.com',
     });
 
-    const response = await request(webapp).post('/follow/isimbib').send({
+    const response = await request(webapp).post('/api/follow/isimbib').send({
       follower: 'berwa',
     });
     expect(JSON.parse(response.text).message).toBe('user successfully followed');
@@ -428,7 +428,7 @@ describe('/unfollow/:username test', () => {
       email: 'anaick@gmail.com',
     });
 
-    request(webapp).put('/unfollow/isimbib').send().expect(405);
+    request(webapp).put('/api/unfollow/isimbib').send().expect(405);
   });
 
   test('successful unfollowing user', async () => {
@@ -453,7 +453,7 @@ describe('/unfollow/:username test', () => {
       user_two: 'berwa',
     });
 
-    const response = await request(webapp).put('/unfollow/isimbib').send({
+    const response = await request(webapp).put('/api/unfollow/isimbib').send({
       follower: 'berwa',
     });
     expect(JSON.parse(response.text).message).toBe('user successfully unfollowed');
@@ -470,7 +470,7 @@ describe('/unblock/:username test', () => {
       email: 'anaick@gmail.com',
     });
 
-    request(webapp).put('/unblock/isimbib').send().expect(405);
+    request(webapp).put('/api/unblock/isimbib').send().expect(405);
   });
 
   test('successful unblocking user', async () => {
@@ -495,7 +495,7 @@ describe('/unblock/:username test', () => {
       user_two: 'berwa',
     });
 
-    const response = await request(webapp).put('/unblock/isimbib').send({
+    const response = await request(webapp).put('/api/unblock/isimbib').send({
       follower: 'berwa',
     });
     expect(JSON.parse(response.text).message).toBe('user successfully unblocked');
@@ -512,7 +512,7 @@ describe('/blocked/:username test', () => {
       email: 'anaick@gmail.com',
     });
 
-    request(webapp).get('/blocked/isimbib').send().expect(405);
+    request(webapp).get('/api/blocked/isimbib').send().expect(405);
   });
 
   test('successful getting blocked users', async () => {
@@ -537,13 +537,13 @@ describe('/blocked/:username test', () => {
       user_two: 'berwa',
     });
 
-    const response = await request(webapp).get('/blocked/isimbib').send();
+    const response = await request(webapp).get('/api/blocked/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
 
 describe('/createTweet/:username test', () => {
-  test('Error creating tweet', () => request(webapp).post('/createTweet/isimbib')
+  test('Error creating tweet', () => request(webapp).post('/api/createTweet/isimbib')
     .send()
     .expect(405));
 
@@ -556,7 +556,7 @@ describe('/createTweet/:username test', () => {
       email: 'anaick@gmail.com',
     });
 
-    const response = await request(webapp).post('/createTweet/isimbib').send({
+    const response = await request(webapp).post('/api/createTweet/isimbib').send({
       tweetId: '1',
       type: 'text',
       content: 'Hello',
@@ -567,7 +567,7 @@ describe('/createTweet/:username test', () => {
 });
 
 describe('/resetPassword test', () => {
-  test('Error resetting password', () => request(webapp).put('/resetPassword')
+  test('Error resetting password', () => request(webapp).put('/api/resetPassword')
     .expect(200));
 
   test('successful creation of tweet', async () => {
@@ -579,7 +579,7 @@ describe('/resetPassword test', () => {
       email: 'anaick@gmail.com',
     });
 
-    const response = await request(webapp).put('/resetPassword').send({
+    const response = await request(webapp).put('/api/resetPassword').send({
       username: 'isimbib',
       password: '1235',
     });
@@ -588,7 +588,7 @@ describe('/resetPassword test', () => {
 });
 
 describe('/resetPassword test', () => {
-  test('Error resetting password', () => request(webapp).put('/resetPassword')
+  test('Error resetting password', () => request(webapp).put('/api/resetPassword')
     .expect(200));
 
   test('successful restting of password', async () => {
@@ -600,7 +600,7 @@ describe('/resetPassword test', () => {
       email: 'anaick@gmail.com',
     });
 
-    const response = await request(webapp).put('/resetPassword').send({
+    const response = await request(webapp).put('/api/resetPassword').send({
       username: 'isimbib',
       password: '1235',
     });
@@ -609,7 +609,7 @@ describe('/resetPassword test', () => {
 });
 
 describe('/uploadProfilePicture test', () => {
-  test('Error uploading Picture', () => request(webapp).post('/uploadProfilePicture')
+  test('Error uploading Picture', () => request(webapp).post('/api/uploadProfilePicture')
     .expect(200));
 
   test('successful uploading Profile Picture', async () => {
@@ -621,7 +621,7 @@ describe('/uploadProfilePicture test', () => {
       email: 'anaick@gmail.com',
     });
 
-    const response = await request(webapp).post('/uploadProfilePicture').send({
+    const response = await request(webapp).post('/api/uploadProfilePicture').send({
       username: 'isimbib',
       profile_picture: 'hello.png',
     });
@@ -630,7 +630,7 @@ describe('/uploadProfilePicture test', () => {
 });
 
 describe('/updateNumberFailedLogins test', () => {
-  test('Error updating failed logins', () => request(webapp).post('/updateNumberFailedLogins')
+  test('Error updating failed logins', () => request(webapp).post('/api/updateNumberFailedLogins')
     .expect(200));
 
   test('successful updating failed logins', async () => {
@@ -642,7 +642,7 @@ describe('/updateNumberFailedLogins test', () => {
       email: 'anaick@gmail.com',
     });
 
-    const response = await request(webapp).post('/updateNumberFailedLogins').send({
+    const response = await request(webapp).post('/api/updateNumberFailedLogins').send({
       username: 'isimbib',
       number_failed_logins: 2,
     });
@@ -651,7 +651,7 @@ describe('/updateNumberFailedLogins test', () => {
 });
 
 describe('/numberFailedLogins/:username test', () => {
-  test('Error getting number of failed logins', () => request(webapp).get('/numberFailedLogins/isimbib')
+  test('Error getting number of failed logins', () => request(webapp).get('/api/numberFailedLogins/isimbib')
     .expect(200));
 
   test('successful getting failed logins', async () => {
@@ -664,13 +664,13 @@ describe('/numberFailedLogins/:username test', () => {
       number_failed_logins: 1,
     });
 
-    const response = await request(webapp).get('/numberFailedLogins/isimbib').send();
+    const response = await request(webapp).get('/api/numberFailedLogins/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
 
 describe('/dateUserLastLockedOut/:username test', () => {
-  test('Error getting date user last locked out', () => request(webapp).get('/dateUserLastLockedOut/isimbib')
+  test('Error getting date user last locked out', () => request(webapp).get('/api/dateUserLastLockedOut/isimbib')
     .expect(200));
 
   test('successful getting date lockout', async () => {
@@ -683,13 +683,13 @@ describe('/dateUserLastLockedOut/:username test', () => {
       number_failed_logins: 1,
     });
 
-    const response = await request(webapp).get('/dateUserLastLockedOut/isimbib').send();
+    const response = await request(webapp).get('/api/dateUserLastLockedOut/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
 
 describe('/setLockOutTime test', () => {
-  test('Error setting lock out time', () => request(webapp).post('/setLockOutTime')
+  test('Error setting lock out time', () => request(webapp).post('/api/setLockOutTime')
     .expect(200));
 
   test('successful setting lock out time', async () => {
@@ -702,13 +702,13 @@ describe('/setLockOutTime test', () => {
       number_failed_logins: 1,
     });
 
-    const response = await request(webapp).post('/setLockOutTime').send();
+    const response = await request(webapp).post('/api/setLockOutTime').send();
     expect(JSON.parse(response.text).message).toBe('success');
   });
 });
 
 describe('/setLockOutTime test', () => {
-  test('Error setting lock out time', () => request(webapp).post('/setLockOutTime')
+  test('Error setting lock out time', () => request(webapp).post('/api/setLockOutTime')
     .expect(200));
 
   test('successful setting lock out time', async () => {
@@ -721,7 +721,7 @@ describe('/setLockOutTime test', () => {
       number_failed_logins: 1,
     });
 
-    const response = await request(webapp).post('/setLockOutTime').send();
+    const response = await request(webapp).post('/api/setLockOutTime').send();
     expect(JSON.parse(response.text).message).toBe('success');
   });
 });
@@ -735,7 +735,7 @@ describe('/tweets/all/:username test', () => {
       last_name: 'Bizimana',
       email: 'anaick@gmail.com',
     });
-    request(webapp).get('/tweets/all/isimbib').send().expect(405);
+    request(webapp).get('/api/tweets/all/isimbib').send().expect(405);
   });
 
   test('successful retrieving of tweets/followers', async () => {
@@ -764,7 +764,7 @@ describe('/tweets/all/:username test', () => {
       user_one: 'berwa',
       user_two: 'isimbib',
     });
-    const response = await request(webapp).get('/tweets/all/isimbib').send();
+    const response = await request(webapp).get('/api/tweets/all/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
@@ -778,7 +778,7 @@ describe('/all/followers/:username test', () => {
       last_name: 'Bizimana',
       email: 'anaick@gmail.com',
     });
-    request(webapp).get('/all/Followers/isimbib').send().expect(405);
+    request(webapp).get('/api/all/Followers/isimbib').send().expect(405);
   });
 
   test('successful retrieving of followers', async () => {
@@ -807,7 +807,7 @@ describe('/all/followers/:username test', () => {
       user_one: 'berwa',
       user_two: 'isimbib',
     });
-    const response = await request(webapp).get('/all/followers/isimbib').send();
+    const response = await request(webapp).get('/api/all/followers/isimbib').send();
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });

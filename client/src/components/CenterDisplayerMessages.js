@@ -17,7 +17,6 @@ import './CenterDisplayerHome.css';
 import {
   addMessage,
   fetchMessages,
-  fetchTweets,
 } from './Module';
 import './CenterDisplay.css';
 
@@ -124,7 +123,7 @@ export default function DisplayerMessages() {
     const dateTime = new Date().toISOString();
     const messageId = hash(`${input}${user}${dateTime}`);
 
-    fetch('/uploadFile', requestOptions)
+    fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => {
         // console.log(`---uploading a pic ---:${result}`);
@@ -175,7 +174,7 @@ export default function DisplayerMessages() {
     const dateTime = new Date().toISOString();
     const messageId = hash(`${input}${user}${dateTime}`);
 
-    fetch('/uploadFile', requestOptions)
+    fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const newMessage = {
@@ -225,7 +224,7 @@ export default function DisplayerMessages() {
     const dateTime = new Date().toISOString();
     const messageId = hash(`${input}${user}${dateTime}`);
 
-    fetch('/uploadFile', requestOptions)
+    fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => {
         const newMessage = {

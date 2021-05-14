@@ -141,8 +141,8 @@ export default function Tweet({ data, handleDelete }) {
   }, []);
 
   const date = (data.tweet_date.split('T'))[0];
-  const newAvatar = `/viewFile/${avatar}`;
-  const newMedia = `/viewFile/${data.content}`;
+  const newAvatar = `/api/viewFile/${avatar}`;
+  const newMedia = `/api/viewFile/${data.content}`;
 
   let newMediaTweet;
   if (isPicture) {
