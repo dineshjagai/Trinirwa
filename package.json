@@ -5,7 +5,7 @@
   "main": "authentication.js",
   "scripts": {
     "test": "jest --coverage --forceExit --testTimeout=10000",
-    "build": "npm install && cd client && npm install && npm run build",
+    "build": "npm install && cd ../client && npm install && npm run build",
     "lint": "eslint --fix --ext .js,.jsx .",
     "server": "node-env-run server.js --exec nodemon | pino-colada",
     "dev": "run-p server"
@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/cis557/project-microblogging-and-streaming-social-network-team12.git"
 
-/* ----------------------------------- }, ----------------------------------- */
+  },
 
   "author": "Trinirwa",
   "license": "ISC",
