@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';

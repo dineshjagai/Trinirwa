@@ -10,6 +10,7 @@ import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
 import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
 import TextField from '@material-ui/core/TextField';
 import Message from './Message';
+import Tweet from './Tweet';
 // eslint-disable-next-line no-unused-vars
 import { getCurrentUsername, getCurrentReceiver } from '../auth/authServices';
 import './CenterDisplayerHome.css';
@@ -88,14 +89,13 @@ export default function DisplayerMessages() {
   };
 
   const getData = async () => {
-    console.log(`Sdfdsf${user}`, `Sdfdsf${receiver}`);
-    await fetchMessages(user, receiver).then((res) => {
+    fetchMessages(user, receiver).then((res) => {
       const { messages } = res.data;
-      console.log(`Sdfdsf${messages}`);
+      console.log(`ttt--${messages}`);
       messages.forEach((e) => {
         const toAdd = <div className="tContainer"><Message data={e} /></div>;
         toDisplay.add(toAdd);
-        items.set(e.message_id, toAdd);
+        items.set(e.tweet_id, toAdd);
       });
       setUpdate(true);
     }).catch((err) => console.log(err));
@@ -133,8 +133,9 @@ export default function DisplayerMessages() {
           type: 'picture',
           content: JSON.parse(result).data,
           message_date: dateTime,
+          receiver,
         };
-        // console.log(`is this good? ${newMessage.user}`);
+        console.log(`is this good? ${newMessage}`);
         // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newMessage} /></div>;
         // const newItems = items;
         // const newToDisplay = new Set([toAdd, ...toDisplay]);
@@ -183,6 +184,7 @@ export default function DisplayerMessages() {
           type: 'video',
           content: JSON.parse(result).data,
           message_date: dateTime,
+          receiver,
         };
         // console.log(`is this good? ${newMessage.user}`);
         // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newMessage} /></div>;
@@ -233,6 +235,7 @@ export default function DisplayerMessages() {
           type: 'song',
           content: JSON.parse(result).data,
           message_date: dateTime,
+          receiver,
         };
         // console.log(`is this good? ${newMessage.user}`);
         // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newMessage} /></div>;

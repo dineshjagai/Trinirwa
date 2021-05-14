@@ -481,7 +481,7 @@ export function addMessage(data) {
 }
 
 export function fetchMessages(username, receiver) {
-  const getUrl = `/api/profile/messages/:${username}/:${receiver}`;
+  const getUrl = `/api/profile/messages/${username}/${receiver}`;
   return axios({
     method: 'GET',
     url: getUrl,

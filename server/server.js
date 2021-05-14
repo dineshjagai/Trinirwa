@@ -1083,9 +1083,11 @@ webapp.get('/api/profile/messages/:username/:receiver', (req, res) => {
       });
       return;
     }
+
+    console.log(messages);
     res.json({
       message: '200',
-      data: messages,
+      messages,
     });
   });
 });

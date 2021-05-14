@@ -110,6 +110,7 @@ export default function DisplayerTweets() {
   const getData = async () => {
     fetchAllTweets(user).then((res) => {
       const { tweets } = res.data;
+      console.log(`ttt--${tweets}`);
       tweets.forEach((e) => {
         const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={e} /></div>;
         toDisplay.add(toAdd);
