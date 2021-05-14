@@ -87,19 +87,19 @@ const sendTokenResponse = (token, res) => {
   );
 };
 
-webapp.get('/api/greeting', (req, res) => {
+webapp.get('/greeting', (req, res) => {
   const name = req.query.name || 'World';
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
 });
 
-webapp.get('/api/video/token', (req, res) => {
+webapp.get('/video/token', (req, res) => {
   const { identity } = req.query;
   const { room } = req.query;
   const token = videoToken(identity, room, configTwo);
   sendTokenResponse(token, res);
 });
-webapp.post('/api/video/token', (req, res) => {
+webapp.post('/video/token', (req, res) => {
   console.log(configTwo);
   const { identity } = req.body;
   const { room } = req.body;
