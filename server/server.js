@@ -36,7 +36,7 @@ const connection = mysql.createConnection(config);
 const saltRounds = 10;
 // TODO: define all endpoints as specified in REST API
 webapp.use(express.static(path.join(__dirname, './client/build')));
-const port = 5000;
+const port = process.env.PORT || 5000;
 webapp.use(bodyParser.urlencoded({
   extended: true,
 }));
