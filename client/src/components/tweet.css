@@ -89,3 +89,12 @@
     display: block;
  }
 
+ .comment_item {
+    border-radius: 8px;
+    min-height: 200px;
+    background-color: #eaf1ef;
+    overflow: auto; 
+    margin: auto;
+    width: 90%; 
+    margin-top: 2%; 
+ }

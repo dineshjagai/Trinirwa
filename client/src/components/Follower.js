@@ -22,10 +22,10 @@ export default function Follower({ info, handleB, handleF }) {
     <div className="Container_two">
       <div className={classes.root}>
         <Tooltip title="Block user" placement="top">
-          <BlockIcon className="button" color="secondary" onClick={() => handleB(info.username)} />
+          <BlockIcon fontSize="small" className="button" color="secondary" onClick={() => handleB(info.username)} />
         </Tooltip>
         <Tooltip title="Follow" placement="top">
-          <PersonAddIcon className="button" onClick={() => handleF(info.username)} />
+          <PersonAddIcon fontSize="small" className="button" onClick={() => handleF(info.username)} />
         </Tooltip>
       </div>
       <div className="followerContainer">
@@ -37,7 +37,7 @@ export default function Follower({ info, handleB, handleF }) {
           />
         </div>
       </div>
-      <div className="text">{info.username}</div>
+      <div style={{ fontWeight: 'bold', color: '#0C8367' }} className="text">{info.username}</div>
     </div>
   );
 }

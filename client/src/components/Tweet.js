@@ -36,14 +36,10 @@ export default function Tweet({ data, handleDelete }) {
   const [blocks, setBlocks] = useState(data.tweet_blocks);
   const [isOwner] = useState(data.user === user);
   const [avatar, setAvatar] = useState('');
-  // eslint-disable-next-line eqeqeq
-  const [isPicture] = useState(data.type === 'picture');
-  const [isVideo] = useState(data.type === 'video');
-  const [isSong] = useState(data.type === 'song');
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
-  const [isMediaUndefined] = useState(typeof (data.content) !== 'undefined');
   const [allComments, setComments] = useState([]);
+  // const [display, setDisplay] = useState(true);
   const postComment = (content, tweetId) => {
     const timestamp = new Date().toISOString();
     const commentId = hash(`${content}${user}${timestamp}`);
@@ -91,7 +87,10 @@ export default function Tweet({ data, handleDelete }) {
     if (input === '') return;
     postComment(input, id);
   };
-
+  // const handleDeleteorHideInternal = () => {
+  //   setDisplay(false);
+  //   handleDelete(id, isOwner);
+  // };
   const handleDeleteComment = (toDel) => {
     const newList = allComments.filter((comment) => comment.comm_id !== toDel);
     setComments(newList);
@@ -143,133 +142,131 @@ export default function Tweet({ data, handleDelete }) {
   const date = (data.tweet_date.split('T'))[0];
   const newAvatar = `/viewFile/${avatar}`;
   const newMedia = `/viewFile/${data.content}`;
-
-  let newMediaTweet;
-  if (isPicture) {
-    newMediaTweet = <img className="tweet_image" id="tweet_media_picture" src={newMedia} alt="" />;
-  } else if (isVideo) {
-    newMediaTweet = (
-      // eslint-disable-next-line jsx-a11y/media-has-caption
-      <video className="tweet_video" controls>
-        {' '}
-        <source src={newMedia} />
-      </video>
-    );
-  } else if (isSong) {
-    newMediaTweet = (
-      // eslint-disable-next-line jsx-a11y/media-has-caption
-      <audio controls>
-        <source src={newMedia} />
-      </audio>
-    );
-  } else {
-    newMediaTweet = data.content;
-  }
-
   return (
-    { isMediaUndefined }
-      ? (
-        <div id="container_tweet">
-          <div className="tweet_header">
-            <div className="tweet_img">
-              <img className="tweet_header" id="tweet_author_picture" src={newAvatar} alt="" />
-            </div>
-            <div className="tweet_text">
-              <span
-                style={{
-                  fontSize: '13px',
-                  fontWeight: 'bold',
-                }}
-                id="author_username"
-              >
+    <>
+      <div id="container_tweet">
+        <div className="tweet_header">
+          <div className="tweet_img">
+            <img className="tweet_header" id="tweet_author_picture" src={newAvatar} alt="" />
+          </div>
+          <div className="tweet_text">
+            <span
+              style={{
+                fontSize: '13px',
+                fontWeight: 'bold',
+              }}
+              id="author_username"
+            >
 
-                {data.user}
-              </span>
-              <span style={{ fontSize: '10px' }} id="date">
-                {date}
-              </span>
-            </div>
-          </div>
-          <div id="menu">
-            <Tooltip title={isOwner ? 'Delete post' : 'Hide post'} placement="top">
-              <IconButton
-                style={{
-                  borderRadius: '50%',
-                  padding: '3',
-                  color: '#0C8367',
-                }}
-                onClick={() => handleDelete(id, isOwner)}
-              >
-                <CloseRoundedIcon id={data.tweet_id} />
-              </IconButton>
-            </Tooltip>
-          </div>
-          <Divider variant="middle" />
-          <div className="tweet_content">
-            <p style={{ textAlign: 'left' }}>
-              {newMediaTweet}
-            </p>
-          </div>
-          <Divider variant="middle" />
-          <div className="comment">
-            <CommentInput handleComment={handleComment} />
-          </div>
-          <div style={{
-            borderRadius: '8px', minHeight: '200px', backgroundColor: '#eaf1ef', overflow: 'auto', margin: 'auto', width: '90%', marginTop: '2%', height: isOpen ? '300px' : '200px',
-          }}
-          >
-            <div style={{
-              margin: 'auto',
-              textAlign: 'center',
-              fontWeight: 'bold',
-              color: '#0C8367',
-            }}
-            >
-              <span>{ (numComments !== 0) ? `${numComments} comments` : 'Comments'}</span>
-            </div>
-            <div style={{
-              margin: 'auto', width: '90%', height: '100%',
-            }}
-            >
-              <ul
-                id={`list${id}`}
-                style={{
-                  whiteSpace: 'nowrap', listStyleType: 'none',
-                }}
-              >
-                {allComments.map((comment) => (
-                  <li style={{ marginBottom: '35px' }} key={comment.comm_id}>
-                    <CommentDisplayer data={comment} handleDeleteComment={handleDeleteComment} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="tweet_bottom">
-            <div className="likes">
-              <IconButton
-                onClick={handleLike}
-                style={{
-                  borderRadius: '50%',
-                  padding: '3',
-                  color: isLikedBool ? 'red' : 'black',
-                }}
-              >
-                <LikeIcon />
-              </IconButton>
-              <span style={{ color: '#0C8367' }}>{`${likes} likes`}</span>
-            </div>
-            <div style={{ display: isOwner ? 'block' : 'none' }} className="analytics">
-              <DialogAnalytics
-                tweetId={data.tweet_id}
-              />
-            </div>
-            <div className="comments">
-              <button onClick={() => handleClick()} id="viewCommentsBtn" type="button">{!isOpen ? 'View more' : 'View less'}</button>
-            </div>
+              {data.user}
+            </span>
+            <span style={{ fontSize: '10px' }} id="date">
+              {date}
+            </span>
           </div>
         </div>
-      )
-      : <div> </div>
+        <div id="menu">
+          <Tooltip title={isOwner ? 'Delete post' : 'Hide post'} placement="top">
+            <IconButton
+              style={{
+                borderRadius: '50%',
+                padding: '3',
+                color: '#0C8367',
+              }}
+              onClick={() => handleDelete(id, isOwner)}
+            >
+              <CloseRoundedIcon id={data.tweet_id} />
+            </IconButton>
+          </Tooltip>
+        </div>
+        <Divider variant="middle" />
+        <div className="tweet_content">
+          <>
+            {data.type === 'text' && (
+            <p style={{ textAlign: 'left' }}>
+              {data.content}
+            </p>
+            )}
+            {data.type === 'video' && (
+            // eslint-disable-next-line jsx-a11y/media-has-caption
+            <video className="tweet_video" controls>
+              {' '}
+              <source src={newMedia} />
+            </video>
+            )}
+            {data.type === 'song' && (
+            // eslint-disable-next-line jsx-a11y/media-has-caption
+            <audio controls>
+              <source src={newMedia} />
+            </audio>
+            )}
+            {data.type === 'picture' && <img className="tweet_image" id="tweet_media_picture" src={newMedia} alt="" />}
+          </>
+
+        </div>
+        <Divider variant="middle" />
+        <div className="comment">
+          <CommentInput handleComment={handleComment} />
+        </div>
+        <div
+          className="comment_item"
+          style={{
+            height: isOpen ? '300px' : '200px',
+            display: numComments > 0 ? 'block' : 'none',
+          }}
+        >
+          <div style={{
+            margin: 'auto',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            color: '#0C8367',
+          }}
+          >
+            <span>{ (numComments !== 0) ? `${numComments} comments` : 'Comments'}</span>
+          </div>
+          <div style={{
+            margin: 'auto', width: '90%', height: '100%',
+          }}
+          >
+            <ul
+              id={`list${id}`}
+              style={{
+                whiteSpace: 'nowrap', listStyleType: 'none',
+              }}
+            >
+              {allComments.map((comment) => (
+                <li style={{ marginBottom: '35px' }} key={comment.comm_id}>
+                  <CommentDisplayer data={comment} handleDeleteComment={handleDeleteComment} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="tweet_bottom">
+          <div className="likes">
+            <IconButton
+              onClick={handleLike}
+              style={{
+                borderRadius: '50%',
+                padding: '3',
+                color: isLikedBool ? 'red' : 'black',
+              }}
+            >
+              <LikeIcon />
+            </IconButton>
+            <span style={{ color: '#0C8367' }}>{`${likes} likes`}</span>
+          </div>
+          <div style={{ display: isOwner ? 'block' : 'none' }} className="analytics">
+            <DialogAnalytics
+              tweetId={data.tweet_id}
+            />
+          </div>
+          <div className="comments">
+            <button onClick={() => handleClick()} id="viewCommentsBtn" type="button">{!isOpen ? 'View more' : 'View less'}</button>
+          </div>
+        </div>
+      </div>
+    </>
+
   );
 }

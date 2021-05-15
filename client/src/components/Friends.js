@@ -46,7 +46,7 @@ export default function Friends() {
           iconText="Unfollow"
         />
       </div>
-      <div className="title">Friends</div>
+      <div style={{ color: '#0C8367' }} className="title">Friends</div>
       <br />
       <div className="box">
         <div className="containers">

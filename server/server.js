@@ -174,7 +174,6 @@ webapp.post('/login', (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
   console.log(`username:${username}`);
-
   connection.query(
     'SELECT * FROM USERS WHERE username = ?',
     username,
@@ -1027,6 +1026,27 @@ webapp.get('/all/followers/:username', (req, res) => {
     });
 });
 
+webapp.get('/profile/suggestions/:username', (req, res) => {
+  const { username } = req.params;
+  const sql_select = `SELECT username, profile_picture FROM USERS WHERE username != '${username}' 
+  AND username NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one = '${username}') 
+  AND username NOT IN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one = '${username}')
+  ORDER BY rand() LIMIT 5`;
+  connection.query(sql_select, (err, suggestions) => {
+    if (err) {
+      res.status(404).json({
+        message: 'no suggestions',
+        error: err.message,
+      });
+      return;
+    }
+    res.json({
+      message: 'suggestions acquired',
+      suggestions,
+    });
+  });
+});
+
 // gets alls the followers with no limit
 webapp.get('/tweets/all/:username', (req, res) => {
   // finish the outes correctly
@@ -1044,6 +1064,40 @@ webapp.get('/tweets/all/:username', (req, res) => {
         tweets,
       });
     });
+});
+
+// gets alls the followers pagination with no limit
+webapp.get('/tweeters/all/:username', (req, res) => {
+  const { username} = req.params;
+  const {page, limit} = req.query;
+  const offset = (page - 1) * limit;
+  const sql_get = `CALL getTweetsUsers("${username}", ${limit}, ${offset})`;
+  connection.query(sql_get,
+    (err, tweets) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        tweets,
+      });
+  });
+});
+
+// gets the tweet number
+webapp.get('/tweets/count/all/:username', (req, res) => {
+  const { username} = req.params;
+  const sql_count = `CALL getTweetsCount("${username}")`;
+  connection.query(sql_count,
+    (err, count) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        count,
+      });
+  });
 });
 
 // gets alls the comments of tweet

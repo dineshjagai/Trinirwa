@@ -18,3 +18,19 @@
     position: relative;
     z-index: 1;
 }
+
+.whatIsOn {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+}
+
+.tweet_items {
+    overflow: auto;
+}
+
+.tweetIpt {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+}
