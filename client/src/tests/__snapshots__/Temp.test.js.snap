@@ -1,17 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test Regisration snapshot 1`] = `
-<div
-  className="col-xs-12 col-sm-6 col-md-6 col-lg-6"
->
-  <img
-    alt=""
-    className="img-responsive"
-    src="/viewFile/cat1.jpg"
-  />
-</div>
-`;
-
 exports[`Test Temp snapshot 1`] = `
 <div
   className="col-xs-12 col-sm-6 col-md-6 col-lg-6"
