@@ -35,7 +35,7 @@ const config = require('./db_connection.js');
 const connection = mysql.createConnection(config);
 const saltRounds = 10;
 // TODO: define all endpoints as specified in REST API
-webapp.use(express.static(path.join(__dirname, './client/build')));
+webapp.use(express.static(path.join(__dirname, '../client/build')));
 const port = process.env.PORT || 5000;
 webapp.use(bodyParser.urlencoded({
   extended: true,
@@ -1109,7 +1109,7 @@ webapp.post('/api/createMessage/:username/:receiver', (req, res) => {
 });
 
 webapp.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, './client/build/index.html'));
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
 webapp.use((_req, res) => {
