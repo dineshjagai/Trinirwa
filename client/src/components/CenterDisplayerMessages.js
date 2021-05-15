@@ -1,26 +1,26 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-
+// import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import PostAddIcon from '@material-ui/icons/PostAdd';
-import LiveTvIcon from '@material-ui/icons/LiveTv';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
 import LibraryMusicIcon from '@material-ui/icons/LibraryMusic';
 import TextField from '@material-ui/core/TextField';
+import Message from './Message';
 import Tweet from './Tweet';
-import { getCurrentUsername } from '../auth/authServices';
+// eslint-disable-next-line no-unused-vars
+import { getCurrentUsername, getCurrentReceiver } from '../auth/authServices';
 import './CenterDisplayerHome.css';
 
 import {
-  addTweet,
-  deleteTweet,
-  fetchAllTweets,
-  hideTweet,
+  addMessage,
+  fetchMessages,
 } from './Module';
 import './CenterDisplay.css';
+
 // import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
@@ -31,8 +31,11 @@ const useStyles = makeStyles((theme) => ({
 // eslint-disable-next-line import/no-unresolved
 const hash = require('object-hash');
 
-export default function DisplayerTweets() {
-  const history = useHistory();
+export default function DisplayerMessages() {
+  const receiver = getCurrentReceiver();
+  console.log(`receiver = ${receiver}`);
+  //   const history = useHistory();
+
   const [items] = useState(new Map());
   const [update, setUpdate] = useState(false);
   const [count, setCount] = useState(255);
@@ -40,78 +43,57 @@ export default function DisplayerTweets() {
   const classes = useStyles();
   const user = getCurrentUsername();
   const handleChange = (e) => {
-    const u = 255 - (e.target.value).length;
-    setCount(u);
-  };
-  const handleHideOrDelete = (id, isOwner) => {
-    if (isOwner) {
-      deleteTweet(id).then((res) => {
-        console.log(typeof (res.status));
-        window.location.reload();
-        console.log('message: delete:', res.message);
-        setUpdate(true);
-        items.delete(id);
-      }).catch((err) => {
-        console.log(err.message);
-      });
-    } else {
-      // eslint-disable-next-line no-unused-vars
-      hideTweet(id, user).then((res) => {
-        window.location.reload();
-        toDisplay.delete(items.get(id));
-        items.delete(id);
-        setUpdate(true);
-        // updating blocks
-      }).catch((err) => console.log(err));
+    if ((e.target.value).length >= 0) {
+      const u = 255 - (e.target.value).length;
+      setCount(u);
     }
   };
-
   useEffect(() => {
     console.log('refreshed');
     setUpdate(false);
   }, [update]);
-  const postTweet = () => {
+  const postMessage = () => {
     setCount(255);
-    const input = document.getElementById('tweet').value;
+    const input = document.getElementById('message').value;
     if (typeof input === 'undefined') {
       return;
     }
     if (input.length === 0) return;
     const dateTime = new Date().toISOString();
-    const tweetId = hash(`${input}${user}${dateTime}`);
-    const newTweet = {
+    const messageId = hash(`${input}${user}${dateTime}`);
+    const newMessage = {
       user,
-      tweet_id: tweetId,
+      message_id: messageId,
       type: 'text',
       content: input,
-      tweet_date: dateTime,
-      tweet_likes: 0,
+      message_date: dateTime,
+      receiver,
     };
-    // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+    // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newMessage} /></div>;
     // // const newItems = items;
     // const newToDisplay = new Set([toAdd, ...toDisplay]);
     // const newItems = items;
 
     // setToDisplay(newToDisplay);
-    // items.set(tweetId, toAdd);
-    // newItems.set(tweetId, toAdd);
+    // items.set(messageId, toAdd);
+    // newItems.set(messageId, toAdd);
     // setUpdate(true);
     // setItems(newItems);
     // console.log('items length', items.length);
-    addTweet(newTweet).then((res) => {
+    addMessage(newMessage).then((res) => {
       console.log(res.message);
-      window.location.reload();
+    //   window.location.reload();
     }).catch((err) => {
       console.log(err.message);
     });
   };
 
   const getData = async () => {
-    fetchAllTweets(user).then((res) => {
-      const { tweets } = res.data;
-      console.log(`ttt--${tweets}`);
-      tweets.forEach((e) => {
-        const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={e} /></div>;
+    fetchMessages(user, receiver).then((res) => {
+      const { messages } = res.data;
+      console.log(`ttt--${messages}`);
+      messages.forEach((e) => {
+        const toAdd = <div className="tContainer"><Message data={e} /></div>;
         toDisplay.add(toAdd);
         items.set(e.tweet_id, toAdd);
       });
@@ -121,10 +103,6 @@ export default function DisplayerTweets() {
   useEffect(() => {
     getData();
   }, []);
-
-  const goLiveHandler = () => {
-    history.push('/videochat');
-  };
 
   const postPicture = (e) => {
     // upload picture
@@ -138,37 +116,37 @@ export default function DisplayerTweets() {
       body: formdata,
       redirect: 'follow',
     };
-    const input = document.getElementById('tweet').value;
+    const input = document.getElementById('message').value;
     if (typeof input === 'undefined') {
       return;
     }
     const dateTime = new Date().toISOString();
-    const tweetId = hash(`${input}${user}${dateTime}`);
+    const messageId = hash(`${input}${user}${dateTime}`);
 
     fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => {
         // console.log(`---uploading a pic ---:${result}`);
-        const newTweet = {
+        const newMessage = {
           user,
-          tweet_id: tweetId,
+          message_id: messageId,
           type: 'picture',
           content: JSON.parse(result).data,
-          tweet_date: dateTime,
-          tweet_likes: 0,
+          message_date: dateTime,
+          receiver,
         };
-        // console.log(`is this good? ${newTweet.user}`);
-        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        console.log(`is this good? ${newMessage}`);
+        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newMessage} /></div>;
         // const newItems = items;
         // const newToDisplay = new Set([toAdd, ...toDisplay]);
         // setToDisplay(newToDisplay);
-        // newItems.set(tweetId, toAdd);
+        // newItems.set(messageId, toAdd);
         // setUpdate(true);
         // setItems(newItems);
         // console.log(items.length);
-        addTweet(newTweet).then((res) => {
+        addMessage(newMessage).then((res) => {
           console.log(res.message);
-          window.location.reload();
+        //   window.location.reload();
         }).catch((err) => {
           console.log(err.message);
         });
@@ -190,36 +168,36 @@ export default function DisplayerTweets() {
       body: formdata,
       redirect: 'follow',
     };
-    const input = document.getElementById('tweet').value;
+    const input = document.getElementById('message').value;
     if (typeof input === 'undefined') {
       return;
     }
     const dateTime = new Date().toISOString();
-    const tweetId = hash(`${input}${user}${dateTime}`);
+    const messageId = hash(`${input}${user}${dateTime}`);
 
     fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        const newTweet = {
+        const newMessage = {
           user,
-          tweet_id: tweetId,
+          message_id: messageId,
           type: 'video',
           content: JSON.parse(result).data,
-          tweet_date: dateTime,
-          tweet_likes: 0,
+          message_date: dateTime,
+          receiver,
         };
-        // console.log(`is this good? ${newTweet.user}`);
-        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        // console.log(`is this good? ${newMessage.user}`);
+        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newMessage} /></div>;
         // const newItems = items;
         // const newToDisplay = new Set([toAdd, ...toDisplay]);
         // setToDisplay(newToDisplay);
-        // newItems.set(tweetId, toAdd);
+        // newItems.set(messageId, toAdd);
         // setUpdate(true);
         // setItems(newItems);
         // console.log(items.length);
-        addTweet(newTweet).then((res) => {
+        addMessage(newMessage).then((res) => {
           console.log(res.message);
-          window.location.reload();
+        //   window.location.reload();
         }).catch((err) => {
           console.log(err.message);
         });
@@ -241,35 +219,35 @@ export default function DisplayerTweets() {
       body: formdata,
       redirect: 'follow',
     };
-    const input = document.getElementById('tweet').value;
+    const input = document.getElementById('message').value;
     if (typeof input === 'undefined') {
       return;
     }
     const dateTime = new Date().toISOString();
-    const tweetId = hash(`${input}${user}${dateTime}`);
+    const messageId = hash(`${input}${user}${dateTime}`);
 
     fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        const newTweet = {
+        const newMessage = {
           user,
-          tweet_id: tweetId,
+          message_id: messageId,
           type: 'song',
           content: JSON.parse(result).data,
-          tweet_date: dateTime,
-          tweet_likes: 0,
+          message_date: dateTime,
+          receiver,
         };
-        // console.log(`is this good? ${newTweet.user}`);
-        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
+        // console.log(`is this good? ${newMessage.user}`);
+        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newMessage} /></div>;
         // const newItems = items;
         // const newToDisplay = new Set([toAdd, ...toDisplay]);
         // setToDisplay(newToDisplay);
-        // newItems.set(tweetId, toAdd);
+        // newItems.set(messageId, toAdd);
         // setUpdate(true);
         // setItems(newItems);
         // console.log(items.length);
-        addTweet(newTweet).then((res) => {
-          window.location.reload();
+        addMessage(newMessage).then((res) => {
+        //   window.location.reload();
           console.log(res.message);
         }).catch((err) => {
           console.log(err.message);
@@ -291,7 +269,7 @@ export default function DisplayerTweets() {
   const postSongTrigger = () => {
     document.getElementById('fileInputSong').click();
   };
-  // console.log('td', toDisplay);
+  console.log('td', toDisplay);
   return (
     <div className="container_center">
       <div
@@ -311,7 +289,7 @@ export default function DisplayerTweets() {
         >
           <TextField
             multiline
-            id="tweet"
+            id="message"
             label="what's on your mind!!"
             variant="outlined"
             helperText={`${count} remaining chars`}
@@ -328,15 +306,7 @@ export default function DisplayerTweets() {
           }}
           className="buttons"
         >
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-            onClick={goLiveHandler}
-            startIcon={<LiveTvIcon />}
-          >
-            Go live
-          </Button>
+
           <Button
             variant="contained"
             color="secondary"
@@ -373,7 +343,7 @@ export default function DisplayerTweets() {
             color="secondary"
             className={classes.button}
             startIcon={<PostAddIcon />}
-            onClick={postTweet}
+            onClick={postMessage}
           >
             Create post
           </Button>
@@ -401,7 +371,7 @@ export default function DisplayerTweets() {
           />
         </div>
       </div>
-      <div className="tweet_items">
+      <div>
         {toDisplay}
       </div>
     </div>

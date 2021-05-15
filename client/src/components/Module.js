@@ -3,13 +3,13 @@ import axios from 'axios';
 export function getUserInformation(username) {
   const prm = axios({
     method: 'GET',
-    url: `/api/${username}`,
+    url: `/api/api/${username}`,
   });
   return prm;
 }
 
 export function addInterest(newInterest, username) {
-  const addUrl = `/profile/interest/${username}`;
+  const addUrl = `/api/profile/interest/${username}`;
   return axios({
     method: 'POST',
     url: addUrl,
@@ -20,7 +20,7 @@ export function addInterest(newInterest, username) {
 }
 
 export function deleteInterest(interestToDelete, username) {
-  const delUrl = `/profile/delete/interest/${username}`;
+  const delUrl = `/api/profile/delete/interest/${username}`;
   return axios({
     method: 'DELETE',
     url: delUrl,
@@ -31,7 +31,7 @@ export function deleteInterest(interestToDelete, username) {
 }
 
 export function fetchTweets(username) {
-  const getUrl = `/profile/tweet/${username}`;
+  const getUrl = `/api/profile/tweet/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -39,7 +39,7 @@ export function fetchTweets(username) {
 }
 
 export function fetchAllTweets(username) {
-  const getUrl = `/tweets/all/${username}`;
+  const getUrl = `/api/tweets/all/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -64,7 +64,7 @@ export function getTweetCount(username) {
   });
 }
 export function getProfileData(username) {
-  const getUrl = `/profile/${username}`;
+  const getUrl = `/api/profile/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -72,7 +72,7 @@ export function getProfileData(username) {
 }
 
 export function getFollowers(username) {
-  const getUrl = `/profile/followers/${username}`;
+  const getUrl = `/api/profile/followers/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -80,7 +80,7 @@ export function getFollowers(username) {
 }
 
 export function getTweets(username) {
-  const getUrl = `/profile/tweets/${username}`;
+  const getUrl = `/api/profile/tweets/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -88,7 +88,7 @@ export function getTweets(username) {
 }
 
 // export function getFriends(id) {
-//   const getUrl = `/profile/friends/${id}`;
+//   const getUrl = `/api/profile/friends/${id}`;
 //   return axios({
 //     method: 'GET',
 //     url: getUrl,
@@ -96,7 +96,7 @@ export function getTweets(username) {
 // }
 
 export function getFriends(username) {
-  const getUrl = `/profile/friends/${username}`;
+  const getUrl = `/api/profile/friends/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -104,7 +104,7 @@ export function getFriends(username) {
 }
 
 export function deactivateProfile(id, inputPassword) {
-  const delUrl = `/profile/deactivate/${id}`;
+  const delUrl = `/api/profile/deactivate/${id}`;
   return axios({
     method: 'PUT',
     url: delUrl,
@@ -116,7 +116,7 @@ export function deactivateProfile(id, inputPassword) {
 
 // reactivate the account
 export function reactivateProfile(id, inputPassword) {
-  const delUrl = `/profile/reactivate/${id}`;
+  const delUrl = `/api/profile/reactivate/${id}`;
   return axios({
     method: 'PUT',
     url: delUrl,
@@ -128,7 +128,7 @@ export function reactivateProfile(id, inputPassword) {
 
 // change the password in the profile page
 export function updatePassword(username, newPass, oldPass) {
-  const upUrl = `/profile/password/${username}`;
+  const upUrl = `/api/profile/password/${username}`;
   return axios({
     method: 'PUT',
     url: upUrl,
@@ -141,7 +141,7 @@ export function updatePassword(username, newPass, oldPass) {
 
 // change the password in the login page
 export function resetPassword(username, newPassword) {
-  const upUrl = '/resetPassword';
+  const upUrl = '/api/resetPassword';
   return axios({
     method: 'PUT',
     url: upUrl,
@@ -153,7 +153,7 @@ export function resetPassword(username, newPassword) {
 }
 
 export function blockFollower(id, username) {
-  const insUrl = `/block/${id}`;
+  const insUrl = `/api/block/${id}`;
   return axios({
     method: 'POST',
     url: insUrl,
@@ -164,7 +164,7 @@ export function blockFollower(id, username) {
 }
 
 export function getBlockedFollowers(username) {
-  const insUrl = `/blocked/${username}`;
+  const insUrl = `/api/blocked/${username}`;
   return axios({
     method: 'GET',
     url: insUrl,
@@ -172,7 +172,7 @@ export function getBlockedFollowers(username) {
 }
 
 export function unBlockUser(username, blocked) {
-  const insUrl = `/unblock/${username}`;
+  const insUrl = `/api/unblock/${username}`;
   return axios({
     method: 'PUT',
     url: insUrl,
@@ -186,7 +186,7 @@ export function unBlockUser(username, blocked) {
 export function getUsername(id) {
   return axios({
     method: 'GET',
-    url: `/home/${id}`,
+    url: `/api/home/${id}`,
   });
 }
 
@@ -194,14 +194,14 @@ export function getUsername(id) {
 export function getAvatar(user) {
   return axios({
     method: 'GET',
-    url: `/profile/avatar/${user}`,
+    url: `/api/profile/avatar/${user}`,
   });
 }
 
 export function addTweet(data) {
   return axios({
     method: 'POST',
-    url: `/createTweet/${data.user}`,
+    url: `/api/createTweet/${data.user}`,
     data: {
       content: data.content,
       tweet_date: data.tweet_date,
@@ -214,7 +214,7 @@ export function addTweet(data) {
 export function addComment(data) {
   return axios({
     method: 'POST',
-    url: `/comment/add/${data.user}`,
+    url: `/api/comment/add/${data.user}`,
     data: {
       commentId: data.comment_id,
       tweetId: data.tweet_id,
@@ -227,14 +227,14 @@ export function addComment(data) {
 export function getAllCommentsForTweet(tweetId) {
   return axios({
     method: 'GET',
-    url: `/tweet/comments/all/${tweetId}`,
+    url: `/api/tweet/comments/all/${tweetId}`,
   });
 }
 
 export function updateTweetComments(tweetId, newNumComments) {
   return axios({
     method: 'PUT',
-    url: `/tweet/comments/${tweetId}`,
+    url: `/api/tweet/comments/${tweetId}`,
     data: {
       comments: newNumComments,
     },
@@ -244,7 +244,7 @@ export function updateTweetComments(tweetId, newNumComments) {
 export function updateComment(commId, newContent) {
   return axios({
     method: 'PUT',
-    url: `/tweet/comment/update/${commId}`,
+    url: `/api/tweet/comment/update/${commId}`,
     data: {
       content: newContent,
     },
@@ -254,12 +254,12 @@ export function updateComment(commId, newContent) {
 export function deleteComment(commId) {
   return axios({
     method: 'DELETE',
-    url: `/tweet/comment/delete/${commId}`,
+    url: `/api/tweet/comment/delete/${commId}`,
   });
 }
 
 export function followUser(id, username) {
-  const insUrl = `/follow/${id}`;
+  const insUrl = `/api/follow/${id}`;
   return axios({
     method: 'POST',
     url: insUrl,
@@ -270,7 +270,7 @@ export function followUser(id, username) {
 }
 
 export function unfollowUser(id, username) {
-  const insUrl = `/unfollow/${id}`;
+  const insUrl = `/api/unfollow/${id}`;
   return axios({
     method: 'PUT',
     url: insUrl,
@@ -283,14 +283,14 @@ export function unfollowUser(id, username) {
 export function fetchFollowers(id) {
   return axios({
     method: 'GET',
-    url: `/followers/${id}`,
+    url: `/api/followers/${id}`,
   });
 }
 
 export function fetchAllFollowers(username) {
   return axios({
     method: 'GET',
-    url: `/all/followers/${username}`,
+    url: `/api/all/followers/${username}`,
   });
 }
 
@@ -299,7 +299,7 @@ export const addUser = (usernameReg, passwordOneReg, firstName, lastName, email)
   localStorage.setItem('username', JSON.stringify(usernameReg));
   const prm = axios({
     method: 'POST',
-    url: '/register',
+    url: '/api/register',
     data: {
       username: usernameReg,
       password: passwordOneReg,
@@ -314,7 +314,7 @@ export const addUser = (usernameReg, passwordOneReg, firstName, lastName, email)
 export const getUid = (usernameReg) => {
   const prm = axios({
     method: 'POST',
-    url: '/userUid',
+    url: '/api/userUid',
     data: {
       username: usernameReg,
     },
@@ -325,7 +325,7 @@ export const getUid = (usernameReg) => {
 export const userLogin = (usernameReg, password) => {
   const prm = axios({
     method: 'POST',
-    url: '/login',
+    url: '/api/login',
     data: {
       username: usernameReg,
       password,
@@ -337,7 +337,7 @@ export const userLogin = (usernameReg, password) => {
 export const addProfilePicture = (username, profilePicture) => {
   const prm = axios({
     method: 'POST',
-    url: '/uploadProfilePicture',
+    url: '/api/uploadProfilePicture',
     data: {
       username,
       profilePicture,
@@ -349,7 +349,7 @@ export const addProfilePicture = (username, profilePicture) => {
 // export const uploadFile = () => {
 //   const prm = axios({
 //     method: 'POST',
-//     url: '/uploadFile',
+//     url: '/api/uploadFile',
 //     data: {
 //     },
 //   });
@@ -359,13 +359,13 @@ export const searchFriend = (username, input) => {
   console.log(`search friend ${username}, typeof ${typeof (input)}@@@@@@@@@@@@`);
   const promise = axios({
     method: 'GET',
-    url: `/search/${username}/${input}`,
+    url: `/api/search/${username}/${input}`,
   });
   return promise;
 };
 
 export function deleteTweet(tweetId) {
-  const delUrl = `/tweet/delete/${tweetId}`;
+  const delUrl = `/api/tweet/delete/${tweetId}`;
   return axios({
     method: 'DELETE',
     url: delUrl,
@@ -373,7 +373,7 @@ export function deleteTweet(tweetId) {
 }
 
 export function hideTweet(tweetId, username) {
-  const postUrl = `/tweet/hide/${tweetId}`;
+  const postUrl = `/api/tweet/hide/${tweetId}`;
   return axios({
     method: 'POST',
     url: postUrl,
@@ -384,7 +384,7 @@ export function hideTweet(tweetId, username) {
 }
 
 export function updateTweetLikes(tweetId, tweetLikes) {
-  const putUrl = `/tweet/likes/${tweetId}`;
+  const putUrl = `/api/tweet/likes/${tweetId}`;
   return axios({
     method: 'PUT',
     url: putUrl,
@@ -395,7 +395,7 @@ export function updateTweetLikes(tweetId, tweetLikes) {
 }
 
 export function updateTweetBlocks(tweetId, tweetBlocks) {
-  const putUrl = `/tweet/likes/${tweetId}`;
+  const putUrl = `/api/tweet/likes/${tweetId}`;
   return axios({
     method: 'PUT',
     url: putUrl,
@@ -406,7 +406,7 @@ export function updateTweetBlocks(tweetId, tweetBlocks) {
 }
 
 export function isLiked(user, tweetId) {
-  const getUrl = `/tweet/isliked/${user}/${tweetId}/`;
+  const getUrl = `/api/tweet/isliked/${user}/${tweetId}/`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -414,7 +414,7 @@ export function isLiked(user, tweetId) {
 }
 
 export function likeTweet(user, tweetId) {
-  const insUrl = `/tweet/like/${user}/`;
+  const insUrl = `/api/tweet/like/${user}/`;
   return axios({
     method: 'POST',
     url: insUrl,
@@ -427,7 +427,7 @@ export function likeTweet(user, tweetId) {
 export const getHiders = (tweetId) => {
   const prm = axios({
     method: 'GET',
-    url: `/tweet/hiders/all/${tweetId}`,
+    url: `/api/tweet/hiders/all/${tweetId}`,
   });
   return prm;
 };
@@ -441,7 +441,7 @@ export const getSuggestions = (username) => {
 };
 
 export function unLikeTweet(user, tweetId) {
-  const putUrl = `/tweet/unlike/${user}/`;
+  const putUrl = `/api/tweet/unlike/${user}/`;
   return axios({
     method: 'PUT',
     url: putUrl,
@@ -454,13 +454,13 @@ export function unLikeTweet(user, tweetId) {
 export const getNumberFailedLogins = (username) => {
   const prm = axios({
     method: 'GET',
-    url: `/numberFailedLogins/${username}`,
+    url: `/api/numberFailedLogins/${username}`,
   });
   return prm;
 };
 
 export const updateNumberFailedLogins = (username, numberOfFailedLogins) => {
-  const addUrl = '/updateNumberFailedLogins';
+  const addUrl = '/api/updateNumberFailedLogins';
   return axios({
     method: 'POST',
     url: addUrl,
@@ -474,13 +474,13 @@ export const updateNumberFailedLogins = (username, numberOfFailedLogins) => {
 export const getDateUserLastLockedOut = (username) => {
   const prm = axios({
     method: 'GET',
-    url: `/dateUserLastLockedOut/${username}`,
+    url: `/api/dateUserLastLockedOut/${username}`,
   });
   return prm;
 };
 
 export const setLockOutTime = (username) => {
-  const addUrl = '/setLockOutTime';
+  const addUrl = '/api/setLockOutTime';
   return axios({
     method: 'POST',
     url: addUrl,
@@ -489,3 +489,28 @@ export const setLockOutTime = (username) => {
     },
   });
 };
+
+/* -------------------------------------------------------------------------- */
+/* ------------------------------MESSAGING----------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+export function addMessage(data) {
+  return axios({
+    method: 'POST',
+    url: `/api/createMessage/${data.user}/${data.receiver}`,
+    data: {
+      content: data.content,
+      message_date: data.message_date,
+      type: data.type,
+      messageId: data.message_id,
+    },
+  });
+}
+
+export function fetchMessages(username, receiver) {
+  const getUrl = `/api/profile/messages/${username}/${receiver}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}

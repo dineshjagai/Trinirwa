@@ -9,6 +9,7 @@ import Signup from './components/Signup';
 import Temp from './components/Temp';
 import VideoChat from './live_stream/VideoChat';
 import ResetPassword from './components/ResetPassword';
+import MessagePage from './components/MessagePage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/resetPassword" exact render={() => <ResetPassword />} />
         <Route path="/temp" exact render={() => <Temp />} />
         <Route path="/videochat" exact render={() => <VideoChat />} />
+        <Route path="/message" exact render={() => <MessagePage />} />
 
       </Switch>
     </Router>

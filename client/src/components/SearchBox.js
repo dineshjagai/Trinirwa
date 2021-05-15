@@ -80,7 +80,7 @@ export default function SearchBox() {
         <ListItemAvatar>
           <Avatar
             alt=""
-            src={`/viewFile/${data.profile_picture}`}
+            src={`/api/viewFile/${data.profile_picture}`}
           />
         </ListItemAvatar>
         <ListItemText primary={data.username} secondary={data.followed ? 'following' : 'Follow me PLZ :)'} />

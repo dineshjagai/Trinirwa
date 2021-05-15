@@ -15,7 +15,9 @@ const s3 = new AWS.S3({
 
 // upload a file
 const uploadFile = (fileName) => {
-  console.log(`fileNme${fileName}`);
+  console.log(`fileNme ${fileName}`);
+  console.log(`The current Location is ${process.cwd()}`);
+
   const tmpPath = './uploads/';
   const fileContent = fs.readFileSync(tmpPath + fileName);
 

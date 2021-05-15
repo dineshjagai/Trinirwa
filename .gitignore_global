@@ -117,3 +117,4 @@ dist
 
 # no media in our github! 
 server/uploads/*
+uploads/*

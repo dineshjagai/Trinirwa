@@ -36,7 +36,7 @@ export default function ScrollDialog({
         <ListItemAvatar>
           <Avatar
             alt=""
-            src={`/viewFile/${data.profile_picture}`}
+            src={`/api/viewFile/${data.profile_picture}`}
           />
         </ListItemAvatar>
         <ListItemText primary={data.username} secondary={secondary} />

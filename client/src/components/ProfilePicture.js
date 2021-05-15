@@ -21,7 +21,7 @@ export default function Profile(props) {
 
   const profilePic = props.data.profile_picture;
   console.log(`pics${profilePic}`);
-  const profilePicUrl = `/viewFile/${profilePic}`;
+  const profilePicUrl = `/api/viewFile/${profilePic}`;
   return (
     <div className="container-profile">
       <div className="pictures">

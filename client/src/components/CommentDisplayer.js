@@ -35,7 +35,7 @@ export default function CommentDisplayer({ data, handleDeleteComment }) {
     <div className="comment_cont" stlye={{ height: '200px', width: '100px', backgroundColor: 'red' }}>
       <div className="comment_header">
         <div className="header_profile">
-          <img id="comment_picture" src={`/viewFile/${avatar}`} alt="" />
+          <img id="comment_picture" src={`/api/viewFile/${avatar}`} alt="" />
         </div>
         <div className="header_name">
           <span id="cmnt_username">{data.user}</span>

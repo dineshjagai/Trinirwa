@@ -16,6 +16,8 @@ export default function Signup() {
   const [interests, setInterests] = useState(new Set());
   // const [madeQuery, setMadeQuery] = useState(false);
   const [childKey, setChildKey] = useState(0);
+  const [filePath, setFilePath] = useState('');
+  // const [showImage] = useState(<div />);
 
   useEffect(() => {
     getProfileData(username).then((result) => {
@@ -54,23 +56,52 @@ export default function Signup() {
       redirect: 'follow',
     };
 
-    fetch('/uploadFile', requestOptions)
+    fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
-      .then((result) => addProfilePicture(username, JSON.parse(result).data)
-        .then((res) => {
-          console.log(res);
-        }).catch((error) => {
-          console.log(error);
-        })).catch((err) => {
+      .then((result) => {
+        setFilePath(JSON.parse(result).data);
+        addProfilePicture(username, JSON.parse(result).data)
+          .then((res) => {
+            console.log(res);
+          }).catch((error) => {
+            console.log(error);
+          });
+      }).catch((err) => {
         alert(err);
       });
   };
+
+  // useEffect(() => {
+  //   if (typeof filePath !== 'undefined') {
+  //     const tmp = `/viewFile/${filePath}`;
+  //     console.log(`${tmp}`);
+  //   }
+  // }, [filePath]);
 
   const signup = () => {
     alert('Your have successfully signed up');
     history.push('/login/');
   };
+  // useEffect(() => {
 
+  // }, [filePath]);
+  let showImage = <div />;
+  if (filePath !== '') {
+    showImage = (
+      <div className="myimgContainer">
+        {' '}
+        {' '}
+        Here is your new profile
+        <img
+          className="myimg"
+          src={`/api/viewFile/${filePath}`}
+          alt=""
+        />
+      </div>
+    );
+    console.log(`/api/viewFile/${filePath}`);
+  }
+  console.log(showImage);
   return (
     <div className="card shadow mx-auto mt-5" style={{ width: '30rem' }}>
       <div className="container mx-1">
@@ -89,9 +120,6 @@ export default function Signup() {
             <h2 className="card-title text-center font-weight-bold">Please Finish Sign Up</h2>
           </h2>
           <div className="form-group">
-            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-              <img src="/uploadFiles/1620555316674--image.png" alt="" className="img-responsive" />
-            </div>
 
             <label htmlFor="new-username-form">Please Upload Profile Picture:</label>
             <input
@@ -100,6 +128,7 @@ export default function Signup() {
               id="fileUploadProfilePicture"
               onChange={fileupload}
             />
+            {showImage}
 
             <label htmlFor="new-username-form">Please Add Your Interests:</label>
 
@@ -118,6 +147,7 @@ export default function Signup() {
                 Complete Registration
               </button>
             </div>
+
             <p>
               Already have an account?&nbsp;
               <Link to="/login">Log in here!</Link>
