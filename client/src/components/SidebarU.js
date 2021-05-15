@@ -32,7 +32,7 @@ export default function Sidebar() {
         <button className="button_profile" onClick={handleClick} type="button">
           <div className="header_box">
             <div className="img_box">
-              <img id="img" alt="" src={`/viewfile/${avatar}`} />
+              <img id="img" alt="" src={`/api/viewfile/${avatar}`} />
             </div>
             <div className="username_box">
               <span className="user">{user}</span>

@@ -1,0 +1,23 @@
+{
+  "name": "project-microblogging-and-streaming-social-network-team12",
+  "version": "1.0.0",
+  "description": "microbloging dependencies",
+  "main": "authentication.js",
+  "scripts": {
+    "build": "cd server && npm install && cd ../client && npm install && npm run build",
+    "lint": "eslint --fix --ext .js,.jsx .",
+    "server": "node-env-run server/server.js --exec nodemon | pino-colada",
+    "dev": "run-p server",
+    "start": "node server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cis557/project-microblogging-and-streaming-social-network-team12.git"
+  },
+  "author": "Trinirwa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cis557/project-microblogging-and-streaming-social-network-team12/issues"
+  },
+  "homepage": "https://github.com/cis557/project-microblogging-and-streaming-social-network-team12#readme"
+}

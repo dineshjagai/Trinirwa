@@ -79,15 +79,13 @@
 .comments {
     margin: auto;
 }
-    
 
-
-
- .tweet_video {
-     height: 400px;
-     width: 400px;
-     text-align: center;
-     margin-left: auto;
-     margin-right: auto;
-     display: block;
+.tweet_video {
+    height: 400px;
+    width: 400px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
  }
+

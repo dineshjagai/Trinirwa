@@ -54,7 +54,7 @@ export default function Signup() {
       redirect: 'follow',
     };
 
-    fetch('/uploadFile', requestOptions)
+    fetch('/api/uploadFile', requestOptions)
       .then((response) => response.text())
       .then((result) => addProfilePicture(username, JSON.parse(result).data)
         .then((res) => {

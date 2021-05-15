@@ -25,7 +25,7 @@ export default function Friend({
     <div className="Container_two">
       <div className={classes.root}>
         <Tooltip title="Message" placement="top">
-          <ChatIcon className="button" onClick={() => handleMessage} />
+          <ChatIcon className="button" onClick={() => handleMessage(info.username)} />
         </Tooltip>
         <Tooltip title="Block user" placement="top">
           <BlockIcon className="button" color="secondary" onClick={() => handleB(info.username)} />
@@ -38,7 +38,7 @@ export default function Friend({
         <div className="myimgContainer">
           <img
             className="myimg"
-            src={`/viewFile/${info.profile_picture}`}
+            src={`/api/viewFile/${info.profile_picture}`}
             alt=""
           />
         </div>

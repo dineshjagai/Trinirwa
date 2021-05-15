@@ -39,7 +39,7 @@ const Room = ({ roomName, room, handleLogout }) => {
         }}
       />
       <h2>
-        Room:
+        Live Stream:
         {' '}
         {roomName}
       </h2>
