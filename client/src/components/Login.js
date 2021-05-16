@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import {
-  Link, useHistory,
+  BrowserRouter as Router, Link, useHistory,
 } from 'react-router-dom';
 import '../App.css';
 import {
@@ -160,7 +160,9 @@ export default function Login() {
           </div>
           <p>
             Forgot Password?&nbsp;
-            <Link to="/resetPassword">Click here to reset!</Link>
+            <Router>
+              <Link to="/resetPassword">Click here to reset!</Link>
+            </Router>
           </p>
           <div className="form-group text-center">
             <button
@@ -173,7 +175,9 @@ export default function Login() {
           </div>
           <p>
             Don&apos;t have an account?&nbsp;
-            <Link to="/registration">Sign Up!</Link>
+            <Router>
+              <Link to="/registration">Sign Up!</Link>
+            </Router>
           </p>
         </div>
       </div>

@@ -10,12 +10,12 @@ exports[`Test ProfilePicture snapshot 1`] = `
     <img
       alt=""
       id="overlay"
-      src="/viewFile/logo512.png"
+      src="/api/viewFile/logo512.png"
     />
     <img
       alt=""
       id="originalDiv"
-      src="/viewFile/logo512.png"
+      src="/api/viewFile/logo512.png"
     />
   </div>
   <br />

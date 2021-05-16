@@ -1,9 +1,9 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Followers from '../components/Followers';
+import NormalUser from '../components/NormalUser';
 
-test('Test Followers snapshot', () => {
-  const component = renderer.create(<Followers />);
+test('Test NomralUser snapshot', () => {
+  const component = renderer.create(<NormalUser />);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });

@@ -1,6 +1,5 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import '@testing-library/jest-dom';
 import Displayer from '../components/Displayer';
 
 test('Test Displayer snapshot', () => {

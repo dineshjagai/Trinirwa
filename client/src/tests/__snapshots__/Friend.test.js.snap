@@ -79,7 +79,7 @@ exports[`Test Friend snapshot 1`] = `
       <img
         alt=""
         className="myimg"
-        src="logo512.png"
+        src="/api/viewFile/logo512.png"
       />
     </div>
   </div>

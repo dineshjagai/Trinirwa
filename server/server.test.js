@@ -811,3 +811,80 @@ describe('/all/followers/:username test', () => {
     expect(JSON.parse(response.text).message).toBe('200');
   });
 });
+
+
+describe('/api/profile/deactivate/:username test', () => {
+  test('Error deactivating profile', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+      number_failed_logins: 1,
+    });
+
+    const response = await request(webapp).put('/api/profile/deactivate/isimbib').send(
+      {
+        password: '1235',
+      }
+    );
+    expect(JSON.parse(response.text).message).toBe('Wrong password input! Try again.');
+  });
+
+  test('successful deactivation of profile', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+      number_failed_logins: 1,
+    });
+
+    const response = await request(webapp).put('/api/profile/deactivate/isimbib').send(
+      {
+        password: '1234',
+      }
+    );
+    expect(JSON.parse(response.text).message).toBe('Wrong password input! Try again.');
+  });
+});
+
+describe('/api/profile/reactivate/:username test', () => {
+  test('Error reactivating profile', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+      number_failed_logins: 1,
+    });
+
+    const response = await request(webapp).put('/api/profile/reactivate/isimbib').send(
+      {
+        password: '1235',
+      }
+    );
+    expect(JSON.parse(response.text).message).toBe('Wrong password input! Try again.');
+  });
+  
+  test('successful reactivation of profile', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+      number_failed_logins: 1,
+    });
+
+    const response = await request(webapp).put('/api/profile/reactivate/isimbib').send(
+      {
+        password: '1234',
+      }
+    );
+    expect(JSON.parse(response.text).message).toBe('Wrong password input! Try again.');
+  });
+});

@@ -1,6 +1,5 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import '@testing-library/jest-dom';
 import ProfilePage from '../components/ProfilePage';
 
 test('Test ProfilePage snapshot', () => {

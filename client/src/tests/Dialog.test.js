@@ -1,6 +1,5 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import '@testing-library/jest-dom';
 import Dialog from '../components/Dialog';
 
 test('Test Dialog snapshot', () => {
