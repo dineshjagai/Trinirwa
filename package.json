@@ -8,7 +8,7 @@
     "lint": "eslint --fix --ext .js,.jsx .",
     "server": "node-env-run server/server.js --exec nodemon | pino-colada",
     "dev": "run-p server",
-    "start": "node-env-run server/server.js"
+    "start": "node server/server.js"
   },
   "repository": {
     "type": "git",
