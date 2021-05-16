@@ -2,6 +2,7 @@
 import React, {
   useState, useEffect, useRef, useCallback,
 } from 'react';
+import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Tweet from './Tweet';
 import { getCurrentUsername } from '../auth/authServices';
@@ -30,8 +31,12 @@ export default function TweetsDisplayer() {
   // eslint-disable-next-line no-unused-vars
   const [pageNumber, setPageNumber] = useState(1);
   // eslint-disable-next-line no-unused-vars
+  const [count, setCount] = useState(25);
   const observer = useRef();
-
+  const handleChange = (e) => {
+    const u = 25 - (e.target.value).length;
+    setCount(u);
+  };
   const lastTweetRef = useCallback((node) => {
     if (loading) return;
     if (observer.current) observer.current.disconnect();
@@ -64,10 +69,9 @@ export default function TweetsDisplayer() {
 
   const postTweet = () => {
     const input = document.getElementById('tweet').value;
-    if (typeof input === 'undefined') {
-      return;
-    }
+    // const regexp = /\B\#\w\w+\b/g;
     if (input.length === 0) return;
+    // const hashtag = input.match(regexp);
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
     const newTweet = {
@@ -78,7 +82,6 @@ export default function TweetsDisplayer() {
       tweet_date: dateTime,
       tweet_likes: 0,
     };
-
     setAllTweets((prevTweet) => [newTweet, ...prevTweet]);
     // eslint-disable-next-line no-unused-vars
     addTweet(newTweet).then((res) => {
@@ -245,6 +248,19 @@ export default function TweetsDisplayer() {
     <>
       <div className="container_center">
         <CommentBox className="tweetIpt" handlers={handlers} />
+        <div className="filterBox">
+          <TextField
+            style={{
+              background: 'white', margin: '10px', width: '90%', borderRadius: '8px',
+            }}
+            multiline
+            id="filter"
+            label="Filter posts by hashtag"
+            variant="outlined"
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
+
         <div className="tweet_items">
           {allTweets.map((e, index) => {
             if (allTweets.length === index + 1) {

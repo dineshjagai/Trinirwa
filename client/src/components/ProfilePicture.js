@@ -10,6 +10,7 @@ import { getCurrentUsername } from '../auth/authServices';
 
 export default function Profile(props) {
   const user = getCurrentUsername();
+  const date = (props.data.date.split('T'))[0];
   const handleUnblock = (username) => {
     unBlockUser(user, username).then((res) => {
       console.log(res.message);
@@ -30,7 +31,8 @@ export default function Profile(props) {
       </div>
       <br />
       <div className="username">
-        <span id="username">{props.data.username}</span>
+        <span style={{ color: '#0C8367' }} id="username">{props.data.username}</span>
+        <span style={{ color: '#0C8367' }} id="username">{`Since: ${date}`}</span>
       </div>
       <div className="deleteButton">
         <ScrollDialog
@@ -48,22 +50,3 @@ export default function Profile(props) {
     </div>
   );
 }
-
-// export default function Profile(props) {
-//   return (
-//     <div className="container-profile">
-//       <div className="pictures">
-//         <img src={props.data.profile_picture} alt="" id="overlay" />
-//         <img src={props.data.profile_picture} alt="" id="originalDiv" />
-//       </div>
-//       <br />
-//       <div className="username">
-//         <span id="username">{props.data.username}</span>
-//       </div>
-//       <div className="deleteButton">
-//         <DialogPassword id={props.id} />
-//         <DialogPasswordChange id={props.id} />
-//       </div>
-//     </div>
-//   );
-// }

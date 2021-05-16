@@ -211,6 +211,16 @@ export function addTweet(data) {
   });
 }
 
+export function addHashtag(tweetid, hashtag) {
+  return axios({
+    method: 'POST',
+    url: `/api/tweet/hashtag/${tweetid}`,
+    data: {
+      hashtag,
+    },
+  });
+}
+
 export function addComment(data) {
   return axios({
     method: 'POST',
@@ -221,6 +231,27 @@ export function addComment(data) {
       content: data.content,
       timestamp: data.timestamp,
     },
+  });
+}
+export function addCommentLiveStream(data) {
+  const {
+    roomName, user, timestamp, content,
+  } = data;
+  return axios({
+    method: 'POST',
+    url: `/api/comment/livestream/${roomName}`,
+    data: {
+      user,
+      timestamp,
+      content,
+    },
+  });
+}
+
+export function getAllCommentsLiveStream(roomName) {
+  return axios({
+    method: 'GET',
+    url: `/api/livestream/comments/all/${roomName}`,
   });
 }
 

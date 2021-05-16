@@ -36,6 +36,7 @@
 .username {
   margin: auto;
   display: flex;
+  flex-direction: column;
 }
 #username {
   margin: auto;
@@ -51,3 +52,4 @@
  position: relative;
  padding:10px;
 } 
+
