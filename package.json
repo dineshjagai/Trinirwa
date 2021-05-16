@@ -6,9 +6,9 @@
   "scripts": {
     "build": "cd server && npm install && cd ../client && npm install && npm run build",
     "lint": "eslint --fix --ext .js,.jsx .",
-    "server": "node-env-run server/server.js --exec nodemon | pino-colada",
+    "server": "node server/server.js --exec nodemon | pino-colada",
     "dev": "run-p server",
-    "start": "node-env-run server/server.js"
+    "start": "node server/server.js"
   },
   "repository": {
     "type": "git",
@@ -19,8 +19,5 @@
   "bugs": {
     "url": "https://github.com/cis557/project-microblogging-and-streaming-social-network-team12/issues"
   },
-  "homepage": "https://github.com/cis557/project-microblogging-and-streaming-social-network-team12#readme",
-  "devDependencies": {
-    "node-env-run": "^4.0.2"
-  }
+  "homepage": "https://github.com/cis557/project-microblogging-and-streaming-social-network-team12#readme"
 }

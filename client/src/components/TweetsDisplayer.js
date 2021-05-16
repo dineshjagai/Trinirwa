@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 import React, {
   useState, useEffect, useRef, useCallback,
@@ -33,11 +34,14 @@ export default function TweetsDisplayer() {
   const [pageNumber, setPageNumber] = useState(1);
   // eslint-disable-next-line no-unused-vars
   const [count, setCount] = useState(25);
+  const [hashTagQuery, sethashTagQuery] = useState('');
   const observer = useRef();
   const handleChange = (e) => {
     const u = 25 - (e.target.value).length;
     setCount(u);
+    sethashTagQuery(e);
   };
+
   const lastTweetRef = useCallback((node) => {
     if (loading) return;
     if (observer.current) observer.current.disconnect();
@@ -268,6 +272,13 @@ export default function TweetsDisplayer() {
             variant="outlined"
             onChange={(e) => handleChange(e)}
           />
+
+          {/* <button
+            type="submit"
+            className="btn btn-primary w-100"
+            onClick={filterTweetsButton}
+          /> */}
+
         </div>
 
         <div className="tweet_items">
