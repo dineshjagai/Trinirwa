@@ -6,10 +6,13 @@ import './tweet.css';
 import {
   getAvatar,
 } from './Module';
+import { getCurrentUsername } from '../auth/authServices';
 
 export default function Message({ data }) {
-//   const user = getCurrentUsername();
+  const user = getCurrentUsername();
+  // const receiver = getCurrentReceiver();
   const [avatar, setAvatar] = useState('');
+  // const [hadRead, setHasRead] = useState(false);
   // eslint-disable-next-line eqeqeq
   const [isPicture] = useState(data.type === 'picture');
   const [isVideo] = useState(data.type === 'video');
@@ -51,7 +54,19 @@ export default function Message({ data }) {
   } else {
     newMediaMessage = data.content;
   }
+  // eslint-disable-next-line eqeqeq
+  const hasRead = (data.is_read == 1);
+  let messageStatus = 'Message Status : Delivered';
+  if (hasRead) {
+    messageStatus = 'Message Status : Read';
+  }
 
+  let senderReceiver = 'Receiver>';
+  if (user === data.user) {
+    senderReceiver = 'Sender>';
+  } else {
+    messageStatus = '';
+  }
   return (
 
     <div id="container_tweet">
@@ -67,8 +82,22 @@ export default function Message({ data }) {
             }}
             id="author_username"
           >
-
+            {senderReceiver}
+            {' '}
             {data.user}
+
+          </span>
+          <span
+            style={{
+              fontSize: '13px',
+              fontWeight: 'bold',
+            }}
+            id="author_message"
+
+          >
+            {' '}
+            {messageStatus}
+
           </span>
           <span style={{ fontSize: '10px' }} id="date">
             {date}

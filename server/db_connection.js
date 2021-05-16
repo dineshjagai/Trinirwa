@@ -1,8 +1,8 @@
 const config = {
-  host: 'database-1.cmkrry719kkl.us-east-1.rds.amazonaws.com',
-  user: 'admin',
-  password: 'XQJYs10aUBLqQm5R2Skq',
-  database: 'TRINIWA',
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
 };
 
 module.exports = config;

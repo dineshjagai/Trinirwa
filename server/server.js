@@ -1,4 +1,8 @@
+/* eslint-disable max-len */
+/* eslint-disable camelcase */
+/* eslint-disable import/extensions */
 // create express app
+
 const express = require('express');
 
 const webapp = express();
@@ -33,6 +37,7 @@ const config = require('./db_connection.js');
 
 // connecting to database
 const connection = mysql.createConnection(config);
+// console.log(connection);
 const saltRounds = 10;
 // TODO: define all endpoints as specified in REST API
 webapp.use(express.static(path.join(__dirname, '../client/build')));
@@ -100,7 +105,7 @@ webapp.get('/video/token', (req, res) => {
   sendTokenResponse(token, res);
 });
 webapp.post('/video/token', (req, res) => {
-  console.log(configTwo);
+  // console.log(configTwo);
   const { identity } = req.body;
   const { room } = req.body;
   const token = videoToken(identity, room, configTwo);
@@ -1069,8 +1074,8 @@ webapp.get('/api/tweets/all/:username', (req, res) => {
 
 // gets alls the followers pagination with no limit
 webapp.get('/api/tweeters/all/:username', (req, res) => {
-  const { username} = req.params;
-  const {page, limit} = req.query;
+  const { username } = req.params;
+  const { page, limit } = req.query;
   const offset = (page - 1) * limit;
   const sql_get = `CALL getTweetsUsers("${username}", ${limit}, ${offset})`;
   connection.query(sql_get,
@@ -1082,12 +1087,12 @@ webapp.get('/api/tweeters/all/:username', (req, res) => {
         message: '200',
         tweets,
       });
-  });
+    });
 });
 
 // gets the tweet number
 webapp.get('/api/tweets/count/all/:username', (req, res) => {
-  const { username} = req.params;
+  const { username } = req.params;
   const sql_count = `CALL getTweetsCount("${username}")`;
   connection.query(sql_count,
     (err, count) => {
@@ -1098,7 +1103,7 @@ webapp.get('/api/tweets/count/all/:username', (req, res) => {
         message: '200',
         count,
       });
-  });
+    });
 });
 
 // gets alls the comments of tweet
@@ -1159,6 +1164,21 @@ webapp.post('/api/createMessage/:username/:receiver', (req, res) => {
         return;
       }
       res.json({ message: 'Message successfully added', changes: this.changes });
+    });
+});
+
+// setting the boolean for logging in/out
+webapp.post('/api/hasRead/:username/:receiver', (req, res) => {
+  const trueInt = 1;
+  const sql = 'UPDATE MESSAGES_1 SET is_read = ? WHERE (user = ?) AND (receiver = ?)';
+  const params = [trueInt, req.params.username, req.params.receiver];
+  connection.query(sql, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'The Receiver has read his messages', changes: this.changes });
     });
 });
 

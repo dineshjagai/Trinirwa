@@ -18,6 +18,7 @@ import './CenterDisplayerHome.css';
 import {
   addMessage,
   fetchMessages,
+  updateHasRead,
 } from './Module';
 import './CenterDisplay.css';
 
@@ -82,7 +83,7 @@ export default function DisplayerMessages() {
     // console.log('items length', items.length);
     addMessage(newMessage).then((res) => {
       console.log(res.message);
-    //   window.location.reload();
+      window.location.reload();
     }).catch((err) => {
       console.log(err.message);
     });
@@ -90,6 +91,11 @@ export default function DisplayerMessages() {
 
   const getData = async () => {
     fetchMessages(user, receiver).then((res) => {
+      updateHasRead(receiver, user).then(() => {
+        console.log('Updated message status');
+      }).catch((err) => {
+        console.log(err.message);
+      });
       const { messages } = res.data;
       console.log(`ttt--${messages}`);
       messages.forEach((e) => {
@@ -146,7 +152,7 @@ export default function DisplayerMessages() {
         // console.log(items.length);
         addMessage(newMessage).then((res) => {
           console.log(res.message);
-        //   window.location.reload();
+          window.location.reload();
         }).catch((err) => {
           console.log(err.message);
         });
@@ -197,7 +203,7 @@ export default function DisplayerMessages() {
         // console.log(items.length);
         addMessage(newMessage).then((res) => {
           console.log(res.message);
-        //   window.location.reload();
+          window.location.reload();
         }).catch((err) => {
           console.log(err.message);
         });
@@ -247,7 +253,7 @@ export default function DisplayerMessages() {
         // setItems(newItems);
         // console.log(items.length);
         addMessage(newMessage).then((res) => {
-        //   window.location.reload();
+          window.location.reload();
           console.log(res.message);
         }).catch((err) => {
           console.log(err.message);
