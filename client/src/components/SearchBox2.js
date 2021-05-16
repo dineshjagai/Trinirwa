@@ -49,11 +49,14 @@ export default function searchBox() {
   }, []);
 
   const handleChange = (e) => {
-    if (e.target.value === '') setResults([]);
+    if (e.target.value === '') {
+      setResults([]);
+      return;
+    }
     searchFriend(user, e.target.value).then((result) => {
       console.log(`input: ${e.target.value} , ${user}`);
       setResults(result.data.friends);
-      console.log(results.data.friends);
+      console.log(result.data.friends);
     }).catch((error) => {
       console.log(error.message);
     });
@@ -66,7 +69,7 @@ export default function searchBox() {
     return (
       <div className="searchItem">
         <div className="searchImg">
-          <img id="search_img" src={`/viewFile/${info.profile_picture}`} alt="" />
+          <img id="search_img" src={`/api/viewFile/${info.profile_picture}`} alt="" />
         </div>
         <div className="search-name">
           <span style={{ color: '#0C8367', fontWeight: 'bold' }}>

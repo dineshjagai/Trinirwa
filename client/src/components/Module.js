@@ -47,7 +47,7 @@ export function fetchAllTweets(username) {
 }
 
 export function fetchAllTweetsPaginated(username, pageNumber, limit) {
-  const getUrl = `/tweeters/all/${username}`;
+  const getUrl = `/api/tweeters/all/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -57,7 +57,7 @@ export function fetchAllTweetsPaginated(username, pageNumber, limit) {
 }
 
 export function getTweetCount(username) {
-  const getUrl = `/tweets/count/all/${username}`;
+  const getUrl = `/api/tweets/count/all/${username}`;
   return axios({
     method: 'GET',
     url: getUrl,
@@ -435,7 +435,7 @@ export const getHiders = (tweetId) => {
 export const getSuggestions = (username) => {
   const prm = axios({
     method: 'GET',
-    url: `/profile/suggestions/${username}`,
+    url: `/api/profile/suggestions/${username}`,
   });
   return prm;
 };

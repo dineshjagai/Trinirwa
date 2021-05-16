@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React, { useState } from 'react';
-
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import PostAddIcon from '@material-ui/icons/PostAdd';
@@ -20,13 +20,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CommentBox({ handlers }) {
-  const { postTweet } = handlers;
+  const {
+    postTweet, postPicture, postVideo, postSong,
+  } = handlers;
   const [count, setCount] = useState(255);
   const handleChange = (e) => {
     const u = 255 - (e.target.value).length;
     setCount(u);
   };
+  const history = useHistory();
   const classes = useStyles();
+
+  const goLiveHandler = () => {
+    history.push('/videochat');
+  };
+
+  const postPictureTrigger = () => {
+    document.getElementById('fileInputPictureCommentBox').click();
+  };
+
+  const postVideoTrigger = () => {
+    document.getElementById('fileInputVideo').click();
+  };
+
+  const postSongTrigger = () => {
+    document.getElementById('fileInputSong').click();
+  };
   return (
     <div className="container_center">
       <div
@@ -64,46 +83,51 @@ export default function CommentBox({ handlers }) {
           className="buttons"
         >
           <Button
+            size="small"
             variant="contained"
             color="secondary"
             className={classes.button}
-            // onClick={goLiveHandler}
+            onClick={goLiveHandler}
             startIcon={<LiveTvIcon />}
           >
             Go live
           </Button>
           <Button
+            size="small"
             variant="contained"
             color="secondary"
             id="button-media"
             className={classes.button}
             startIcon={<AddAPhotoIcon />}
-            // onClick={postPictureTrigger}
+            onClick={postPictureTrigger}
           >
             Photo
           </Button>
           <Button
+            size="small"
             variant="contained"
             color="secondary"
             id="button-media"
             className={classes.button}
             startIcon={<VideoLibraryIcon />}
-            // onClick={postVideoTrigger}
+            onClick={postVideoTrigger}
           >
             Video
           </Button>
           <Button
+            size="small"
             variant="contained"
             color="secondary"
             id="button-media"
             className={classes.button}
             startIcon={<LibraryMusicIcon />}
-            // onClick={postSongTrigger}
+            onClick={postSongTrigger}
           >
             Song
           </Button>
 
           <Button
+            size="small"
             variant="contained"
             color="secondary"
             className={classes.button}
@@ -115,23 +139,23 @@ export default function CommentBox({ handlers }) {
           <input
             className="FileUpload"
             accept=".jpg,.png,.gif"
-            id="fileInputPicture"
+            id="fileInputPictureCommentBox"
             type="file"
-            // onChange={postPicture}
+            onChange={postPicture}
             hidden
           />
           <input
             className="FileUpload"
             id="fileInputVideo"
             type="file"
-            // onChange={postVideo}
+            onChange={postVideo}
             hidden
           />
           <input
             className="FileUpload"
             id="fileInputSong"
             type="file"
-            // onChange={postSong}
+            onChange={postSong}
             hidden
           />
         </div>

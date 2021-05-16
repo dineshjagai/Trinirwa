@@ -72,7 +72,6 @@ export default function SearchBox() {
       });
     });
   };
-
   const createItem = (data) => {
     console.log(data.profile_picture);
     const toRet = (

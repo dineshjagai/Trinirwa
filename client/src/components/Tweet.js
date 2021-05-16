@@ -28,6 +28,7 @@ import DialogAnalytics from './AnalyticsTweet';
 const hash = require('object-hash');
 
 export default function Tweet({ data, handleDelete }) {
+  console.log('tweet', data.content);
   const user = getCurrentUsername();
   const [isLikedBool, setIsLike] = useState(false);
   const [likes, setLikes] = useState(data.tweet_likes);
@@ -39,7 +40,7 @@ export default function Tweet({ data, handleDelete }) {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [allComments, setComments] = useState([]);
-  // const [display, setDisplay] = useState(true);
+  const [display, setDisplay] = useState(true);
   const postComment = (content, tweetId) => {
     const timestamp = new Date().toISOString();
     const commentId = hash(`${content}${user}${timestamp}`);
@@ -87,10 +88,10 @@ export default function Tweet({ data, handleDelete }) {
     if (input === '') return;
     postComment(input, id);
   };
-  // const handleDeleteorHideInternal = () => {
-  //   setDisplay(false);
-  //   handleDelete(id, isOwner);
-  // };
+  const handleDeleteorHideInternal = () => {
+    setDisplay(false);
+    handleDelete(id, isOwner);
+  };
   const handleDeleteComment = (toDel) => {
     const newList = allComments.filter((comment) => comment.comm_id !== toDel);
     setComments(newList);
@@ -144,7 +145,7 @@ export default function Tweet({ data, handleDelete }) {
   const newMedia = `/api/viewFile/${data.content}`;
   return (
     <>
-      <div id="container_tweet">
+      <div style={{ display: display ? 'block' : 'none' }} id="container_tweet">
         <div className="tweet_header">
           <div className="tweet_img">
             <img className="tweet_header" id="tweet_author_picture" src={newAvatar} alt="" />
@@ -173,7 +174,7 @@ export default function Tweet({ data, handleDelete }) {
                 padding: '3',
                 color: '#0C8367',
               }}
-              onClick={() => handleDelete(id, isOwner)}
+              onClick={handleDeleteorHideInternal}
             >
               <CloseRoundedIcon id={data.tweet_id} />
             </IconButton>

@@ -1,11 +1,10 @@
 import React from 'react';
 import './Home.css';
 import NavBar from './navBar';
-// import DisplayerTweets from './CenterDisplayerHome';
 import SideBar from './SidebarU';
 import SearchBox from './SearchBox2';
 import Suggestions from './Suggestion';
-import TweetsDisplayer from './TweetDisplayer';
+import TweetsDisplayer from './TweetsDisplayer';
 
 export default function Home() {
   return (

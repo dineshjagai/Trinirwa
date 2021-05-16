@@ -44,6 +44,7 @@ export default function TweetsDisplayer() {
   }, [loading]);
   const user = getCurrentUsername();
 
+  // eslint-disable-next-line no-unused-vars
   const getData = async () => {
     getTweetCount(user).then((res) => {
       // const {  } = res.data.count[0][0];
@@ -86,8 +87,137 @@ export default function TweetsDisplayer() {
       console.log(err.message);
     });
   };
+
+  const postPicture = (e) => {
+    // upload picture
+    const formdata = new FormData();
+    const fakePath = document.getElementById('fileInputPictureCommentBox').value;
+    formdata.append('image', e.target.files[0], fakePath);
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow',
+    };
+    const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
+    const dateTime = new Date().toISOString();
+    const tweetId = hash(`${input}${user}${dateTime}`);
+    const upload = async () => {
+      let content = '';
+      await fetch('/api/uploadFile', requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          content = JSON.parse(result).data;
+          // eslint-disable-next-line no-unused-vars
+        }).catch((error) => {
+          console.log(error);
+        });
+      console.log('content', content);
+      const newTweet = {
+        user,
+        tweet_id: tweetId,
+        type: 'picture',
+        content,
+        tweet_date: dateTime,
+        tweet_likes: 0,
+      };
+      // eslint-disable-next-line no-unused-vars
+      await addTweet(newTweet).then((res) => {
+        setAllTweets((prevTweet) => [newTweet, ...prevTweet]);
+      }).catch((err) => {
+        console.log(err.message);
+      });
+    };
+    upload();
+  };
+
+  const postVideo = (e) => {
+    // upload video
+    const formdata = new FormData();
+    // console.log(e.target.files);
+    const fakePath = document.getElementById('fileInputVideo').value;
+    formdata.append('image', e.target.files[0], fakePath);
+
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow',
+    };
+    const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
+    const dateTime = new Date().toISOString();
+    const tweetId = hash(`${input}${user}${dateTime}`);
+
+    fetch('/api/uploadFile', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const newTweet = {
+          user,
+          tweet_id: tweetId,
+          type: 'video',
+          content: JSON.parse(result).data,
+          tweet_date: dateTime,
+          tweet_likes: 0,
+        };
+        addTweet(newTweet).then((res) => {
+          console.log(res.message);
+          window.location.reload();
+        }).catch((err) => {
+          console.log(err.message);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const postSong = (e) => {
+    // upload song
+    const formdata = new FormData();
+    // console.log(e.target.files);
+    const fakePath = document.getElementById('fileInputSong').value;
+    formdata.append('image', e.target.files[0], fakePath);
+
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow',
+    };
+    const input = document.getElementById('tweet').value;
+    if (typeof input === 'undefined') {
+      return;
+    }
+    const dateTime = new Date().toISOString();
+    const tweetId = hash(`${input}${user}${dateTime}`);
+
+    fetch('/api/uploadFile', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        const newTweet = {
+          user,
+          tweet_id: tweetId,
+          type: 'song',
+          content: JSON.parse(result).data,
+          tweet_date: dateTime,
+          tweet_likes: 0,
+        };
+        addTweet(newTweet).then((res) => {
+          window.location.reload();
+          console.log(res.message);
+        }).catch((err) => {
+          console.log(err.message);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const updateState = async (id) => {
-    console.log('here 2');
     await setAllTweets((prevTweets) => prevTweets.filter((e) => e.tweet_id !== id));
   };
   const handleHideOrDelete = (id, isOwner) => {
@@ -107,7 +237,9 @@ export default function TweetsDisplayer() {
       }).catch((err) => console.log(err));
     }
   };
-  const handlers = { postTweet };
+  const handlers = {
+    postTweet, postPicture, postVideo, postSong,
+  };
   // console.log('td', toDisplay);
   return (
     <>

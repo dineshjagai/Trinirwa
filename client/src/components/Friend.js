@@ -25,7 +25,6 @@ export default function Friend({
     <div className="Container_two">
       <div className={classes.root}>
         <Tooltip title="Message" placement="top">
-          {/* <ChatIcon fontSize="small" className="button" onClick={() => handleMessage} /> */}
           <ChatIcon fontSize="small" className="button" onClick={() => handleMessage(info.username)} />
         </Tooltip>
         <Tooltip title="Block user" placement="top">

@@ -1027,7 +1027,7 @@ webapp.get('/api/all/followers/:username', (req, res) => {
     });
 });
 
-webapp.get('/profile/suggestions/:username', (req, res) => {
+webapp.get('/api/profile/suggestions/:username', (req, res) => {
   const { username } = req.params;
   const sql_select = `SELECT username, profile_picture FROM USERS WHERE username != '${username}' 
   AND username NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one = '${username}') 
@@ -1068,7 +1068,7 @@ webapp.get('/api/tweets/all/:username', (req, res) => {
 });
 
 // gets alls the followers pagination with no limit
-webapp.get('/tweeters/all/:username', (req, res) => {
+webapp.get('/api/tweeters/all/:username', (req, res) => {
   const { username} = req.params;
   const {page, limit} = req.query;
   const offset = (page - 1) * limit;
@@ -1086,7 +1086,7 @@ webapp.get('/tweeters/all/:username', (req, res) => {
 });
 
 // gets the tweet number
-webapp.get('/tweets/count/all/:username', (req, res) => {
+webapp.get('/api/tweets/count/all/:username', (req, res) => {
   const { username} = req.params;
   const sql_count = `CALL getTweetsCount("${username}")`;
   connection.query(sql_count,

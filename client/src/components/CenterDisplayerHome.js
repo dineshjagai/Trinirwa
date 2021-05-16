@@ -157,15 +157,6 @@ export default function DisplayerTweets() {
           tweet_date: dateTime,
           tweet_likes: 0,
         };
-        // console.log(`is this good? ${newTweet.user}`);
-        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
-        // const newItems = items;
-        // const newToDisplay = new Set([toAdd, ...toDisplay]);
-        // setToDisplay(newToDisplay);
-        // newItems.set(tweetId, toAdd);
-        // setUpdate(true);
-        // setItems(newItems);
-        // console.log(items.length);
         addTweet(newTweet).then((res) => {
           console.log(res.message);
           window.location.reload();
@@ -208,15 +199,6 @@ export default function DisplayerTweets() {
           tweet_date: dateTime,
           tweet_likes: 0,
         };
-        // console.log(`is this good? ${newTweet.user}`);
-        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
-        // const newItems = items;
-        // const newToDisplay = new Set([toAdd, ...toDisplay]);
-        // setToDisplay(newToDisplay);
-        // newItems.set(tweetId, toAdd);
-        // setUpdate(true);
-        // setItems(newItems);
-        // console.log(items.length);
         addTweet(newTweet).then((res) => {
           console.log(res.message);
           window.location.reload();
@@ -259,15 +241,6 @@ export default function DisplayerTweets() {
           tweet_date: dateTime,
           tweet_likes: 0,
         };
-        // console.log(`is this good? ${newTweet.user}`);
-        // const toAdd = <div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={newTweet} /></div>;
-        // const newItems = items;
-        // const newToDisplay = new Set([toAdd, ...toDisplay]);
-        // setToDisplay(newToDisplay);
-        // newItems.set(tweetId, toAdd);
-        // setUpdate(true);
-        // setItems(newItems);
-        // console.log(items.length);
         addTweet(newTweet).then((res) => {
           window.location.reload();
           console.log(res.message);

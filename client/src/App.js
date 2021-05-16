@@ -25,7 +25,6 @@ function App() {
         <Route path="/temp" exact render={() => <Temp />} />
         <Route path="/videochat" exact render={() => <VideoChat />} />
         <Route path="/message" exact render={() => <MessagePage />} />
-
       </Switch>
     </Router>
   );
