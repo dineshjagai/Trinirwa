@@ -212,6 +212,7 @@ export function addTweet(data) {
 }
 
 export function addHashtag(tweetid, hashtag) {
+  console.log('hasha', hashtag);
   return axios({
     method: 'POST',
     url: `/api/tweet/hashtag/${tweetid}`,

@@ -9,6 +9,7 @@ import { getCurrentUsername } from '../auth/authServices';
 import './CenterDisplayerHome.css';
 
 import {
+  addHashtag,
   addTweet,
   deleteTweet,
   fetchAllTweetsPaginated,
@@ -69,9 +70,12 @@ export default function TweetsDisplayer() {
 
   const postTweet = () => {
     const input = document.getElementById('tweet').value;
-    // const regexp = /\B\#\w\w+\b/g;
+    // eslint-disable-next-line no-useless-escape
+    const regexp = /\B\#\w\w+\b/g;
     if (input.length === 0) return;
-    // const hashtag = input.match(regexp);
+    const hashtag = input.match(regexp);
+    // take the first hashtag
+
     const dateTime = new Date().toISOString();
     const tweetId = hash(`${input}${user}${dateTime}`);
     const newTweet = {
@@ -82,10 +86,12 @@ export default function TweetsDisplayer() {
       tweet_date: dateTime,
       tweet_likes: 0,
     };
+    if (hashtag.length > 0) {
+      addHashtag(tweetId, hashtag[0]).catch((err) => console.log(err.message));
+    }
     setAllTweets((prevTweet) => [newTweet, ...prevTweet]);
     // eslint-disable-next-line no-unused-vars
     addTweet(newTweet).then((res) => {
-      console.log(allTweets);
     }).catch((err) => {
       console.log(err.message);
     });

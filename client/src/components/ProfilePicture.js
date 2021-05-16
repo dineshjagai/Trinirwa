@@ -10,7 +10,12 @@ import { getCurrentUsername } from '../auth/authServices';
 
 export default function Profile(props) {
   const user = getCurrentUsername();
-  const date = (props.data.date.split('T'))[0];
+
+  let date = 0;
+  console.log(props.data);
+  if (typeof props.data !== 'undefined') {
+    date = (props.data.date);
+  }
   const handleUnblock = (username) => {
     unBlockUser(user, username).then((res) => {
       console.log(res.message);
