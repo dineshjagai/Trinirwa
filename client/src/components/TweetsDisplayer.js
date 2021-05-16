@@ -86,15 +86,18 @@ export default function TweetsDisplayer() {
       tweet_date: dateTime,
       tweet_likes: 0,
     };
-    if (hashtag.length > 0) {
-      addHashtag(tweetId, hashtag[0]).catch((err) => console.log(err.message));
-    }
     setAllTweets((prevTweet) => [newTweet, ...prevTweet]);
     // eslint-disable-next-line no-unused-vars
     addTweet(newTweet).then((res) => {
     }).catch((err) => {
       console.log(err.message);
     });
+    if (hashtag.length > 0) {
+      addHashtag(tweetId, hashtag[0]).then(() => {
+      }).catch((err) => {
+        console.log(err.message);
+      });
+    }
   };
 
   const postPicture = (e) => {

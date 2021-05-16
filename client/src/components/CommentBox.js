@@ -72,14 +72,6 @@ export default function CommentBox({ handlers }) {
             fullWidth
           />
         </div>
-        <div>
-          <TextField
-            id="filter"
-            label="Filter posts by hashtag"
-            variant="standard"
-          />
-        </div>
-
         <div
           style={{
             backgroundColor: 'white',
