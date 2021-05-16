@@ -1,11 +1,20 @@
 language: node_js
 node_js:
   - node
+cache:
+  directories:
+    - node_modules
 install: 
   - npm install  
   - nvm install node  
   - node -v  
-  - npm install --save-dev jest  
+  - npm install --save-dev jest
+  - jest --updateSnapshot  
+
+branches:
+  only:
+   - testing
+
 script:  
   - cd server 
   - npm install
@@ -13,3 +22,13 @@ script:
   - cd ../client 
   - npm install
   - npm test
+
+after_success:
+    - coveralls
+    - codecov
+    
+notifications:
+  email:
+    recipients: dinesh97@seas.upenn.edu
+    on_success: always
+    on_failure: always
