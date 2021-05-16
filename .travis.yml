@@ -19,10 +19,10 @@ branches:
 script:  
   - cd server 
   - npm install
-  - npm test > tmp.txt
+  - npm test
   - cd ../client 
   - npm install
-  - npm test >> tmp.txt
+  - npm test
 
 after_success:
     - coveralls
