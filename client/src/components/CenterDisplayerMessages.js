@@ -34,7 +34,7 @@ const hash = require('object-hash');
 
 export default function DisplayerMessages() {
   const receiver = getCurrentReceiver();
-  console.log(`receiver = ${receiver}`);
+  // console.log(`receiver = ${receiver}`);
   //   const history = useHistory();
 
   const [items] = useState(new Map());
@@ -50,7 +50,7 @@ export default function DisplayerMessages() {
     }
   };
   useEffect(() => {
-    console.log('refreshed');
+    // console.log('refreshed');
     setUpdate(false);
   }, [update]);
   const postMessage = () => {
@@ -82,7 +82,7 @@ export default function DisplayerMessages() {
     // setItems(newItems);
     // console.log('items length', items.length);
     addMessage(newMessage).then((res) => {
-      console.log(res.message);
+      // console.log(res.message);
       window.location.reload();
     }).catch((err) => {
       console.log(err.message);
