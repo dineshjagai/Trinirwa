@@ -10,7 +10,6 @@ const pino = require('express-pino-logger')();
 
 // impporting database
 const mysql = require('mysql');
-
 const cors = require('cors');
 
 webapp.use(cors());
@@ -398,7 +397,7 @@ webapp.get('/api/readFile', (req, res) => {
 
 // getting the profile info
 webapp.get('/api/profile/:username', (req, res) => {
-  const sql_info = 'SELECT username, first_name, last_name, email, profile_picture, location FROM USERS WHERE username = ?';
+  const sql_info = 'SELECT username, first_name, last_name, email, profile_picture, date FROM USERS WHERE username = ?';
   const sql_interest = 'SELECT interest FROM INTERESTS_1 WHERE user= ?';
   const sql_following = 'SELECT uid, username, profile_picture FROM USERS WHERE username IN  (SELECT user_two FROM FOLLOWERS_1 WHERE user_one = ?)';
   const parameters = [req.params.username];
@@ -684,6 +683,8 @@ webapp.get('/api/search/:username/:input', (req, res) => {
     });
 });
 
+
+
 webapp.get('/api/followers/:uid', (req, res) => {
   // finish the outes correctly
   const sql_get = 'SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one=?';
@@ -847,7 +848,7 @@ webapp.post('/api/tweet/like/:username', (req, res) => {
     });
 });
 
-// unlike a user
+// unlike a tweet
 webapp.put('/api/tweet/unlike/:username', (req, res) => {
   const sql_unlike = `DELETE FROM LIKED_TWEETS WHERE user='${req.params.username}' AND tweet_id='${req.body.tweetid}'`;
   // const params = [req.params.username, req.body.follower];
@@ -897,6 +898,19 @@ webapp.get('/api/tweet/hiders/all/:tweetid', (req, res) => {
         return;
       }
       res.json({ message: 'hiders successfully retrieved', hiders });
+    });
+});
+
+// adding hashtag to a tweet
+webapp.post('/api/tweet/hashtag/:tweetid', (req, res) => {
+  const sql_insert = `CALL addHashTag("${req.params.tweetid}","${req.body.hashtag}")`;
+  connection.query(sql_insert,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'hashtag successfully added', changes: this.changes });
     });
 });
 // updating picture
@@ -1121,6 +1135,38 @@ webapp.get('/api/tweet/comments/all/:tweetid', (req, res) => {
         comments,
       });
     });
+});
+
+// commenting on livestream
+webapp.post('/api/comment/livestream/:roomName', (req, res) => {
+  const {
+    user, timestamp, content,
+  } = req.body;
+  const room = req.params.roomName;
+  const sql = `CALL addCommentStream("${room}","${user}","${timestamp}","${content}")`;
+  connection.query(sql,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Comment successfully added', changes: this.changes });
+    });
+});
+
+// gets the tweet number
+webapp.get('/api/livestream/comments/all/:roomName', (req, res) => {
+  const sql_get = `CALL getTweetsCount("${req.params.roomName}")`;
+  connection.query(sql_get,
+    (err, comments) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        comments,
+      });
+  });
 });
 
 /* -------------------------------------------------------------------------- */

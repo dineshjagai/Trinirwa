@@ -25,12 +25,10 @@ export default function CommentBox({ handlers }) {
   } = handlers;
   const [count, setCount] = useState(255);
   const handleChange = (e) => {
-    const u = 255 - (e.target.value).length;
-    setCount(u);
+    setCount(255 - (e.target.value).length);
   };
   const history = useHistory();
   const classes = useStyles();
-
   const goLiveHandler = () => {
     history.push('/videochat');
   };
@@ -72,6 +70,13 @@ export default function CommentBox({ handlers }) {
             inputProps={{ maxLength: 255 }}
             onChange={(e) => handleChange(e)}
             fullWidth
+          />
+        </div>
+        <div>
+          <TextField
+            id="filter"
+            label="Filter posts by hashtag"
+            variant="standard"
           />
         </div>
 

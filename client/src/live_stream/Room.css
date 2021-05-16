@@ -7,3 +7,23 @@
 .home>div {
     margin: 6px;
 }
+
+.comment-liveStream {
+    flex-basis: 45%;
+    background-color: white;
+    position: relative;
+}
+
+.parent-liveStream  {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.local-participant {
+    flex-basis: 45%;
+}
+.comn-liveStream {
+    width: 90%;
+    position: absolute;
+    bottom:10;
+}

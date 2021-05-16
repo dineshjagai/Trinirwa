@@ -28,7 +28,6 @@ import DialogAnalytics from './AnalyticsTweet';
 const hash = require('object-hash');
 
 export default function Tweet({ data, handleDelete }) {
-  console.log('tweet', data.content);
   const user = getCurrentUsername();
   const [isLikedBool, setIsLike] = useState(false);
   const [likes, setLikes] = useState(data.tweet_likes);
