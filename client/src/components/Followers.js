@@ -48,7 +48,7 @@ export default function Followers() {
           iconText="Follow"
         />
       </div>
-      <div className="title">Followers</div>
+      <div style={{ color: '#0C8367' }} className="title">Followers</div>
       <br />
       <div className="box">
         <div className="containers">

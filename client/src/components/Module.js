@@ -46,6 +46,23 @@ export function fetchAllTweets(username) {
   });
 }
 
+export function fetchAllTweetsPaginated(username, pageNumber, limit) {
+  const getUrl = `/tweeters/all/${username}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+    params: { page: pageNumber, limit },
+
+  });
+}
+
+export function getTweetCount(username) {
+  const getUrl = `/tweets/count/all/${username}`;
+  return axios({
+    method: 'GET',
+    url: getUrl,
+  });
+}
 export function getProfileData(username) {
   const getUrl = `/api/profile/${username}`;
   return axios({
@@ -339,6 +356,7 @@ export const addProfilePicture = (username, profilePicture) => {
 //   return prm;
 // };
 export const searchFriend = (username, input) => {
+  console.log(`search friend ${username}, typeof ${typeof (input)}@@@@@@@@@@@@`);
   const promise = axios({
     method: 'GET',
     url: `/api/search/${username}/${input}`,
@@ -414,6 +432,14 @@ export const getHiders = (tweetId) => {
   return prm;
 };
 
+export const getSuggestions = (username) => {
+  const prm = axios({
+    method: 'GET',
+    url: `/profile/suggestions/${username}`,
+  });
+  return prm;
+};
+
 export function unLikeTweet(user, tweetId) {
   const putUrl = `/api/tweet/unlike/${user}/`;
   return axios({
@@ -424,6 +450,7 @@ export function unLikeTweet(user, tweetId) {
     },
   });
 }
+
 export const getNumberFailedLogins = (username) => {
   const prm = axios({
     method: 'GET',

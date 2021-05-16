@@ -25,13 +25,14 @@ export default function Friend({
     <div className="Container_two">
       <div className={classes.root}>
         <Tooltip title="Message" placement="top">
-          <ChatIcon className="button" onClick={() => handleMessage(info.username)} />
+          {/* <ChatIcon fontSize="small" className="button" onClick={() => handleMessage} /> */}
+          <ChatIcon fontSize="small" className="button" onClick={() => handleMessage(info.username)} />
         </Tooltip>
         <Tooltip title="Block user" placement="top">
-          <BlockIcon className="button" color="secondary" onClick={() => handleB(info.username)} />
+          <BlockIcon fontSize="small" className="button" color="secondary" onClick={() => handleB(info.username)} />
         </Tooltip>
         <Tooltip title="Unfollow" placement="top">
-          <PersonAddDisabledIcon className="button" onClick={() => handleU(info.username)} />
+          <PersonAddDisabledIcon fontSize="small" className="button" onClick={() => handleU(info.username)} />
         </Tooltip>
       </div>
       <div className="followerContainer">
@@ -43,7 +44,7 @@ export default function Friend({
           />
         </div>
       </div>
-      <div className="text">{info.username}</div>
+      <div style={{ fontWeight: 'bold', color: '#0C8367' }} className="text">{info.username}</div>
     </div>
   );
 }

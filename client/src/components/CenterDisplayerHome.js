@@ -40,14 +40,13 @@ export default function DisplayerTweets() {
   const classes = useStyles();
   const user = getCurrentUsername();
   const handleChange = (e) => {
-    if ((e.target.value).length >= 0) {
-      const u = 255 - (e.target.value).length;
-      setCount(u);
-    }
+    const u = 255 - (e.target.value).length;
+    setCount(u);
   };
   const handleHideOrDelete = (id, isOwner) => {
     if (isOwner) {
       deleteTweet(id).then((res) => {
+        console.log(typeof (res.status));
         window.location.reload();
         console.log('message: delete:', res.message);
         setUpdate(true);
@@ -402,7 +401,7 @@ export default function DisplayerTweets() {
           />
         </div>
       </div>
-      <div>
+      <div className="tweet_items">
         {toDisplay}
       </div>
     </div>

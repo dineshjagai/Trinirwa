@@ -64,9 +64,7 @@ export default function DialogAnalytics({ tweetId }) {
   const getData = async () => {
     await getAllCommentsForTweet(tweetId).then((res) => {
       const { comments } = res.data;
-      console.log(comments);
       setCommentors(comments.map((com) => com.user));
-      console.log(commentors);
     }).catch((err) => console.log(err.message));
     await getHiders(tweetId).then((res) => {
       setHiders(res.data.hiders.map((hider) => hider.user));
@@ -109,10 +107,9 @@ export default function DialogAnalytics({ tweetId }) {
         </DialogTitle>
         <DialogContent dividers>
           <div style={{ display: 'flex', minWidth: '100px' }}>
-
-            <div className="commentors">
-              <span>Commentors</span>
-              <ol style={{ title: 'commentors' }}>
+            <div>
+              <span style={{ margin: 'auto', color: '#0C8367', fontWeight: 'bold' }}>Commentors</span>
+              <ol style={{ margin: 'auto', listStyleType: 'circle' }}>
                 {commentors.map((e) => (
                   <li>
                     {e}
@@ -120,12 +117,12 @@ export default function DialogAnalytics({ tweetId }) {
                 ))}
               </ol>
             </div>
-            <div style={{ borderRadius: '8px', backgroundColor: '#D0EAE4' }} className="hiders">
-              <div style={{ margin: 'auto' }}>
-                <span>Hiders</span>
+            <div style={{ marginLeft: '5px', borderRadius: '8px', backgroundColor: '#D0EAE4' }} className="hiders">
+              <div style={{ display: 'flex' }}>
+                <span style={{ margin: 'auto', color: '#0C8367', fontWeight: 'bold' }}>Hiders</span>
               </div>
 
-              <ol>
+              <ol style={{ margin: 'auto', listStyleType: 'circle' }}>
                 {hiders.map((hider) => (
                   <li key={hider}>
                     {hider}

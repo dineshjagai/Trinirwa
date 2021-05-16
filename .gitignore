@@ -118,3 +118,4 @@ src/components/login.js
 
 # no media in our github! 
 server/uploads/*
+uploads/*

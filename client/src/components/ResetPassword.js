@@ -84,7 +84,7 @@ export default function ResetPassword() {
           <div className="form-group text-center">
 
             <button
-              type="button"
+              type="submit"
               className="btn btn-primary w-100"
               onClick={resetPasswrd}
             >
