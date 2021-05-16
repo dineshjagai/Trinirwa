@@ -888,3 +888,69 @@ describe('/api/profile/reactivate/:username test', () => {
     expect(JSON.parse(response.text).message).toBe('Wrong password input! Try again.');
   });
 });
+
+describe('/api/tweet/like/:username test', () => {
+  test('Error inserting like', () => {
+    request(webapp).post('/api/tweet/like/isimbib').send().expect(405);
+  });
+  
+  test('successful inserting like', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+      number_failed_logins: 1,
+    });
+    
+    await knex('TWEETS_1').insert({
+      user: 'isimbib',
+      tweet_id: '1',
+      type: 'text',
+      content: 'Hello',
+    });
+
+    const response = await request(webapp).post('/api/tweet/like/isimbib').send(
+      {
+        tweetid: 1,
+      }
+    );
+    expect(JSON.parse(response.text).message).toBe('tweet successfully liked');
+  });
+});
+
+describe('/api/tweet/unlike/:username test', () => {
+  test('Error unliking', () => {
+    request(webapp).put('/api/tweet/unlike/isimbib').send().expect(405);
+  });
+  
+  test('successful unliking', async () => {
+    await knex('USERS').insert({
+      username: 'isimbib',
+      password: '1234',
+      first_name: 'Anaick',
+      last_name: 'Bizimana',
+      email: 'anaick@gmail.com',
+      number_failed_logins: 1,
+    });
+    
+    await knex('TWEETS_1').insert({
+      user: 'isimbib',
+      tweet_id: '1',
+      type: 'text',
+      content: 'Hello',
+    });
+
+    const response = await request(webapp).put('/api/tweet/unlike/isimbib').send(
+      {
+        tweetid: 1,
+      }
+    );
+    expect(JSON.parse(response.text).message).toBe('tweet successfully unliked');
+  });
+});
+
+
+
+
