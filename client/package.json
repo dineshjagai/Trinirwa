@@ -70,7 +70,6 @@
     "@babel/node": "^7.10.1",
     "@babel/polyfill": "^7.10.1",
     "@babel/preset-env": "^7.10.2",
-    "@babel/plugin-proposal-object-rest-spread": "*",
     "babel-eslint": "^10.1.0",
     "babel-plugin-css-modules-transform": "^1.6.2",
     "eslint": "^7.26.0",
