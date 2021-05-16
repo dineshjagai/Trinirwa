@@ -19,8 +19,5 @@
   "bugs": {
     "url": "https://github.com/cis557/project-microblogging-and-streaming-social-network-team12/issues"
   },
-  "homepage": "https://github.com/cis557/project-microblogging-and-streaming-social-network-team12#readme",
-  "devDependencies": {
-    "node-env-run": "^4.0.2"
-  }
+  "homepage": "https://github.com/cis557/project-microblogging-and-streaming-social-network-team12#readme"
 }
