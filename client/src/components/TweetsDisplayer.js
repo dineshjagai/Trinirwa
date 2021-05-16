@@ -3,6 +3,8 @@
 import React, {
   useState, useEffect, useRef, useCallback,
 } from 'react';
+import { useHistory } from 'react-router-dom';
+
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Tweet from './Tweet';
@@ -36,10 +38,16 @@ export default function TweetsDisplayer() {
   const [count, setCount] = useState(25);
   const [hashTagQuery, sethashTagQuery] = useState('');
   const observer = useRef();
+  const history = useHistory();
+
   const handleChange = (e) => {
     const u = 25 - (e.target.value).length;
     setCount(u);
-    sethashTagQuery(e);
+    sethashTagQuery(e.target.value);
+  };
+  const filterTweetsButton = () => {
+    localStorage.setItem('hashtag', JSON.stringify(hashTagQuery));
+    history.push('/home');
   };
 
   const lastTweetRef = useCallback((node) => {
@@ -273,11 +281,12 @@ export default function TweetsDisplayer() {
             onChange={(e) => handleChange(e)}
           />
 
-          {/* <button
+          <button
+            aria-label="Close"
             type="submit"
             className="btn btn-primary w-100"
             onClick={filterTweetsButton}
-          /> */}
+          />
 
         </div>
 

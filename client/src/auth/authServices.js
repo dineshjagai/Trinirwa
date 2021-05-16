@@ -18,6 +18,10 @@ function getCurrentReceiver() {
   return JSON.parse(localStorage.getItem('receiver'));
 }
 
+function getCurrentHashTag() {
+  return JSON.parse(localStorage.getItem('hashtag'));
+}
+
 module.exports = {
-  getCurrentUsername, isLogged, logout, getCurrentReceiver,
+  getCurrentUsername, isLogged, logout, getCurrentReceiver, getCurrentHashTag,
 };

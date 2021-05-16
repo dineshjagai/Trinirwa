@@ -116,5 +116,5 @@ dist
 .pnp.*
 
 # no media in our github! 
-# server/uploads/*
-# uploads/*
+server/uploads/*
+uploads/*
