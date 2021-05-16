@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test CommentDisplayer snapshot 1`] = `
+<div
+  className="comment_cont"
+  stlye={
+    Object {
+      "backgroundColor": "red",
+      "height": "200px",
+      "width": "100px",
+    }
+  }
+>
+  <div
+    className="comment_header"
+  >
+    <div
+      className="header_profile"
+    >
+      <img
+        alt=""
+        id="comment_picture"
+        src="/api/viewFile/"
+      />
+    </div>
+    <div
+      className="header_name"
+    >
+      <span
+        id="cmnt_username"
+      >
+        isimbib
+      </span>
+    </div>
+  </div>
+  <div
+    className="cmnt_cntBtn_box"
+    style={
+      Object {
+        "width": "fit-content",
+      }
+    }
+  >
+    <div
+      className="cmnt_cnt_box"
+    >
+      <span
+        id="cmnt_cnt"
+      >
+        Hiii
+      </span>
+    </div>
+    <div
+      className="cmnt_btns_box"
+    >
+      <div
+        className="cmnt_EditBtn_box"
+        style={
+          Object {
+            "display": "none",
+          }
+        }
+      >
+        <div>
+          <button
+            id="editBtn"
+            onClick={[Function]}
+            type="button"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+      <div
+        className="cmnt_EditBtn_box"
+        style={
+          Object {
+            "display": "none",
+          }
+        }
+      >
+        <button
+          id="deleteBtn"
+          onClick={[Function]}
+          type="button"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

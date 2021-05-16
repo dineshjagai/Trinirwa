@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Participant snapshot 1`] = `
+<div
+  className="participant"
+>
+  <h3>
+    isimbib
+  </h3>
+  <video
+    autoPlay={true}
+  />
+  <audio
+    autoPlay={true}
+    muted={true}
+  />
+</div>
+`;

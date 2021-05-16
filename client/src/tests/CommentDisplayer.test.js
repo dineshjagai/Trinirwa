@@ -1,8 +1,8 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Tweet from '../components/Tweet';
+import CommentDisplayer from '../components/CommentDisplayer';
 
-test('Test Tweet snapshot', () => {
+test('Test CommentDisplayer snapshot', () => {
   const d = {
     'user' : 'isimbib',
     'tweet_date' :  '2008-09-07',
@@ -11,16 +11,18 @@ test('Test Tweet snapshot', () => {
     'tweet_id' :  '1',
     'type' : 'picture',
     'tweet_blocks': 0,
+    'profile_picture': 'logo512.png',
+    'comm_id': 3,
   };
 
-  const handle = (id, owner) => {
-    if (owner) {
+  const handle = (id) => {
+    if (id) {
       console.log("owner");
     } else {
       console.log("HERE {id}");
     }
   };
-  const component = renderer.create(<Tweet data={d} handleDelete={handle}/>);
+  const component = renderer.create(<CommentDisplayer data={d} handleDeleteComment={handle}/>);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });

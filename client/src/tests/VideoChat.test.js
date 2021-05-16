@@ -1,9 +1,9 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Followers from '../components/Followers';
+import VideoChat from '../live_stream/VideoChat';
 
-test('Test Followers snapshot', () => {
-  const component = renderer.create(<Followers />);
+test('Test VideoChat snapshot', () => {
+  const component = renderer.create(<VideoChat />);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });

@@ -55,7 +55,7 @@ exports[`Test Follower snapshot 1`] = `
       <img
         alt=""
         className="myimg"
-        src="/viewFile/logo512.png"
+        src="/api/viewFile/logo512.png"
       />
     </div>
   </div>
