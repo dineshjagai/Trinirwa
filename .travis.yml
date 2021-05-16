@@ -17,10 +17,7 @@ branches:
    - testing
 
 script:  
-  - cd client 
-  - npm install
-  - npm test
-  - cd ../server 
+  - cd server 
   - npm install
   - npm test
 
