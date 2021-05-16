@@ -1,6 +1,7 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
 import Lobby from '../live_stream/Lobby';
+import { createMount } from '@material-ui/core/test-utils';
+
 
 test('Test Lobby snapshot', () => {
   const handleS = () => {
@@ -9,7 +10,7 @@ test('Test Lobby snapshot', () => {
   const handleR = () => {
       console.log('Room Change');
   };
-  const component = renderer.create(<Lobby 
+  const component = createMount(<Lobby 
     username={'isimbib'}
     roomName={'First Name'}
     handleRoomNameChange={handleR}
@@ -17,6 +18,5 @@ test('Test Lobby snapshot', () => {
     connecting={true}
   />
   );
-  const tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+  expect(component).toMatchSnapshot();
 });

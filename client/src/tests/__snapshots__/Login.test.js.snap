@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login testing Login Snapshot 1`] = `
+<div
+  className="card shadow mx-auto mt-5"
+  style={
+    Object {
+      "width": "30rem",
+    }
+  }
+>
+  <div
+    className="container mx-1"
+  >
+    <div
+      className="card-body p-xs"
+    >
+      <h2
+        className="card-title text-center font-weight-bold"
+      >
+        Log In
+      </h2>
+      <div
+        className="form-group"
+      >
+        <label>
+          Username:
+        </label>
+        <input
+          className="form-control"
+          id="new-username-form"
+          onChange={[Function]}
+          placeholder="Enter Username"
+        />
+      </div>
+      <div
+        className="form-group"
+      >
+        <label>
+          Password:
+        </label>
+        <input
+          className="form-control"
+          id="new-password-form"
+          onChange={[Function]}
+          placeholder="Enter Password"
+          type="password"
+        />
+      </div>
+      <p>
+        Forgot Password? 
+        <a
+          href="/resetPassword"
+          onClick={[Function]}
+        >
+          Click here to reset!
+        </a>
+      </p>
+      <div
+        className="form-group text-center"
+      >
+        <button
+          className="btn btn-primary w-100"
+          onClick={[Function]}
+          type="submit"
+        >
+          Log In
+        </button>
+      </div>
+      <p>
+        Don't have an account? 
+        <a
+          href="/registration"
+          onClick={[Function]}
+        >
+          Sign Up!
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+`;

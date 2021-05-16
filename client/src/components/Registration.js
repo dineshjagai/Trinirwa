@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Link, useHistory } from 'react-router-dom';
 import Axios from 'axios';
 import { addUser } from './Module';
 import '../App.css';
@@ -135,7 +135,9 @@ export default function Registration() {
           </div>
           <p>
             Already have an account?&nbsp;
-            <Link to="/login">Log in here!</Link>
+            <Router>
+              <Link to="/login">Log in here!</Link>
+            </Router>
           </p>
         </div>
       </div>

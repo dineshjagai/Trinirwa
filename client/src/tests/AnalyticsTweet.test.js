@@ -1,5 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react'
 import DialogAnalytics from '../components/AnalyticsTweet';
 
 test('Test AnalyticsTweet snapshot', () => {
@@ -7,3 +8,8 @@ test('Test AnalyticsTweet snapshot', () => {
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });
+
+ test('checks that the labels are there', () => {
+      const { getByText } = render(<DialogAnalytics tweetId={1} />);
+      getByText('Analytics');
+  });

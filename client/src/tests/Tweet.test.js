@@ -20,6 +20,7 @@ test('Test Tweet snapshot', () => {
       console.log("HERE {id}");
     }
   };
+
   const component = renderer.create(<Tweet data={d} handleDelete={handle}/>);
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
