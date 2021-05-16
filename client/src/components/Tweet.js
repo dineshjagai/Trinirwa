@@ -144,7 +144,7 @@ export default function Tweet({ data, handleDelete }) {
   const newAvatar = `/api/viewFile/${avatar}`;
   const newMedia = `/api/viewFile/${data.content}`;
 
-  if ((typeof hashtag === 'undefined') || (data.content.includes(hashtag))) {
+  if ((typeof input === 'undefined') || (data.content.includes(hashtag))) {
     // console.log('dfdsdfssd', hashtag, data.content);
     return (
       <>
