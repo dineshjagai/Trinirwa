@@ -2,7 +2,6 @@
 const express = require('express');
 
 const webapp = express();
-const pino = require('express-pino-logger')();
 
 // impporting database
 const mysql = require('mysql');
@@ -76,7 +75,6 @@ webapp.use(
 const configTwo = require('./config');
 const { videoToken } = require('./tokens');
 
-webapp.use(pino);
 
 const sendTokenResponse = (token, res) => {
   res.set('Content-Type', 'application/json');
@@ -1069,8 +1067,8 @@ webapp.get('/api/tweets/all/:username', (req, res) => {
 
 // gets alls the followers pagination with no limit
 webapp.get('/tweeters/all/:username', (req, res) => {
-  const { username} = req.params;
-  const {page, limit} = req.query;
+  const { username } = req.params;
+  const { page, limit } = req.query;
   const offset = (page - 1) * limit;
   const sql_get = `CALL getTweetsUsers("${username}", ${limit}, ${offset})`;
   connection.query(sql_get,
@@ -1082,12 +1080,12 @@ webapp.get('/tweeters/all/:username', (req, res) => {
         message: '200',
         tweets,
       });
-  });
+    });
 });
 
 // gets the tweet number
 webapp.get('/tweets/count/all/:username', (req, res) => {
-  const { username} = req.params;
+  const { username } = req.params;
   const sql_count = `CALL getTweetsCount("${username}")`;
   connection.query(sql_count,
     (err, count) => {
@@ -1098,7 +1096,7 @@ webapp.get('/tweets/count/all/:username', (req, res) => {
         message: '200',
         count,
       });
-  });
+    });
 });
 
 // gets alls the comments of tweet
