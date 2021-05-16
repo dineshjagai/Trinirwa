@@ -10,7 +10,8 @@ install:
   - node -v  
   - npm install --save-dev jest
   - jest --updateSnapshot  
-  - npm install --save-dev @babel/plugin-proposal-class-properties 
+  - npm install --save-dev @babel/preset-env
+
 
 branches:
   only:
