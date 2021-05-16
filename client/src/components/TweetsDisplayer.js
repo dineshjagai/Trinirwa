@@ -92,7 +92,7 @@ export default function TweetsDisplayer() {
     }).catch((err) => {
       console.log(err.message);
     });
-    if (hashtag.length > 0) {
+    if (hashtag !== null && hashtag.length > 0) {
       addHashtag(tweetId, hashtag[0]).then(() => {
       }).catch((err) => {
         console.log(err.message);

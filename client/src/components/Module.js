@@ -19,6 +19,17 @@ export function addInterest(newInterest, username) {
   });
 }
 
+export function addRoom(username, room) {
+  const addUrl = `/api/livestream/open/${username}`;
+  return axios({
+    method: 'POST',
+    url: addUrl,
+    data: {
+      room,
+    },
+  });
+}
+
 export function deleteInterest(interestToDelete, username) {
   const delUrl = `/api/profile/delete/interest/${username}`;
   return axios({

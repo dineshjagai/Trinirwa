@@ -1167,6 +1167,20 @@ webapp.get('/api/livestream/comments/all/:roomName', (req, res) => {
   });
 });
 
+
+// open a stream
+webapp.post('/api/livestream/open/:username', (req, res) => {
+  const sql_post = `CALL openLiveStream('${req.body.room}','${req.params.username}')`;
+  connection.query(sql_post,
+    (err) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+      });
+  });
+});
 /* -------------------------------------------------------------------------- */
 /* ----------------------------MESSAGING------------------------------------------ */
 /* -------------------------------------------------------------------------- */
