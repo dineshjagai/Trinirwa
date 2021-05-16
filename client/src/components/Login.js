@@ -166,6 +166,7 @@ export default function Login() {
           </p>
           <div className="form-group text-center">
             <button
+              title="login"
               type="submit"
               className="btn btn-primary w-100"
               onClick={loginOnClick}

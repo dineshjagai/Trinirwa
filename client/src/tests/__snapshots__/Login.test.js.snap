@@ -62,6 +62,7 @@ exports[`Login testing Login Snapshot 1`] = `
         <button
           className="btn btn-primary w-100"
           onClick={[Function]}
+          title="login"
           type="submit"
         >
           Log In

@@ -25,10 +25,10 @@ describe("Login testing", () => {
     });
 
     test("with valid inputs", async () => {
-        const { getByPlaceholderText, getByRole } = render(<Login />);
+        const handleClick = jest.fn();
+        const { getByPlaceholderText, getByRole, getByText } = render(<Login />);
         const usernameLabel = getByPlaceholderText('Enter Username');
         const passwordLabel = getByPlaceholderText('Enter Password');      
-        const mockOnSubmit = jest.fn();
 
         await act(async () => {
             fireEvent.change(usernameLabel, {target: {value: "isimbi"}});
@@ -36,10 +36,12 @@ describe("Login testing", () => {
         })
 
         await act(async () => {
-            fireEvent.click(getByRole("button"));
+            fireEvent.click(getByText("Log In", { selector: 'button' }));
         })
 
-      expect(mockOnSubmit).toHaveBeenCalledTimes(0);
+        expect(usernameLabel.value).toBe("isimbi");
+        expect(passwordLabel.value).toBe("Anaick@123");
+        expect(handleClick).toHaveBeenCalledTimes(0);
     });
 
     test("with invalid username", () => {
