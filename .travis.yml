@@ -3,9 +3,9 @@ node_js:
   - node
 install: 
   - npm install  
-  - nvm install node  
   - node -v  
   - npm install --save-dev jest  
+  - jest --updateSnapshot
 script:  
   - cd server 
   - npm install

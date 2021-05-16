@@ -64,7 +64,7 @@ const Participant = ({ participant }) => {
       };
     }
   }, [audioTracks]);
-  
+
   return (
     <div className="participant">
       <h3>{participant.identity}</h3>
