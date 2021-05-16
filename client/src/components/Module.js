@@ -546,3 +546,12 @@ export function fetchMessages(username, receiver) {
     url: getUrl,
   });
 }
+
+export function updateHasRead(username, receiver) {
+  return axios({
+    method: 'POST',
+    url: `/api/hasRead/${username}/${receiver}`,
+    data: {
+    },
+  });
+}

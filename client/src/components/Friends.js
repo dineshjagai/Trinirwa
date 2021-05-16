@@ -4,7 +4,10 @@ import './Followers.css';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import { useHistory } from 'react-router-dom';
 import Friend from './Friend';
-import { blockFollower, getFriends, unfollowUser } from './Module';
+import {
+  // eslint-disable-next-line no-unused-vars
+  blockFollower, getFriends, unfollowUser, updateHasRead,
+} from './Module';
 import ScrollDialog from './DisplayerDialog';
 import { getCurrentUsername } from '../auth/authServices';
 
@@ -39,6 +42,7 @@ export default function Friends() {
   const handleMessage = (username) => {
     console.log(username);
     localStorage.setItem('receiver', JSON.stringify(username));
+
     history.push('/message');
   };
 

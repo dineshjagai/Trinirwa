@@ -2,8 +2,8 @@
 const AWS = require('aws-sdk');
 const fs = require('fs');
 // The access ID and secret key of the S3 bucket
-const ID = 'AKIAYBMP5SVIPUUEM7MD';
-const SECRET = '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';
+const ID = process.env.S3_ID;
+const SECRET = process.env.S3_SECRET;
 
 // The name of the bucket that you have created
 const BUCKET_NAME = 'cis557sp21';
