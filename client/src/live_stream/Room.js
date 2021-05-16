@@ -20,7 +20,8 @@ const Room = ({ roomName, room, handleLogout }) => {
   const [comments, setComments] = useState([]);
   const getData = async () => {
     await getAllCommentsLiveStream(roomName).then((res) => {
-      console.log(res.data);
+      console.log(res.data.comments[0]);
+      setComments(res.data.comments[0]);
     }).catch((err) => console.log(err));
   };
   const postComment = (content) => {
@@ -60,7 +61,8 @@ const Room = ({ roomName, room, handleLogout }) => {
   }, [room]);
   useEffect(() => {
     getData();
-  });
+    console.log(comments);
+  }, []);
   const remoteParticipants = participants.map((participant) => (
     <Participant key={participant.sid} participant={participant} />
   ));
@@ -99,8 +101,8 @@ const Room = ({ roomName, room, handleLogout }) => {
           )}
         </div>
         <div className="comment-liveStream">
-          <div style={{ height: '200px' }}>
-            {comments.map((e) => <div style={{ margin: '4px' }}><CommentDisplayerLive data={e} /></div>)}
+          <div style={{ overflow: 'auto', height: '80%' }}>
+            {comments.map((e) => <div style={{ margin: '10px' }}><CommentDisplayerLive data={e} /></div>)}
           </div>
           <div className="comn-liveStream">
             <CommentInput handleComment={handleComment} />

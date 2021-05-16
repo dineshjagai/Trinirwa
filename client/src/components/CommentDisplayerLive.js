@@ -27,7 +27,7 @@ export default function CommentDisplayer({ data }) {
         </div>
       </div>
       <div className="cmnt_cntBtn_box" style={{ width: 'fit-content' }}>
-        <div className="cmnt_cnt_box">
+        <div style={{ backgroundColor: '#D0EAE4' }} className="cmnt_cnt_box">
           <span id="cmnt_cnt">{data.content}</span>
         </div>
       </div>

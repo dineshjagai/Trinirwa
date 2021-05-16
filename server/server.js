@@ -996,8 +996,6 @@ webapp.delete('/api/tweet/delete/:tweetid', (req, res) => {
 webapp.post('/api/tweet/hide/:tweetid', (req, res) => {
   const input = req.params.tweetid;
   const { username } = req.body;
-
-  console.log(`${input}----------${username}`);
   const sql = `INSERT INTO HIDDEN_TWEETS (user, tweet_id) VALUES ('${username}', '${input}')`;
   connection.query(sql, (err, result) => {
     if (err) {
@@ -1156,7 +1154,7 @@ webapp.post('/api/comment/livestream/:roomName', (req, res) => {
 
 // gets the tweet number
 webapp.get('/api/livestream/comments/all/:roomName', (req, res) => {
-  const sql_get = `CALL getTweetsCount("${req.params.roomName}")`;
+  const sql_get = `CALL getAllComments('${req.params.roomName}')`;
   connection.query(sql_get,
     (err, comments) => {
       if (err) {
