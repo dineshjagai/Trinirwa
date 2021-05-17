@@ -126,6 +126,7 @@ export default function Registration() {
           </div>
           <div className="form-group">
             <button
+              id="registration"
               type="submit"
               className="btn btn-primary w-100"
               onClick={register}

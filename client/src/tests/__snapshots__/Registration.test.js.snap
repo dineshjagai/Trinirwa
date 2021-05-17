@@ -126,6 +126,7 @@ exports[`Registration testing Registration Snapshot 1`] = `
       >
         <button
           className="btn btn-primary w-100"
+          id="registration"
           onClick={[Function]}
           type="submit"
         >

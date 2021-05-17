@@ -5,7 +5,7 @@ import NavBar from './navBar';
 import SideBar from './SidebarU';
 import SearchBox from './SearchBox2';
 import Suggestions from './Suggestion';
-import TweetsDisplayer from './TweetDisplayer';
+import TweetsDisplayer from './tweetDisplayer';
 
 export default function Home() {
   return (

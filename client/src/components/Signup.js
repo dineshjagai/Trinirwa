@@ -106,7 +106,7 @@ export default function Signup() {
     <div className="card shadow mx-auto mt-5" style={{ width: '30rem' }}>
       <div className="container mx-1">
         <div className="card-body p-xs">
-          <h2 className="card-title text-center font-weight-bold">
+          <h2 className="card-title text-center font-weight-bold" id="greeting">
 
             Hi
             <var>
@@ -140,6 +140,7 @@ export default function Signup() {
             />
             <div className="form-group">
               <button
+                id="complete"
                 type="submit"
                 className="btn btn-primary w-100"
                 onClick={signup}

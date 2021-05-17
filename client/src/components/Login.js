@@ -138,7 +138,7 @@ export default function Login() {
     <div className="card shadow mx-auto mt-5" style={{ width: '30rem' }}>
       <div className="container mx-1">
         <div className="card-body p-xs">
-          <h2 className="card-title text-center font-weight-bold">Log In</h2>
+          <h2 className="card-title text-center font-weight-bold" id="login page">Log In</h2>
           <div className="form-group">
             <label>Username:</label>
             <input
@@ -166,7 +166,7 @@ export default function Login() {
           </p>
           <div className="form-group text-center">
             <button
-              title="login"
+              id="login"
               type="submit"
               className="btn btn-primary w-100"
               onClick={loginOnClick}
