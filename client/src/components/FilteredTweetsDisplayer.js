@@ -1,13 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable max-len */
 import React, {
   useState, useEffect, useRef, useCallback,
 } from 'react';
-import { useHistory } from 'react-router-dom';
-
-import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Tweet from './Tweet';
+import FilteredTweet from './FilteredTweet';
 import { getCurrentUsername } from '../auth/authServices';
 import './CenterDisplayerHome.css';
 
@@ -36,29 +31,7 @@ export default function TweetsDisplayer() {
   const [pageNumber, setPageNumber] = useState(1);
   // eslint-disable-next-line no-unused-vars
   const [count, setCount] = useState(25);
-  const [hashTagQuery, sethashTagQuery] = useState('');
   const observer = useRef();
-  const history = useHistory();
-
-  const handleChange = (e) => {
-    const u = 25 - (e.target.value).length;
-    setCount(u);
-    sethashTagQuery(e.target.value);
-  };
-  const filterTweetsButton = () => {
-    const regexp = /(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)/g;
-    if (hashTagQuery.length === 0) return;
-    const matchHashTag = hashTagQuery.match(regexp);
-    console.log(`what does this print? = ${matchHashTag}`);
-    if (matchHashTag == null) {
-      alert('not a valid hashTag');
-      history.push('/home');
-      document.getElementById('filter').value = '';
-    } else { // take the first hashtag
-      localStorage.setItem('hashtag', JSON.stringify(hashTagQuery));
-      history.push('/hashTagTweets');
-    }
-  };
 
   const lastTweetRef = useCallback((node) => {
     if (loading) return;
@@ -279,39 +252,13 @@ export default function TweetsDisplayer() {
     <>
       <div className="container_center">
         <CommentBox className="tweetIpt" handlers={handlers} />
-        <div className="filterBox">
-          <TextField
-            style={{
-              background: 'white', margin: '10px', width: '90%', borderRadius: '8px',
-            }}
-            multiline
-            id="filter"
-            label="Filter posts by hashtag"
-            variant="outlined"
-            onChange={(e) => handleChange(e)}
-          />
-
-        </div>
-        <div className="vertical-center">
-          <button
-            aria-label="close"
-            type="button"
-            className="btn btn-primary"
-            onClick={filterTweetsButton}
-          >
-            {' '}
-            Filter Tweets
-
-          </button>
-
-        </div>
 
         <div className="tweet_items">
           {allTweets.map((e, index) => {
             if (allTweets.length === index + 1) {
-              return (<div ref={lastTweetRef} className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={e} /></div>);
+              return (<div ref={lastTweetRef} className="tContainer"><FilteredTweet handleDelete={handleHideOrDelete} data={e} /></div>);
             }
-            return (<div className="tContainer"><Tweet handleDelete={handleHideOrDelete} data={e} /></div>);
+            return (<div className="tContainer"><FilteredTweet handleDelete={handleHideOrDelete} data={e} /></div>);
           })}
         </div>
       </div>
