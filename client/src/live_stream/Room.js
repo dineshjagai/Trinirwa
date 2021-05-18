@@ -10,7 +10,6 @@ import './Room.css';
 import {
   addCommentLiveStream,
   getAllCommentsLiveStream,
-  // deleteComment,
 } from '../components/Module';
 import { getCurrentUsername } from '../auth/authServices';
 
@@ -60,13 +59,15 @@ const Room = ({ roomName, room, handleLogout }) => {
     };
   }, [room]);
   useEffect(() => {
-    getData();
-    console.log(comments);
+    const interval = setInterval(() => {
+      getData();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
   const remoteParticipants = participants.map((participant) => (
     <Participant key={participant.sid} participant={participant} />
   ));
-
   return (
 
     <div className="room">

@@ -480,7 +480,7 @@ webapp.get('/api/profile/tweets/:username', (req, res) => {
 // deactivating profile
 webapp.put('/api/profile/deactivate/:username', (req, res) => {
   const sql_get = 'SELECT password FROM USERS WHERE username=?';
-  const sql_deact = 'UPDATE USERS SET isDeactivated = true WHERE username =?';
+  const sql_deact = 'DELETE FROM USERS WHERE username =?';
   const user = req.params.username;
   const { password } = req.body;
   connection.query(sql_get, user, (err, result) => {
@@ -488,10 +488,8 @@ webapp.put('/api/profile/deactivate/:username', (req, res) => {
       res.status(401).json({ error: err.message });
       return;
     }
-    // console.log(username);
     if (result.length > 0) {
       bcrypt.compare(password, result[0].password, (error, response) => {
-        // console.log(response);
         if (error) {
           res.status(401).json({ error: err.message });
         } else if (response) {
@@ -1152,7 +1150,7 @@ webapp.post('/api/comment/livestream/:roomName', (req, res) => {
     });
 });
 
-// gets the tweet number
+// gets the comment in a livestream
 webapp.get('/api/livestream/comments/all/:roomName', (req, res) => {
   const sql_get = `CALL getAllComments('${req.params.roomName}')`;
   connection.query(sql_get,
@@ -1172,6 +1170,20 @@ webapp.get('/api/livestream/comments/all/:roomName', (req, res) => {
 webapp.post('/api/livestream/open/:username', (req, res) => {
   const sql_post = `CALL openLiveStream('${req.body.room}','${req.params.username}')`;
   connection.query(sql_post,
+    (err) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+      });
+  });
+});
+
+// close a livestream
+webapp.delete('/api/livestream/close/:username', (req, res) => {
+  const sql_delete = `CALL closeLiveStream('${req.params.username}')`;
+  connection.query(sql_delete,
     (err) => {
       if (err) {
         res.status(405).json({ error: err.message });

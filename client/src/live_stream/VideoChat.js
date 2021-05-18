@@ -5,6 +5,7 @@ import Room from './Room';
 import {
   getCurrentUsername,
 } from '../auth/authServices';
+// import { addRoom } from '../components/Module';
 
 const VideoChat = () => {
   const [roomName, setRoomName] = useState('');
@@ -18,6 +19,9 @@ const VideoChat = () => {
 
   const handleSubmit = useCallback(
     async (event) => {
+      // await addRoom(username, roomName).then((res) => {
+      //   console.log(res.message);
+      // }).catch((err) => console.log(err));
       event.preventDefault();
       setConnecting(true);
       const data = await fetch('/video/token', {
@@ -36,8 +40,7 @@ const VideoChat = () => {
         .then((rm) => {
           setConnecting(false);
           setRoom(rm);
-        })
-        .catch((err) => {
+        }).catch((err) => {
           console.error(err);
           setConnecting(false);
         });
