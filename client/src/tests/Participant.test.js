@@ -1,6 +1,8 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import Participant from '../live_stream/Participant';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 
 test('Test Participant snapshot', () => {
   const part = {
@@ -12,3 +14,4 @@ test('Test Participant snapshot', () => {
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });
+

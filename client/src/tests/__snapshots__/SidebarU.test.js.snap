@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test SidebarU snapshot 1`] = `
+<div
+  className="sidebar"
+>
+  <div
+    className="bigButton"
+    style={
+      Object {
+        "marginBottom": "5px",
+      }
+    }
+  >
+    <button
+      className="button_profile"
+      onClick={[Function]}
+      type="button"
+    >
+      <div
+        className="header_box"
+      >
+        <div
+          className="img_box"
+        >
+          <img
+            alt=""
+            id="img"
+            src="/api/viewfile/"
+          />
+        </div>
+        <div
+          className="username_box"
+        >
+          <span
+            className="user"
+          />
+        </div>
+      </div>
+    </button>
+  </div>
+  <div
+    style={
+      Object {
+        "marginBottom": "5px",
+      }
+    }
+  >
+    <div
+      className="box-container"
+    >
+      <div
+        className="buttonFollowers"
+      >
+        <div>
+          <button
+            className="btn"
+            id="delete"
+            onClick={[Function]}
+            style={
+              Object {
+                "backgroundColor": "inherit",
+                "border": "none",
+                "color": "#00695c",
+              }
+            }
+            type="button"
+          >
+            All friends
+          </button>
+        </div>
+      </div>
+      <div
+        className="title"
+        style={
+          Object {
+            "color": "#0C8367",
+          }
+        }
+      >
+        Friends
+      </div>
+      <br />
+      <div
+        className="box"
+      >
+        <div
+          className="containers"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

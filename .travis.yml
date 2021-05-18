@@ -19,6 +19,12 @@ branches:
 script:  
   - cd server 
   - npm install
+  - npm start
+  - cd ../client 
+  - npm install
+  - npm start
+  - npm test
+  - cd ../server
   - npm test
 
 after_success:

@@ -1,17 +1,12 @@
 import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
+import renderer from 'react-test-renderer';
 import { render, screen, fireEvent } from '@testing-library/react'
-import MessagePage from '../components/MessagePage';
+import DisplayerMessages from '../components/CenterDisplayerMessages';
 import '@testing-library/jest-dom';
-import { act } from 'react-dom/test-utils';
-
-test('Test MessagePage snapshot', () => {
-  const component = createMount(<MessagePage />);
-  expect(component).toMatchSnapshot();
-});
+import { act } from 'react-dom/test-utils'
 
 test('Test CenterDisplayerMessages snapshot', async () => {
-  const { getByRole } = render(<MessagePage />);
+  const { getByRole } = render(<DisplayerMessages />);
   expect(screen.getByRole('button', { name: 'Photo' })).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Create post' })).toBeInTheDocument();
   

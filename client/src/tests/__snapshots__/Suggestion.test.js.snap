@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Temp snapshot 1`] = `
+<div
+  className="box-container"
+>
+  <div
+    className="title"
+    style={
+      Object {
+        "color": "#0C8367",
+      }
+    }
+  >
+    Suggestions
+  </div>
+  <br />
+  <div
+    className="box"
+  >
+    <div
+      className="containers"
+    />
+  </div>
+</div>
+`;

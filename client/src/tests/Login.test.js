@@ -2,7 +2,9 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import Login from '../components/Login';
 import { render, screen, fireEvent } from '@testing-library/react'
-import { act } from 'react-dom/test-utils'
+import { act } from 'react-dom/test-utils';
+import '@testing-library/jest-dom';
+
 
 describe("Login testing", () => {
     test('Login Snapshot', () => {
@@ -25,7 +27,6 @@ describe("Login testing", () => {
     });
 
     test("with valid inputs", async () => {
-        const handleClick = jest.fn();
         const { getByPlaceholderText, getByRole, getByText } = render(<Login />);
         const usernameLabel = getByPlaceholderText('Enter Username');
         const passwordLabel = getByPlaceholderText('Enter Password');      
@@ -36,20 +37,17 @@ describe("Login testing", () => {
         })
 
         await act(async () => {
-            fireEvent.click(getByText("Log In", { selector: 'button' }));
+            await fireEvent.click(screen.getByRole('button', { name: 'Log In' }));  
         })
 
         expect(usernameLabel.value).toBe("isimbi");
         expect(passwordLabel.value).toBe("Anaick@123");
-        expect(handleClick).toHaveBeenCalledTimes(0);
     });
 
-    test("with invalid username", () => {
 
-    });
-
-   test("with invalid password", () => {
-
+    test("test login buttons", async () => {
+        const { getByText } = render(<Login />);
+        expect(screen.getByText('Click here to reset!').closest('a')).toBeInTheDocument();
     });
 
 });
