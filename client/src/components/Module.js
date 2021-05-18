@@ -30,6 +30,14 @@ export function addRoom(username, room) {
   });
 }
 
+export function closeRoom(username) {
+  const addUrl = `/api/livestream/close/${username}`;
+  return axios({
+    method: 'DELETE',
+    url: addUrl,
+  });
+}
+
 export function deleteInterest(interestToDelete, username) {
   const delUrl = `/api/profile/delete/interest/${username}`;
   return axios({

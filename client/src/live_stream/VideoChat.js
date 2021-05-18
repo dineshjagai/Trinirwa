@@ -5,6 +5,7 @@ import Room from './Room';
 import {
   getCurrentUsername,
 } from '../auth/authServices';
+// import { addRoom } from '../components/Module';
 
 const VideoChat = () => {
   const [roomName, setRoomName] = useState('');
@@ -36,8 +37,7 @@ const VideoChat = () => {
         .then((rm) => {
           setConnecting(false);
           setRoom(rm);
-        })
-        .catch((err) => {
+        }).catch((err) => {
           console.error(err);
           setConnecting(false);
         });
