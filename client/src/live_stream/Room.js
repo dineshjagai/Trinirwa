@@ -19,7 +19,6 @@ const Room = ({ roomName, room, handleLogout }) => {
   const [comments, setComments] = useState([]);
   const getData = async () => {
     await getAllCommentsLiveStream(roomName).then((res) => {
-      console.log(res.data.comments[0]);
       setComments(res.data.comments[0]);
     }).catch((err) => console.log(err));
   };
@@ -31,7 +30,7 @@ const Room = ({ roomName, room, handleLogout }) => {
       timestamp,
       content,
     };
-    setComments((prevComm) => [newComment, ...prevComm]);
+    setComments((prevComm) => [...prevComm, newComment]);
     addCommentLiveStream(newComment).then((res) => {
       console.log(res.message);
     }).catch((err) => console.log(err.message));
@@ -62,7 +61,6 @@ const Room = ({ roomName, room, handleLogout }) => {
     const interval = setInterval(() => {
       getData();
     }, 5000);
-
     return () => clearInterval(interval);
   }, []);
   const remoteParticipants = participants.map((participant) => (

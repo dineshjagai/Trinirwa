@@ -19,9 +19,6 @@ const VideoChat = () => {
 
   const handleSubmit = useCallback(
     async (event) => {
-      // await addRoom(username, roomName).then((res) => {
-      //   console.log(res.message);
-      // }).catch((err) => console.log(err));
       event.preventDefault();
       setConnecting(true);
       const data = await fetch('/video/token', {
