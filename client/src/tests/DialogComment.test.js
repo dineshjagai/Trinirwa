@@ -14,3 +14,5 @@ test('Test DialogComment snapshot', () => {
   const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });
+
+

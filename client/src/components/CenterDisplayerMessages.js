@@ -33,7 +33,7 @@ const hash = require('object-hash');
 
 export default function DisplayerMessages() {
   const receiver = getCurrentReceiver();
-  console.log(`receiver = ${receiver}`);
+  // console.log(`receiver = ${receiver}`);
   //   const history = useHistory();
 
   const [items] = useState(new Map());
@@ -49,7 +49,7 @@ export default function DisplayerMessages() {
     }
   };
   useEffect(() => {
-    console.log('refreshed');
+    // console.log('refreshed');
     setUpdate(false);
   }, [update]);
   const postMessage = () => {
@@ -81,7 +81,7 @@ export default function DisplayerMessages() {
     // setItems(newItems);
     // console.log('items length', items.length);
     addMessage(newMessage).then((res) => {
-      console.log(res.message);
+      // console.log(res.message);
     //   window.location.reload();
     }).catch((err) => {
       console.log(err.message);
@@ -91,7 +91,7 @@ export default function DisplayerMessages() {
   const getData = async () => {
     fetchMessages(user, receiver).then((res) => {
       const { messages } = res.data;
-      console.log(`ttt--${messages}`);
+      // console.log(`ttt--${messages}`);
       messages.forEach((e) => {
         const toAdd = <div className="tContainer"><Message data={e} /></div>;
         toDisplay.add(toAdd);
@@ -145,7 +145,7 @@ export default function DisplayerMessages() {
         // setItems(newItems);
         // console.log(items.length);
         addMessage(newMessage).then((res) => {
-          console.log(res.message);
+          // console.log(res.message);
         //   window.location.reload();
         }).catch((err) => {
           console.log(err.message);
@@ -196,7 +196,7 @@ export default function DisplayerMessages() {
         // setItems(newItems);
         // console.log(items.length);
         addMessage(newMessage).then((res) => {
-          console.log(res.message);
+          // console.log(res.message);
         //   window.location.reload();
         }).catch((err) => {
           console.log(err.message);
@@ -248,7 +248,7 @@ export default function DisplayerMessages() {
         // console.log(items.length);
         addMessage(newMessage).then((res) => {
         //   window.location.reload();
-          console.log(res.message);
+          // console.log(res.message);
         }).catch((err) => {
           console.log(err.message);
         });
@@ -269,7 +269,7 @@ export default function DisplayerMessages() {
   const postSongTrigger = () => {
     document.getElementById('fileInputSong').click();
   };
-  console.log('td', toDisplay);
+  // console.log('td', toDisplay);
   return (
     <div className="container_center">
       <div

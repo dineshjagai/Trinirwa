@@ -67,7 +67,7 @@ export default function DisplayerTweets() {
   };
 
   useEffect(() => {
-    console.log('refreshed');
+    //console.log('refreshed');
     setUpdate(false);
   }, [update]);
   const postTweet = () => {
@@ -167,7 +167,7 @@ export default function DisplayerTweets() {
         // setItems(newItems);
         // console.log(items.length);
         addTweet(newTweet).then((res) => {
-          console.log(res.message);
+          //console.log(res.message);
           window.location.reload();
         }).catch((err) => {
           console.log(err.message);
@@ -270,7 +270,7 @@ export default function DisplayerTweets() {
         // console.log(items.length);
         addTweet(newTweet).then((res) => {
           window.location.reload();
-          console.log(res.message);
+          //console.log(res.message);
         }).catch((err) => {
           console.log(err.message);
         });

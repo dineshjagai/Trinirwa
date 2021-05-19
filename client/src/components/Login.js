@@ -36,7 +36,7 @@ export default function Login() {
         console.log(er);
       });
       getNumberFailedLogins(username).then((resOne) => {
-        console.log('resOne.data.message', resOne.data.message);
+        // console.log('resOne.data.message', resOne.data.message);
         // eslint-disable-next-line eqeqeq
         if (resOne.data.message == '200') {
           let fetchNumberFailedLogins = 0;
@@ -46,21 +46,14 @@ export default function Login() {
           getDateUserLastLockedOut(username).then((resTwo) => {
             let tmpDateUserLastLockedOut = '';
             [tmpDateUserLastLockedOut] = [Array.from(resTwo.data.data)[0].date_last_locked_out];
-            // console.log('fetched fetchedNumberOfIncorrectLogins = ');
-            // console.log(fetchNumberFailedLogins);
+
             setDateUserLastLockedOut(tmpDateUserLastLockedOut);
             if (fetchNumberFailedLogins > 3) {
-              // setIsLockedOut(true);
-              // const dateTimeOne = new Date(dateTime);
-              // console.log('dateUserLastLockedOut = ', tmpDateUserLastLockedOut);
-              // console.log('dateTimeTwo = ', tmpDateUserLastLockedOut);
               isLockedOut = true;
               const dateTimeTwo = new Date(tmpDateUserLastLockedOut);
               const timeDiffMs = new Date() - dateTimeTwo;
               const lockOutTime = 3600 * 1000; // one hour lockOut
               const isTimeOver = timeDiffMs > lockOutTime;
-              // console.log(`timeDiffMs : ${timeDiffMs}`);
-              // console.log(`isTimeOver : ${isTimeOver}`);
               if (isTimeOver) {
                 isLockedOut = false;
                 // reset
@@ -68,7 +61,6 @@ export default function Login() {
                   console.log(e);
                 });
               }
-              // setIsLockedOut(isTimeOver);
             }
 
             // console.log(`isLockedOut before if : ${isLockedOut}`);
@@ -85,8 +77,6 @@ export default function Login() {
                   .catch((e) => {
                     console.log(e);
                   });
-                // document.getElementById('new-password-form').value = '';
-                // document.getElementById('new-username-form').value = '';
                 alert(response.data.message);
                 history.push('/login');
                 document.getElementById('new-username-form').value = '';
@@ -95,18 +85,7 @@ export default function Login() {
                 updateNumberFailedLogins(username, 0).catch((e) => {
                   console.log(e);
                 });
-                // const fetchedUid = null;
-                // getUid(username).then((resThree) => {
-                //   [fetchedUid] = [Array.from(resThree.data.data)[0].uid];
-                //   console.log('fetched UID = ');
-                //   console.log(fetchedUid);
-                //   setUid(fetchedUid);
-                // }).catch((e) => {
-                //   console.log(e);
-                // });
                 history.push('/home');
-
-                // window.location.reload();
               }
             } else {
               alert('your account has been locked because to too many incorrect attempts, please try back in an hour');
@@ -130,7 +109,6 @@ export default function Login() {
         document.getElementById('new-username-form').value = '';
         document.getElementById('new-password-form').value = '';
       });
-      // console.log(`Number Of Incorrect Logins${numIncorrectLogins}`);
     });
   };
 

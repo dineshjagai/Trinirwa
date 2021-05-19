@@ -15,33 +15,35 @@ describe("Login testing", () => {
 
     test('checks that the labels are there', () => {
         const { getByText } = render(<Login />);
-        getByText('Username:');
-        getByText('Password:');
+        expect(screen.getByText('Username:')).toBeInTheDocument();
+        expect(screen.getByText('Password:')).toBeInTheDocument();
     });
 
     test('calls Log In button', () => {
-        const handleClick = jest.fn();
-        render(<Login />);
+        // const handleClick = jest.fn();
+        const { getByText } = render(<Login />);
         fireEvent.click(screen.getByText('Log In', { selector: 'button' }));
-        expect(handleClick).toHaveBeenCalledTimes(0)
+        // expect(handleClick).toHaveBeenCalledTimes(0)
     });
 
     test("with valid inputs", async () => {
         const { getByPlaceholderText, getByRole, getByText } = render(<Login />);
         const usernameLabel = getByPlaceholderText('Enter Username');
-        const passwordLabel = getByPlaceholderText('Enter Password');      
+        const passwordLabel = getByPlaceholderText('Enter Password');  
+        const btn = screen.getByText('Log In', { selector: 'button' });
+        expect(btn).toBeInTheDocument();
 
         await act(async () => {
             fireEvent.change(usernameLabel, {target: {value: "isimbi"}});
             fireEvent.change(passwordLabel, {target: {value: "Anaick@123"}});
-        })
-
-        await act(async () => {
-            await fireEvent.click(screen.getByRole('button', { name: 'Log In' }));  
-        })
+        });
 
         expect(usernameLabel.value).toBe("isimbi");
         expect(passwordLabel.value).toBe("Anaick@123");
+
+        await act(async () => {
+            await fireEvent.click(btn); 
+        });
     });
 
 

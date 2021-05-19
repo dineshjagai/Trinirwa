@@ -48,7 +48,5 @@ test('checks that interests get in', async () => {
   // delete interest
   const entered = screen.getByText('computer');
   expect(entered).toBeInTheDocument();
-
-  await fireEvent.click(entered);  
 });
 
