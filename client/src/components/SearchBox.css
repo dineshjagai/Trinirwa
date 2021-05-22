@@ -1,0 +1,39 @@
+.item :hover {
+    background-color: #80cbc4;
+}
+.searchBack {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 0px 0px 0px 8px;
+    background-color: white;
+    margin-bottom: 4px;
+}
+
+#search_img {
+    width: 50px;
+    height: 50px;
+    border-radius: 45px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.search-name {
+    display: flex;
+    flex-direction: column;
+    
+}
+.searchItem {
+    position: relative;
+    padding: 4px;
+}
+.searchImg {
+    float: left;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.searchBtn {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    position: absolute;
+    top: 25%;
+    right: 0;
+    margin-right: 4px;
+}

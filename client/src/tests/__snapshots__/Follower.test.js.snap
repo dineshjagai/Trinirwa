@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Follower snapshot 1`] = `
+<div
+  className="Container_two"
+>
+  <div
+    className="makeStyles-root-1"
+  >
+    <svg
+      aria-describedby={null}
+      aria-hidden={true}
+      className="MuiSvgIcon-root button MuiSvgIcon-colorSecondary"
+      focusable="false"
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onMouseLeave={[Function]}
+      onMouseOver={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      title="Block user"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"
+      />
+    </svg>
+    <svg
+      aria-describedby={null}
+      aria-hidden={true}
+      className="MuiSvgIcon-root button"
+      focusable="false"
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onMouseLeave={[Function]}
+      onMouseOver={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      title="Follow"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+      />
+    </svg>
+  </div>
+  <div
+    className="followerContainer"
+  >
+    <div
+      className="myimgContainer"
+    >
+      <img
+        alt=""
+        className="myimg"
+        src="/api/viewFile/logo512.png"
+      />
+    </div>
+  </div>
+  <div
+    className="text"
+  >
+    isimbib
+  </div>
+</div>
+`;

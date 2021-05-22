@@ -1,0 +1,72 @@
+.comment_cont {
+    position: relative;
+    width: 60%;
+}
+
+#comment_picture {
+    width: 35px;
+    height: 35px;
+    border-radius: 35px
+}
+.comment_header {
+    display: flex;
+    flex-direction: row;
+}
+
+#editBtn {
+    color: #0C8367;
+    background: transparent;
+    font-size: small;
+}
+
+#deleteBtn {
+    color: #0C8367;
+    background: transparent;
+    font-size: small;
+}
+
+.header_profile {
+    margin: 4px 2px 4px 4px ;
+}
+.header_name {
+    margin: 4px 4px 4px 2px ;
+}
+#cmnt_username {
+    font-size: small;
+    font-weight: bold;
+    color: #0C8367;
+ }
+
+.cmnt_cnt_box {
+    background-color: white;
+    border-radius: 8px;
+}
+
+#cmnt_cnt {
+    margin: 15px;
+    width: 100px;
+}
+
+#editBtn:hover {
+    text-decoration: underline;
+    font-weight: bold ;
+}
+
+#deleteBtn:hover {
+    text-decoration: underline;
+    font-weight: bold ;
+}
+.cmnt_EditBtn_box {
+    right: 0;
+    bottom: 0;
+}
+.cmnt_cntBtn_box {
+ position: absolute;
+ left: 13%;
+ top: 59%;
+}
+
+.cmnt_btns_box {
+    display: flex;
+    flex-direction: row;
+}

@@ -1,0 +1,36 @@
+.home {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 90%;
+    margin: auto;
+}
+.sidebar_item {
+    flex-basis: 25%;
+    position: -webkit-sticky;
+    align-self: flex-start;
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;   
+}
+.center_item {
+    flex-basis: 50%;
+}
+.right_item {
+    flex-basis: 25%;
+    align-self: flex-start;
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+}
+.searchbox {
+    position: relative;
+    z-index: 2;
+}
+.suggestionBox {
+    position: relative;
+    z-index: 1;
+}
+.home > div {
+    margin: 6px;
+}

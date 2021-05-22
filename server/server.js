@@ -1,0 +1,1263 @@
+/* eslint-disable max-len */
+/* eslint-disable camelcase */
+/* eslint-disable import/extensions */
+// create express app
+
+const express = require('express');
+
+const webapp = express();
+const pino = require('express-pino-logger')();
+
+// impporting database
+const mysql = require('mysql');
+const cors = require('cors');
+
+webapp.use(cors());
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
+
+const fs = require('fs');
+const util = require('util');
+
+const unlinkFile = util.promisify(fs.unlink);
+const multer = require('multer');
+const path = require('path');
+const auth = require('./authentication.js');
+
+// const upload = multer({ dest: './uploads/' });
+
+const {
+  checkKey, uploadFile, readFile, deleteFile,
+} = require('./file_upload/s3fileupload.js');
+
+const config = require('./db_connection.js');
+
+// connecting to database
+const connection = mysql.createConnection(config);
+// console.log(connection);
+const saltRounds = 10;
+// TODO: define all endpoints as specified in REST API
+webapp.use(express.static(path.join(__dirname, '../client/build')));
+const port = process.env.PORT || 5000;
+webapp.use(bodyParser.urlencoded({
+  extended: true,
+}));
+webapp.use(bodyParser.json());
+
+webapp.listen(port, () => {
+  console.log(`Server running on port:${port}`);
+});
+// webapp.use(express.static(__dirname, 'public'));
+webapp.use(express.json());
+webapp.use(
+  cors({
+    origin: [`http://localhost:${port}`],
+    methods: ['GET', 'POST'],
+    credentials: true,
+  }),
+);
+
+webapp.use(cookieParser());
+webapp.use(bodyParser.urlencoded({ extended: true }));
+
+webapp.use(
+  session({
+    key: 'userId',
+    secret: 'subscribe',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      expires: 60 * 60 * 24,
+    },
+  }),
+);
+
+/* -------------------------------------------------------------------------- */
+/*                                TWILIO ENDPOINTS                            */
+/* -------------------------------------------------------------------------- */
+const configTwo = require('./config');
+const { videoToken } = require('./tokens');
+
+webapp.use(pino);
+
+const sendTokenResponse = (token, res) => {
+  res.set('Content-Type', 'application/json');
+  res.send(
+    JSON.stringify({
+      token: token.toJwt(),
+    }),
+  );
+};
+
+webapp.get('/greeting', (req, res) => {
+  const name = req.query.name || 'World';
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify({ greeting: `Hello ${name}!` }));
+});
+
+webapp.get('/video/token', (req, res) => {
+  const { identity } = req.query;
+  const { room } = req.query;
+  const token = videoToken(identity, room, configTwo);
+  sendTokenResponse(token, res);
+});
+webapp.post('/video/token', (req, res) => {
+  // console.log(configTwo);
+  const { identity } = req.body;
+  const { room } = req.body;
+  const token = videoToken(identity, room, configTwo);
+  sendTokenResponse(token, res);
+});
+
+/* -------------------------------------------------------------------------- */
+/*                      LOGIN AND REGISTRATION ENDPOINTS                      */
+/* -------------------------------------------------------------------------- */
+
+webapp.post('/api/register', (req, res) => {
+  const { username } = req.body;
+  const { password } = req.body;
+  const { first_name } = req.body;
+  const { last_name } = req.body;
+  const { email } = req.body;
+  // get the current date time in MYSQL format
+  const datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  // console.log(datetime);
+  const followerCount = 0;
+  const isLoggedIn = 0;
+  const tweetsCount = 0;
+  const isLive = 0;
+
+  bcrypt.hash(password, saltRounds, (hasherr, hash) => {
+    if (hasherr) {
+      console.log(hasherr);
+    }
+    connection.query(
+      'INSERT INTO USERS (username, password, first_name, last_name,email, followers_count, is_logged_in, tweets_count, is_live, date) VALUES (?,?,?,?,?,?,?,?,?,?)',
+      [username, hash, first_name, last_name, email, followerCount,
+        isLoggedIn, tweetsCount, isLive, datetime], (err) => {
+        if (err) {
+          const status = err.status || 500;
+          res.status(status).json({ error: err.message });
+          return;
+        }
+        res.send({
+          message: 'success',
+        });
+      },
+    );
+  });
+});
+
+webapp.get('/api/login', (req, res) => {
+  if (req.session.user) {
+    res.send({ loggedIn: true, user: req.session.user });
+  } else {
+    res.send({ loggedIn: false });
+  }
+});
+
+webapp.post('/api/userUid', (req, res) => {
+  // console.log('Get the user id');
+  const sql = 'select uid from USERS where username = ?';
+  const { username } = req.body;
+  const params = [username];
+  connection.query(sql, params, (err, row) => {
+    if (err) {
+      const status = err.status || 500;
+      res.status(status).json({ error: err.message });
+      return;
+    }
+    res.send({
+      message: 'success',
+      data: row,
+    });
+  });
+});
+
+webapp.post('/api/login', (req, res) => {
+  const { username } = req.body;
+  const { password } = req.body;
+  console.log(`username:${username}`);
+  connection.query(
+    'SELECT * FROM USERS WHERE username = ?',
+    username,
+    (err, result) => {
+      if ((err) || !(result)) {
+        res.send({ err });
+      }
+
+      if (result.length > 0) {
+        bcrypt.compare(password, result[0].password, (error, response) => {
+          console.log(response);
+          if (response) {
+            req.session.user = result;
+            console.log(req.session.user);
+            res.send(result);
+          } else {
+            console.log(`here ${result}`);
+            res.send({ message: 'Wrong username/password combination!' });
+          }
+        });
+      } else {
+        res.send({ message: "User doesn't exist" });
+      }
+    },
+  );
+});
+
+webapp.put('/api/resetPassword', (req, res) => {
+  const { username } = req.body;
+  const { password } = req.body;
+
+  bcrypt.hash(password, saltRounds, (hasherr, hash) => {
+    if (hasherr) {
+      console.log(hasherr);
+    }
+    connection.query(
+      'UPDATE USERS SET password = ? WHERE (username = ?)',
+      [hash, username], (err) => {
+        if (err) {
+          const status = err.status || 500;
+          res.status(status).json({ error: err.message });
+          return;
+        }
+        res.send({
+          message: 'success',
+        });
+      },
+    );
+  });
+});
+
+webapp.post('/api/uploadProfilePicture', (req, res) => {
+  const { username } = req.body;
+  const { profilePicture } = req.body;
+  const params = [profilePicture, username];
+
+  connection.query(
+    'UPDATE USERS SET profile_picture = ? WHERE username = ?',
+    params, (err) => {
+      if (err) {
+        const status = err.status || 500;
+        res.status(status).json({ error: err.message });
+        return;
+      }
+      res.send({
+        message: 'success',
+      });
+    },
+  );
+});
+
+// set the number of failed logins
+webapp.post('/api/updateNumberFailedLogins', (req, res) => {
+  const { username } = req.body;
+  const { numberOfFailedLogins } = req.body;
+  const params = [numberOfFailedLogins, username];
+  // console.log(`updateNumberFailedLogins called with numberOfFailedLogins as ${numberOfFailedLogins}`);
+  // console.log(params);
+
+  connection.query(
+    'UPDATE USERS SET number_failed_logins = ? WHERE username = ?',
+    params, (err) => {
+      if (err) {
+        const status = err.status || 500;
+        res.status(status).json({ error: err.message });
+        return;
+      }
+      res.send({
+        message: 'success',
+      });
+    },
+  );
+});
+// get the number of failed logins
+webapp.get('/api/numberFailedLogins/:username', (req, res) => {
+  const params = [req.params.username];
+  // console.log(req.params);
+
+  const sql_select = 'SELECT  number_failed_logins FROM USERS WHERE username = ?';
+  connection.query(sql_select, params, (err, row) => {
+    // console.log(`numberFailedLogins called with numberFailedLogins, result = }${Array.from(res)}`);
+    // console.log();
+    // TODO: FIXME
+    // if (!row[0]) {
+    //   const status = 500;
+    //   res.status(status).json({ error: 'invalid username' });
+    //   return;
+    // }
+
+    if (err) {
+      const status = err.status || 500;
+      res.status(status).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: '200',
+      data: row,
+    });
+  });
+});
+
+// get the number of failed logins
+webapp.get('/api/dateUserLastLockedOut/:username', (req, res) => {
+  const params = [req.params.username];
+  // console.log(req.params);
+  const sql_select = 'SELECT date_last_locked_out FROM USERS WHERE username = ?';
+  connection.query(sql_select, params, (err, row) => {
+    // console.log(`dateUserLastLockedOut called with dateUserLastLockedOut, result = }${Array.from(res)}`);
+    // console.log(req.params);
+
+    if (err) {
+      const status = err.status || 500;
+      res.status(status).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: '200',
+      data: row,
+    });
+  });
+});
+
+// set the number of failed logins
+webapp.post('/api/setLockOutTime', (req, res) => {
+  const dateTime = new Date().toISOString();
+  const { username } = req.body;
+  const params = [dateTime, username];
+  // console.log(`dateTime =${dateTime}`);
+  // console.log(`username =${username}`);
+  connection.query(
+    'UPDATE USERS SET date_last_locked_out = ? WHERE username = ?',
+    params, (err) => {
+      // console.log('setLockOutTime called with setLockOutTime');
+      if (err) {
+        const status = err.status || 500;
+        res.status(status).json({ error: err.message });
+        return;
+      }
+      res.send({
+        message: 'success',
+      });
+    },
+  );
+});
+
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads'); // important this is a direct path fron our current file to storage location
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}--${file.originalname}`);
+  },
+});
+const upload = multer({ storage: fileStorageEngine });
+
+// Single File Route Handler
+webapp.post('/api/uploadFile', upload.single('image'), (req, res) => {
+  // console.log(req.file);
+  uploadFile(req.file.filename);
+  res.json({
+    message: 'success',
+    data: req.file.filename,
+  });
+});
+
+webapp.get('/api/viewFile/:key', async (req, res) => {
+  const b = await checkKey(req.params.key);
+  try {
+    if (b) {
+      // successful, print the message
+      const readStream = readFile(req.params.key);
+      // console.log(`ress${res[0]}`);
+      readStream.pipe(res);
+    } else {
+      res.send({
+        message: 'unsuccessful',
+      });
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+webapp.get('/api/readFile', (req, res) => {
+  const { fileName } = req.body;
+  readFile(fileName);
+  res.send({
+    message: 'success',
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/*                        PROFILE AND TWEETS ENDPOINTS                        */
+/* -------------------------------------------------------------------------- */
+
+// getting the profile info
+webapp.get('/api/profile/:username', (req, res) => {
+  const sql_info = 'SELECT username, first_name, last_name, email, profile_picture, date FROM USERS WHERE username = ?';
+  const sql_interest = 'SELECT interest FROM INTERESTS_1 WHERE user= ?';
+  const sql_following = 'SELECT uid, username, profile_picture FROM USERS WHERE username IN  (SELECT user_two FROM FOLLOWERS_1 WHERE user_one = ?)';
+  const parameters = [req.params.username];
+  connection.query(sql_info, parameters, (err, student) => {
+    const data = [];
+    if (err) {
+      res.status(404).json({ error: err.message });
+      return;
+    }
+    data.push(student);
+    connection.query(sql_interest, parameters, (err, interests) => {
+      if (err) {
+        res.status(404).json({
+          message: 'no interest',
+          data,
+          error: err.message,
+        });
+        return;
+      }
+      data.push(interests);
+
+      connection.query(sql_following, parameters, (err, followers) => {
+        if (err) {
+          res.status(404).json({
+            message: 'no followers',
+            data,
+            error: err.message,
+          });
+          return;
+        }
+        data.push(followers);
+        res.json({
+          message: '200',
+          data: student,
+          interests,
+          followers,
+        });
+      });
+    });
+  });
+});
+
+/**
+   * Retrieving all tweets of users
+   * route to be updated for infinitely scrolling list
+   * * */
+
+webapp.get('/api/profile/tweet/:username', (req, res) => {
+  const sql_select = 'SELECT * FROM TWEETS_1 WHERE user=? ORDER BY tweet_date DESC';
+  const params = [req.params.username];
+  connection.query(sql_select, params, (err, tweets) => {
+    if (err) {
+      res.status(404).json({
+        message: 'no followers',
+        error: err.message,
+      });
+      return;
+    }
+    res.json({
+      message: '200',
+      data: tweets,
+    });
+  });
+});
+
+webapp.get('/api/profile/tweets/:username', (req, res) => {
+  const sql_select = 'SELECT USERS.username, TWEETS_1.* FROM TWEETS_1 INNER JOIN USERS ON USERS.username = TWEETS_1.user WHERE TWEETS_1.user = ?';
+  const params = [req.params.username];
+  connection.query(sql_select, params, (err, tweets) => {
+    if (err) {
+      res.status(405).json({ error: err.message });
+    }
+    res.json({
+      message: '200',
+      tweets,
+    });
+  });
+});
+
+// deactivating profile
+webapp.put('/api/profile/deactivate/:username', (req, res) => {
+  const sql_get = 'SELECT password FROM USERS WHERE username=?';
+  const sql_deact = 'DELETE FROM USERS WHERE username =?';
+  const user = req.params.username;
+  const { password } = req.body;
+  connection.query(sql_get, user, (err, result) => {
+    if (err) {
+      res.status(401).json({ error: err.message });
+      return;
+    }
+    if (result.length > 0) {
+      bcrypt.compare(password, result[0].password, (error, response) => {
+        if (error) {
+          res.status(401).json({ error: err.message });
+        } else if (response) {
+          connection.query(sql_deact, user,
+            function (errr) {
+              if (errr) {
+                res.status(500).json({ error: errr.message });
+                return;
+              }
+              res.json({ message: 'Account deactivated', changes: this.changes });
+            });
+        } else {
+          res.status(401).json({ message: 'Wrong password input! Try again.' });
+        }
+      });
+    }
+  });
+});
+
+// reactivating profile
+webapp.put('/api/profile/reactivate/:username', (req, res) => {
+  const sql_get = 'SELECT password FROM USERS WHERE username=?';
+  const sql_deact = 'UPDATE USERS SET isDeactivated = false WHERE username =?';
+  const user = req.params.username;
+  const { password } = req.body;
+  connection.query(sql_get, user, (err, result) => {
+    if (err) {
+      res.status(401).json({ error: err.message });
+      return;
+    }
+    // console.log(username);
+    if (result.length > 0) {
+      bcrypt.compare(password, result[0].password, (error, response) => {
+        if (error) {
+          res.status(401).json({ error });
+        } else if (response) {
+          connection.query(sql_deact, user,
+            function (errr) {
+              if (errr) {
+                res.status(500).json({ error: errr });
+                return;
+              }
+              res.json({ message: 'Account reactivated', changes: this.changes });
+            });
+        } else {
+          res.status(401).json({ message: 'Wrong password input! Try again.' });
+        }
+      });
+    }
+  });
+});
+
+// changing username
+webapp.put('/api/profile/username/:uid', (req, res) => {
+  const sql_update = 'UPDATE USERS SET username = ? WHERE uid = ?';
+  const params = [req.body.username, req.params.uid];
+  connection.query(sql_update, params,
+    function (err) {
+      if (!auth.isValidUsername(params[0])) {
+        res.status(400).json({ message: 'invalid username' });
+        return;
+      } if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Username updated', changes: this.changes });
+    });
+});
+
+// updating password
+webapp.put('/api/profile/password/:username', (req, res) => {
+  const sql_get = 'SELECT password FROM USERS WHERE username=?';
+  const sql_update = 'UPDATE USERS SET password= ? WHERE username= ?';
+  const user = req.params.username;
+  const newPass = req.body.newPassword;
+  const oldPass = req.body.oldPassword;
+  connection.query(sql_get, user, (err, result) => {
+    if (err) {
+      res.status(404).json({ error: err.message });
+      return;
+    }
+    if (result.length > 0) {
+      bcrypt.compare(oldPass, result[0].password, (error, response) => {
+        if (error) {
+          res.status(401).json({ error: error.message });
+          return;
+        }
+        if (response) {
+          bcrypt.hash(newPass, saltRounds, (hashingError, hash) => {
+            if (hashingError) {
+              res.json({ error: hashingError.message });
+            } else {
+              connection.query(sql_update, [hash, user], (err) => {
+                if (err) {
+                  res.status(500).json({ error: err.message });
+                } else {
+                  res.status(401).json({ message: 'password successfully updated' });
+                }
+              });
+            }
+          });
+        } else {
+          res.status(401).json({ message: 'Wrong password input! Try again.' });
+        }
+      });
+    }
+  });
+});
+
+// Adding interest
+webapp.post('/api/profile/interest/:username', (req, res) => {
+  const sql_update = 'INSERT INTO INTERESTS_1 (user, interest) VALUES (?, ?)';
+  const params = [req.params.username, req.body.interest];
+  connection.query(sql_update, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Interest successfully added', changes: this.changes });
+    });
+});
+
+// delete interest
+webapp.delete('/api/profile/delete/interest/:username', (req, res) => {
+  const sql_delete = 'DELETE FROM INTERESTS_1 WHERE user=? AND interest=?';
+  const params = [req.params.username, req.body.interest];
+  connection.query(sql_delete, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Interest successfully deleted', changes: this.changes });
+    });
+});
+
+// Getting the followers to display on profile
+webapp.get('/api/profile/followers/:username', (req, res) => {
+  // finish the outes correctly
+  const { username } = req.params;
+  const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT user_one FROM FOLLOWERS_1 WHERE user_two = '${username}' and user_one NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one= '${username}' )) as T ON username = user_one LIMIT 6`;
+
+  connection.query(sql_get,
+    (err, followers) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        followers,
+      });
+    });
+});
+
+// Getting the friends to display on profile
+webapp.get('/api/profile/friends/:username', (req, res) => {
+  const { username } = req.params;
+  // console.log(username);
+  const sql_get = `SELECT profile_picture, username FROM USERS JOIN (SELECT user_one FROM FOLLOWERS_1 WHERE user_two= '${username}' AND user_one in (SELECT user_two FROM FOLLOWERS_1 WHERE user_one= '${username}') AND user_one NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one= '${username}')) AS T ON username = user_one`;
+
+  connection.query(sql_get,
+    (err, friends) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        friends,
+      });
+    });
+});
+
+// Getting the friends to display on profile
+webapp.get('/api/search/:username/:input', (req, res) => {
+  const { username } = req.params;
+  const input = `${req.params.input}%`;
+  const sql_get = 'SELECT username, profile_picture, CASE WHEN username IN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one = ?) THEN \'1\' END AS followed FROM TRINIWA.USERS WHERE username LIKE ? limit 5';
+  connection.query(sql_get, [username, input],
+    (err, friends) => {
+      if (err) {
+        console.log('I failed');
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        friends,
+      });
+    });
+});
+
+
+
+webapp.get('/api/followers/:uid', (req, res) => {
+  // finish the outes correctly
+  const sql_get = 'SELECT uid_user_two FROM FOLLOWERS WHERE uid_user_one=?';
+  const params = [req.params.uid];
+  connection.query(sql_get, params,
+    (err, followers) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        followers,
+      });
+    });
+});
+
+webapp.get('/api/profile/avatar/:username', (req, res) => {
+  const sql_get = 'SELECT profile_picture FROM USERS WHERE username=?';
+  const params = req.params.username;
+  connection.query(sql_get, params, (err, avatar) => {
+    if (err) {
+      res.status(405).json({
+        error: err.message,
+      });
+    }
+    res.json({
+      message: 'Profile retrieved successfully!',
+      avatar,
+    });
+  });
+});
+// blocking a follower
+webapp.post('/api/block/:username', (req, res) => {
+  const sql_insert = 'INSERT INTO BLOCKED_USERS_1 ( user_one, user_two ) VALUES(?,?)';
+  const params = [req.params.username, req.body.follower];
+  connection.query(sql_insert, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'user successfully blocked', changes: this.changes });
+    });
+});
+
+// following a follower
+webapp.post('/api/follow/:username', (req, res) => {
+  const sql_insert = 'INSERT INTO FOLLOWERS_1 ( user_one, user_two ) VALUES(?,?)';
+  const params = [req.params.username, req.body.follower];
+  connection.query(sql_insert, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'user successfully followed', changes: this.changes });
+    });
+});
+
+// unfollowing a user
+webapp.put('/api/unfollow/:username', (req, res) => {
+  const sql_unfollow = 'DELETE FROM FOLLOWERS_1 WHERE user_one = ? AND user_two = ?';
+  const params = [req.params.username, req.body.follower];
+  connection.query(sql_unfollow, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'user successfully unfollowed', changes: this.changes });
+    });
+});
+
+// unblocking a user
+webapp.put('/api/unblock/:username', (req, res) => {
+  const sql_unfollow = 'DELETE FROM BLOCKED_USERS_1 WHERE user_one = ? AND user_two = ?';
+  const params = [req.params.username, req.body.follower];
+  connection.query(sql_unfollow, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'user successfully unblocked', changes: this.changes });
+    });
+});
+
+// get blocked users
+webapp.get('/api/blocked/:username', (req, res) => {
+  const { username } = req.params;
+  const sql = `SELECT USERS.profile_picture, USERS.username, BLOCKED_USERS_1.user_two FROM USERS INNER JOIN BLOCKED_USERS_1 ON BLOCKED_USERS_1.user_two = USERS.username WHERE BLOCKED_USERS_1.user_one = '${username}'`;
+
+  connection.query(sql,
+    (err, friends) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        friends,
+      });
+    });
+});
+
+// updating tweet likes
+webapp.put('/api/tweet/likes/:tweetid', (req, res) => {
+  const sql_update = `UPDATE TWEETS_1 SET tweet_likes='${req.body.likes}' WHERE tweet_id='${req.params.tweetid}'`;
+  connection.query(sql_update,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'tweetLikes successfully updated', changes: this.changes });
+    });
+});
+
+// updating tweet comments
+webapp.put('/api/tweet/comments/:tweetid', (req, res) => {
+  const sql_update = `UPDATE TWEETS_1 SET tweet_comments='${req.body.comments}' WHERE tweet_id='${req.params.tweetid}'`;
+  connection.query(sql_update,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'num of comments successfully updated', changes: this.changes });
+    });
+});
+
+// checking if a tweet has been already liked by user
+webapp.get('/api/tweet/isliked/:username/:tweetid/', (req, res) => {
+  const sql_update = `SELECT 1 FROM LIKED_TWEETS
+  WHERE user = '${req.params.username}' and tweet_id = ?`;
+  const params = [req.params.tweetid];
+  connection.query(sql_update, params,
+    function (err, bool) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'tweetLikes successfully updated',
+        changes: this.changes,
+        bool,
+      });
+    });
+});
+
+// like a tweet
+webapp.post('/api/tweet/like/:username', (req, res) => {
+  console.log(`${req.params.username}.....${req.body.tweetid}`);
+  const sql_like = `INSERT INTO LIKED_TWEETS (user, tweet_id) VALUES ('${req.params.username}','${req.body.tweetid}')`;
+  connection.query(sql_like,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'tweet successfully liked', changes: this.changes });
+    });
+});
+
+// unlike a tweet
+webapp.put('/api/tweet/unlike/:username', (req, res) => {
+  const sql_unlike = `DELETE FROM LIKED_TWEETS WHERE user='${req.params.username}' AND tweet_id='${req.body.tweetid}'`;
+  // const params = [req.params.username, req.body.follower];
+  connection.query(sql_unlike,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'tweet successfully unliked', changes: this.changes });
+    });
+});
+
+// delete comment
+webapp.delete('/api/tweet/comment/delete/:commid', (req, res) => {
+  const sql_delete = `DELETE FROM COMMENTS_1 WHERE comm_id= '${req.params.commid}'`;
+  connection.query(sql_delete,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'comment successfully deleted', changes: this.changes });
+    });
+});
+
+// update comment
+webapp.put('/api/tweet/comment/update/:commid', (req, res) => {
+  const sql_update = `UPDATE COMMENTS_1 SET content='${req.body.content}' WHERE comm_id='${req.params.commid}'`;
+  connection.query(sql_update,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'comment successfully updated', changes: this.changes });
+    });
+});
+
+// get hiders
+webapp.get('/api/tweet/hiders/all/:tweetid', (req, res) => {
+  const sql_get = `SELECT user from HIDDEN_TWEETS WHERE tweet_id='${req.params.tweetid}'`;
+  connection.query(sql_get,
+    (err, hiders) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'hiders successfully retrieved', hiders });
+    });
+});
+
+// adding hashtag to a tweet
+webapp.post('/api/tweet/hashtag/:tweetid', (req, res) => {
+  const sql_insert = `CALL addHashTag("${req.params.tweetid}","${req.body.hashtag}")`;
+  connection.query(sql_insert,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'hashtag successfully added', changes: this.changes });
+    });
+});
+// updating picture
+
+// deleting picture
+
+// updating cover page
+
+// deleting cover page
+
+/* -------------------------------------------------------------------------- */
+/*                                CREATE TWEET                                */
+/* -------------------------------------------------------------------------- */
+
+webapp.get('/api/home/:uid', (req, res) => {
+  const sql = 'SELECT username from USERS WHERE uid=?';
+  const params = [req.params.uid];
+  connection.query(sql, params, (err, user) => {
+    if (err) {
+      res.status(404).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'successful operation',
+      data: user,
+    });
+  });
+});
+
+// Adding tweet
+webapp.post('/api/createTweet/:username', (req, res) => {
+  const input = req.body;
+  // insert newTweet in table TWEETS
+  const sql = 'INSERT INTO TWEETS_1 (user, tweet_id, type, content, tweet_date, tweet_likes) VALUES (?,?,?,?,?,?)';
+  const params = [req.params.username, input.tweetId, input.type,
+    input.content, input.tweet_date, 0];
+  connection.query(sql, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Tweet successfully added', changes: this.changes });
+    });
+});
+
+// Adding tweet
+webapp.post('/api/comment/add/:username', (req, res) => {
+  const {
+    commentId, tweetId, content, timestamp,
+  } = req.body;
+  const user = req.params.username;
+  // insert newTweet in table TWEETS
+  const sql = 'INSERT INTO COMMENTS_1 (comm_id, tweet_id, user, content, timestamp) VALUES (?,?,?,?,?)';
+  const params = [commentId, tweetId, user, content, timestamp];
+  connection.query(sql, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Comment successfully added', changes: this.changes });
+    });
+});
+
+// deleting a tweet
+webapp.delete('/api/tweet/delete/:tweetid', (req, res) => {
+  const input = req.params.tweetid;
+  const sql = `DELETE FROM TWEETS_1 WHERE tweet_id = '${input}'`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'sucessful deletion of tweet',
+      data: result,
+    });
+  });
+});
+
+// hiding a tweet
+webapp.post('/api/tweet/hide/:tweetid', (req, res) => {
+  const input = req.params.tweetid;
+  const { username } = req.body;
+  const sql = `INSERT INTO HIDDEN_TWEETS (user, tweet_id) VALUES ('${username}', '${input}')`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'sucessfully hid the tweet',
+      data: result,
+    });
+  });
+});
+
+// update number of tweet block
+webapp.post('/api/tweet/block/:tweetid', (req, res) => {
+  const input = req.params.tweetid;
+  const { blocks } = req.body;
+  const sql = `UPDATE TWEETS_1 SET tweet_blocks=${blocks} WHERE tweet_id='${input}'`;
+  connection.query(sql, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'tweet_blocks updated',
+      data: result,
+    });
+  });
+});
+
+// gets alls the followers with no limit
+webapp.get('/api/all/followers/:username', (req, res) => {
+  // finish the outes correctly
+  const { username } = req.params;
+  const sql_get = `SELECT user_two FROM FOLLOWERS_1 WHERE user_one = '${username}' and user_two NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one= '${username}')`;
+
+  connection.query(sql_get,
+    (err, followers) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        followers,
+      });
+    });
+});
+
+webapp.get('/api/profile/suggestions/:username', (req, res) => {
+  const { username } = req.params;
+  const sql_select = `SELECT username, profile_picture FROM USERS WHERE username != '${username}' 
+  AND username NOT IN (SELECT user_two FROM BLOCKED_USERS_1 WHERE user_one = '${username}') 
+  AND username NOT IN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one = '${username}')
+  ORDER BY rand() LIMIT 5`;
+  connection.query(sql_select, (err, suggestions) => {
+    if (err) {
+      res.status(404).json({
+        message: 'no suggestions',
+        error: err.message,
+      });
+      return;
+    }
+    res.json({
+      message: 'suggestions acquired',
+      suggestions,
+    });
+  });
+});
+
+// gets alls the followers with no limit
+webapp.get('/api/tweets/all/:username', (req, res) => {
+  // finish the outes correctly
+  const { username } = req.params;
+  const sql_get = `SELECT* FROM ((SELECT user, tweet_id, type, content, tweet_date, tweet_likes, tweet_comments, tweet_blocks
+    FROM TWEETS_1 JOIN (SELECT user_two FROM FOLLOWERS_1 WHERE user_one='${username}') AS T ON user=user_two)
+     UNION ALL (select * from TWEETS_1 where user='${username}'))AS M where tweet_id not in (SELECT tweet_id FROM HIDDEN_TWEETS WHERE user = '${username}') ORDER BY tweet_date DESC`;
+  connection.query(sql_get,
+    (err, tweets) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        tweets,
+      });
+    });
+});
+
+// gets alls the followers pagination with no limit
+webapp.get('/api/tweeters/all/:username', (req, res) => {
+  const { username } = req.params;
+  const { page, limit } = req.query;
+  const offset = (page - 1) * limit;
+  const sql_get = `CALL getTweetsUsers("${username}", ${limit}, ${offset})`;
+  connection.query(sql_get,
+    (err, tweets) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        tweets,
+      });
+    });
+});
+
+// gets the tweet number
+webapp.get('/api/tweets/count/all/:username', (req, res) => {
+  const { username } = req.params;
+  const sql_count = `CALL getTweetsCount("${username}")`;
+  connection.query(sql_count,
+    (err, count) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        count,
+      });
+    });
+});
+
+// gets alls the comments of tweet
+webapp.get('/api/tweet/comments/all/:tweetid', (req, res) => {
+  // finish the outes correctly
+  const { tweetid } = req.params;
+  const sql_get = `SELECT * FROM COMMENTS_1 WHERE tweet_id='${tweetid}' ORDER BY timestamp DESC LIMIT 7`;
+  connection.query(sql_get,
+    (err, comments) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        comments,
+      });
+    });
+});
+
+// commenting on livestream
+webapp.post('/api/comment/livestream/:roomName', (req, res) => {
+  const {
+    user, timestamp, content,
+  } = req.body;
+  const room = req.params.roomName;
+  const sql = `CALL addCommentStream("${room}","${user}","${timestamp}","${content}")`;
+  connection.query(sql,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Comment successfully added', changes: this.changes });
+    });
+});
+
+// gets the comment in a livestream
+webapp.get('/api/livestream/comments/all/:roomName', (req, res) => {
+  const sql_get = `CALL getAllComments('${req.params.roomName}')`;
+  connection.query(sql_get,
+    (err, comments) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+        comments,
+      });
+  });
+});
+
+
+// open a stream
+webapp.post('/api/livestream/open/:username', (req, res) => {
+  const sql_post = `CALL openLiveStream('${req.body.room}','${req.params.username}')`;
+  connection.query(sql_post,
+    (err) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+      });
+  });
+});
+
+// close a livestream
+webapp.delete('/api/livestream/close/:username', (req, res) => {
+  const sql_delete = `CALL closeLiveStream('${req.params.username}')`;
+  connection.query(sql_delete,
+    (err) => {
+      if (err) {
+        res.status(405).json({ error: err.message });
+      }
+      res.json({
+        message: '200',
+      });
+  });
+});
+/* -------------------------------------------------------------------------- */
+/* ----------------------------MESSAGING------------------------------------------ */
+/* -------------------------------------------------------------------------- */
+
+/**
+   * Retrieving all messages of sender/user
+   * * */
+
+webapp.get('/api/profile/messages/:username/:receiver', (req, res) => {
+  const sql_select = 'SELECT * FROM MESSAGES_1 WHERE (user=? AND receiver =?) OR (user=? AND receiver =?) ORDER BY message_date DESC';
+  const params = [req.params.username, req.params.receiver, req.params.receiver, req.params.username];
+  connection.query(sql_select, params, (err, messages) => {
+    if (err) {
+      res.status(404).json({
+        message: 'no followers',
+        error: err.message,
+      });
+      return;
+    }
+
+    console.log(messages);
+    res.json({
+      message: '200',
+      messages,
+    });
+  });
+});
+
+// sending messages
+webapp.post('/api/createMessage/:username/:receiver', (req, res) => {
+  const input = req.body;
+  const sql = 'INSERT INTO MESSAGES_1 (user, message_id, type, content, message_date, receiver) VALUES (?,?,?,?,?,?)';
+  const params = [req.params.username, input.messageId, input.type,
+    input.content, input.message_date, req.params.receiver];
+  connection.query(sql, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'Message successfully added', changes: this.changes });
+    });
+});
+
+// setting the boolean for logging in/out
+webapp.post('/api/hasRead/:username/:receiver', (req, res) => {
+  const trueInt = 1;
+  const sql = 'UPDATE MESSAGES_1 SET is_read = ? WHERE (user = ?) AND (receiver = ?)';
+  const params = [trueInt, req.params.username, req.params.receiver];
+  connection.query(sql, params,
+    function (err) {
+      if (err) {
+        res.status(405).json({ error: err.message });
+        return;
+      }
+      res.json({ message: 'The Receiver has read his messages', changes: this.changes });
+    });
+});
+
+webapp.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
+webapp.use((_req, res) => {
+  res.status(404);
+});
+
+module.exports = webapp;
